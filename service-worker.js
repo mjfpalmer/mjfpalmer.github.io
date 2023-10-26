@@ -1,4 +1,4 @@
-const version = "231026.2100.4";
+const version = "231027.00";
 
 if (typeof Site === "undefined") { var Site = {}; }
 

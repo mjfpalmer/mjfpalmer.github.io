@@ -174,7 +174,9 @@ $(function () {
 
         game.MoveInputs();
 
-        $("#playAgain").show();
+        $("#playAgain")
+          .show()
+          .trigger("focus");
       }
 
       this.onInput = function (handler, value, type) {
