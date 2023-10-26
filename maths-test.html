@@ -89,7 +89,7 @@ $(function () {
       this.setPlayer = function (player) {
         game.Player = player;
         game.log(game.Player);
-        game.log("What's the maximum number to multiply (default: 12)?", true);
+        game.log("What's the maximum number to multiply?", true);
         game.onInput(game.SetMaxMultiply, "12", "integer");
       }
 
@@ -98,7 +98,7 @@ $(function () {
           game.MaxMultiply = parseInt(maxMultiply);
         }
         game.log(game.MaxMultiply);
-        game.log("What's the maximum number to divide (default: 12)?", true);
+        game.log("What's the maximum number to divide?", true);
         game.onInput(game.SetMaxDivide, "12", "integer");
       }
 
@@ -107,7 +107,7 @@ $(function () {
           game.MaxDivide = parseInt(maxDivide);
         }
         game.log(game.MaxDivide);
-        game.log("What's the maximum number to add (default: 50)?", true);
+        game.log("What's the maximum number to add?", true);
         game.onInput(game.SetMaxAdd, "50", "integer");
       }
 
@@ -116,7 +116,7 @@ $(function () {
           game.maxAdd = parseInt(maxAdd);
         }
         game.log(game.MaxAdd);
-        game.log("What's the maximum number to subtract (default: 50)?", true);
+        game.log("What's the maximum number to subtract?", true);
         game.onInput(game.SetMaxSubtract, "50", "integer");
       }
 
@@ -125,7 +125,7 @@ $(function () {
           game.MaxSubtract = parseInt(maxSubtract);
         }
         game.log(game.MaxSubtract);
-        game.log("How many sums (default: 20)?", true);
+        game.log("How many sums?", true);
         game.onInput(game.SetSumCount, "20", "integer");
       }
 
