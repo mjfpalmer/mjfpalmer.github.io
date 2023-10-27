@@ -60,6 +60,8 @@
   <main role="main" class="container" style="overflow: auto;">
     <div id="divLog" class="mt-3"></div>
 
+    <div style="height: 144px;"></div>
+
     <div id="inputs">
       <input type="text" id="inputtext" class="form-control" value="" />
       <input type="number" id="inputinteger" min="0" max="1000" step="1" class="form-control" value="" />
@@ -68,7 +70,7 @@
   </main>
 
   <footer class="footer bg-black fixed-bottom container" data-bs-theme="dark">
-    <textarea rows="5" class="form-control" style="font-family: 'Courier New';"></textarea>
+    <textarea id="scratchPad" rows="5" class="form-control" style="font-family: 'Courier New';"></textarea>
   </footer>
 
   <script type="text/javascript" src="/scripts/jquery-3.7.1.min.js"></script>
@@ -79,7 +81,7 @@
     $(function () {
       let game = new Game();
 
-      $("#playAgain").on("click", function () {
+      $("#playAgain").on("click", function (e) {
         game.clearLog();
         game.Sums = [];
         game.NextSum();
@@ -213,12 +215,15 @@
 
         $(`#input${type}`)
           .show()
-          .off("keyup")
           .on("keyup", function (e) {
-            alert(e.keyCode);
-            if (e.keyCode == 13) {
-              let v = $(e.target).val();
-              $(e.target).val("");
+            if (e.key == 'Enter') {
+              $(e.target).trigger("focusout");
+            }
+          })
+          .on("focusout", function (e) {
+            let v = $(e.target).val();
+            if (v !== "") {
+              $(e.target).off().val("");
               handler(v);
             }
           })
@@ -252,7 +257,7 @@
           .html(html)
           .appendTo(game.CurrentCard.children(".card-body").last());
 
-        $(window).scrollTop(Number.MAX_SAFE_INTEGER)
+        $(window).scrollTop(Number.MAX_SAFE_INTEGER);
       }
 
       this.clearLog = function () {
