@@ -215,6 +215,7 @@
           .show()
           .off("keyup")
           .on("keyup", function (e) {
+            alert(e.keyCode);
             if (e.keyCode == 13) {
               let v = $(e.target).val();
               $(e.target).val("");
