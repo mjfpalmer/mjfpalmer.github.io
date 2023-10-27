@@ -7,7 +7,7 @@ window.addEventListener('load', () => {
 
   window["isUpdateAvailable"] = new Promise(function (resolve, reject) {
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register(`${baseUrl}service-worker${baseUrl.indexOf('localhost') ? '-localhost' : ''}.js`)
+      navigator.serviceWorker.register(`${baseUrl}service-worker${baseUrl.indexOf('localhost') === -1 ? '' : '-localhost'}.js`)
         .then(registration => {
           console.info('ServiceWorker registration successful with scope: ', registration.scope);
 
@@ -33,6 +33,7 @@ window.addEventListener('load', () => {
   window["isUpdateAvailable"]
     .then(isAvailable => {
       if (isAvailable) {
+        alert("New version available. Click Ok to reload.");
         window.location.reload(true);
       }
       return isAvailable;

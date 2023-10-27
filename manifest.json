@@ -1,6 +1,6 @@
 {
   "name": "Michael Palmer",
-  "short_name": "Michael Palmer",
+  "short_name": "MP",
   "description": "Michael Palmer",
   "icons": [
     {
@@ -40,8 +40,9 @@
       "density": "4.0"
     }
   ],
-  "theme_color": "#585858",
-  "background_color": "#ffffff",
+  "id": "/index.html",
+  "theme_color": "#212529",
+  "background_color": "#212529",
   "display": "standalone",
   "orientation": "portrait",
   "scope": ".",
