@@ -53,12 +53,11 @@
   </main>
 
   <footer class="footer bg-black fixed-bottom container" data-bs-theme="dark">
-    <div id="inputs">
-      <input type="text" id="inputtext" class="form-control bg-transparent text-white" value="" />
-      <input type="number" id="inputinteger" min="0" max="1000" step="1" class="form-control bg-transparent text-white" value="" />
+    <div>
+      <input type="text" id="mi" class="form-control bg-transparent text-white" value="" min="0" max="1000" step="1" />
     </div>
     <div class="mt-1">
-      <input type="text" id="input" class="w-100 bg-transparent text-white form-control" />
+      <input type="text" id="ci" class="w-100 bg-transparent text-white form-control" />
     </div>
   </footer>
 
@@ -104,7 +103,7 @@
         game.Player = player;
         game.log(game.Player, false, false);
         game.log("Maximum number to multiply? ", true);
-        game.onInput(game.SetMaxMultiply, "12", "integer");
+        game.onInput(game.SetMaxMultiply, "12", "number");
       }
 
       this.SetMaxMultiply = function (maxMultiply) {
@@ -113,7 +112,7 @@
         }
         game.log(game.MaxMultiply, false, false);
         game.log("Maximum number to divide? ", true);
-        game.onInput(game.SetMaxDivide, "12", "integer");
+        game.onInput(game.SetMaxDivide, "12", "number");
       }
 
       this.SetMaxDivide = function (maxDivide) {
@@ -122,7 +121,7 @@
         }
         game.log(game.MaxDivide);
         game.log("Maximum number to add? ", true);
-        game.onInput(game.SetMaxAdd, "50", "integer");
+        game.onInput(game.SetMaxAdd, "50", "number");
       }
 
       this.SetMaxAdd = function (maxAdd) {
@@ -131,7 +130,7 @@
         }
         game.log(game.MaxAdd, false, false);
         game.log("Maximum number to subtract? ", true);
-        game.onInput(game.SetMaxSubtract, "50", "integer");
+        game.onInput(game.SetMaxSubtract, "50", "number");
       }
 
       this.SetMaxSubtract = function (maxSubtract) {
@@ -140,7 +139,7 @@
         }
         game.log(game.MaxSubtract, false, false);
         game.log("How many sums? ", true);
-        game.onInput(game.SetSumCount, "20", "integer");
+        game.onInput(game.SetSumCount, "20", "number");
       }
 
       this.SetSumCount = function (sumCount) {
@@ -158,7 +157,7 @@
           game.Sum = new Sum(game);
           game.Sums.push(game.Sum);
           game.log(`${game.Sum.Num1} ${game.Sum.OperatorSymbol()} ${game.Sum.Num2} = `, true);
-          game.onInput(game.Answer, "", "integer");
+          game.onInput(game.Answer, "", "number");
         } else {
           game.GameOver();
         }
@@ -201,10 +200,8 @@
       }
 
       this.onInput = function (handler, value, type) {
-        game.HideInputs();
-
-        $(`#input${type}`)
-          .show()
+        $(`#mi`)
+          .prop({ type: type })
           .on("keyup", function (e) {
             if (e.key == 'Enter') {
               $(e.target).trigger("focusout");
@@ -219,10 +216,6 @@
           })
           .val(value)
           .trigger("focus");
-      }
-
-      this.HideInputs = function () {
-        $("#inputs").children().hide();
       }
 
       this.log = function (html, newCard, newLine, colour) {

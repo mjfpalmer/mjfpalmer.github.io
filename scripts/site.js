@@ -1,5 +1,5 @@
 $(function () {
-  $("#input").on("keyup", function (e) {
+  $("#ci").on("keyup", function (e) {
     if (e.key == 'Enter') {
       let value = $(e.target).val();
       switch (value.toLowerCase()) {
