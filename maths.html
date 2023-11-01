@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, shrink-to-fit=no, interactive-widget=resizes-content">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, shrink-to-fit=no, interactive-widget=resizes-visual">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Michael Palmer</title>
   <base href="/">
@@ -49,7 +49,6 @@
 <body>
   <main role="main" class="container">
     <div id="divLog" class="my-2"></div>
-    <div id="scroller"></div>
   </main>
 
   <footer class="footer bg-black fixed-bottom container" data-bs-theme="dark">
@@ -222,8 +221,9 @@
         if (newLine === undefined) { newLine = true; }
         if (newCard) {
           game.CurrentCard = $(document.createElement('div'))
+            .hide()
             .addClass("card text-white bg-dark fs-3 mt-2")
-            .appendTo("#divLog");
+            .prependTo("#divLog");
 
           $(document.createElement('div'))
             .addClass("card-body")
@@ -232,17 +232,19 @@
 
         if (newLine) {
           $(document.createElement('div'))
-            .appendTo(game.CurrentCard.children(".card-body").last());
+            .appendTo(game.CurrentCard.children(".card-body").last())
         }
 
         $(document.createElement('span'))
+          .hide()
           .css("color", colour ? colour : "inherit")
           .html(html)
-          .appendTo(game.CurrentCard.children(".card-body").last().children("div").last());
+          .appendTo(game.CurrentCard.children(".card-body").last().children("div").last())
+          .fadeIn();
 
-        window.setTimeout(function () {
-          document.getElementById("scroller").scrollIntoView({ behavior: "smooth", block: "end" });
-        }, 10);
+        if (newCard) {
+          game.CurrentCard.slideDown();
+        }
       }
 
       this.clearLog = function () {
