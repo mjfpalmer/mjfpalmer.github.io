@@ -98,55 +98,55 @@
         ["Spectacular", "Perfect", "Brilliant", "Whoop whoop"]
       ];
 
-      this.setPlayer = function (player) {
+      this.SetPlayer = function (player) {
         game.Player = player;
-        game.log(game.Player, false, false);
-        game.log("Maximum number to multiply? ", true);
-        game.onInput(game.SetMaxMultiply, "12", "number");
+        game.Log(game.Player, false, false);
+        game.Log("Maximum number to multiply? ", true);
+        game.OnInput(game.SetMaxMultiply, "12", "number");
       }
 
       this.SetMaxMultiply = function (maxMultiply) {
         if (maxMultiply !== "" && !isNaN(maxMultiply)) {
           game.MaxMultiply = parseInt(maxMultiply);
         }
-        game.log(game.MaxMultiply, false, false);
-        game.log("Maximum number to divide? ", true);
-        game.onInput(game.SetMaxDivide, "12", "number");
+        game.Log(game.MaxMultiply, false, false);
+        game.Log("Maximum number to divide? ", true);
+        game.OnInput(game.SetMaxDivide, "12", "number");
       }
 
       this.SetMaxDivide = function (maxDivide) {
         if (maxDivide !== "" && !isNaN(maxDivide)) {
           game.MaxDivide = parseInt(maxDivide);
         }
-        game.log(game.MaxDivide);
-        game.log("Maximum number to add? ", true);
-        game.onInput(game.SetMaxAdd, "50", "number");
+        game.Log(game.MaxDivide);
+        game.Log("Maximum number to add? ", true);
+        game.OnInput(game.SetMaxAdd, "50", "number");
       }
 
       this.SetMaxAdd = function (maxAdd) {
         if (maxAdd !== "" && !isNaN(maxAdd)) {
           game.MaxAdd = parseInt(maxAdd);
         }
-        game.log(game.MaxAdd, false, false);
-        game.log("Maximum number to subtract? ", true);
-        game.onInput(game.SetMaxSubtract, "50", "number");
+        game.Log(game.MaxAdd, false, false);
+        game.Log("Maximum number to subtract? ", true);
+        game.OnInput(game.SetMaxSubtract, "50", "number");
       }
 
       this.SetMaxSubtract = function (maxSubtract) {
         if (maxSubtract !== "" && !isNaN(maxSubtract)) {
           game.MaxSubtract = parseInt(maxSubtract);
         }
-        game.log(game.MaxSubtract, false, false);
-        game.log("How many sums? ", true);
-        game.onInput(game.SetSumCount, "20", "number");
+        game.Log(game.MaxSubtract, false, false);
+        game.Log("How many sums? ", true);
+        game.OnInput(game.SetSumCount, "20", "number");
       }
 
       this.SetSumCount = function (sumCount) {
         if (sumCount !== "" && !isNaN(sumCount)) {
           game.SumCount = parseInt(sumCount);
         }
-        game.log(game.SumCount, false, false);
-        game.clearLog();
+        game.Log(game.SumCount, false, false);
+        game.ClearLog();
 
         game.NextSum();
       }
@@ -155,8 +155,8 @@
         if (game.Sums.length < game.SumCount) {
           game.Sum = new Sum(game);
           game.Sums.push(game.Sum);
-          game.log(`${game.Sum.Num1} ${game.Sum.OperatorSymbol()} ${game.Sum.Num2} = `, true);
-          game.onInput(game.Answer, "", "number");
+          game.Log(`${game.Sum.Num1} ${game.Sum.OperatorSymbol()} ${game.Sum.Num2} = `, true);
+          game.OnInput(game.Answer, "", "number");
         } else {
           game.GameOver();
         }
@@ -166,13 +166,13 @@
         if (answer !== "" && !isNaN(answer)) {
           game.Sum.PlayerAnswer = parseInt(answer);
         }
-        game.log(game.Sum.PlayerAnswer, false, false);
+        game.Log(game.Sum.PlayerAnswer, false, false);
 
         if (game.Sum.Correct()) {
-          game.log("&nbsp;&nbsp;&check;", false, false, "#0ed145");
+          game.Log("&nbsp;&nbsp;&check;", false, false, "#0ed145");
         } else {
-          game.log("&nbsp;&nbsp;&cross;", false, false, "#ec1c24");
-          game.log(`The correct answer was <span style="color: #0ed145;">${game.Sum.Answer}</span>`, false, true);
+          game.Log("&nbsp;&nbsp;&cross;", false, false, "#ec1c24");
+          game.Log(`The correct answer was <span style="color: #0ed145;">${game.Sum.Answer}</span>`, false, true);
         }
 
         game.NextSum();
@@ -183,14 +183,14 @@
         let incorrect = game.Sums.length - correct;
         let percentage = Math.round(correct / game.Sums.length * 100);
         let feedback = game.Feedback[Math.floor(percentage / 10)][Math.floor(Math.random() * game.Feedback[Math.floor(percentage / 10)].length)];
-        game.log(`${feedback} ${game.Player}, you got ${percentage}% (${correct} correct and ${incorrect} incorrect).`, true);
-        game.log("Play again (y/n)? ", true);
-        game.onInput(game.PlayAgain, "y", "text");
+        game.Log(`${feedback} ${game.Player}, you got ${percentage}% (${correct} correct and ${incorrect} incorrect).`, true);
+        game.Log("Play again (y/n)? ", true);
+        game.OnInput(game.PlayAgain, "y", "text");
       }
 
       this.PlayAgain = function (playAgain) {
         if (playAgain.toLowerCase() === "y") {
-          game.clearLog();
+          game.ClearLog();
           game.Sums = [];
           game.NextSum();
         } else {
@@ -198,7 +198,7 @@
         }
       }
 
-      this.onInput = function (handler, value, type) {
+      this.OnInput = function (handler, value, type) {
         $(`#mi`)
           .prop({ type: type })
           .on("keyup", function (e) {
@@ -217,7 +217,7 @@
           .trigger("focus");
       }
 
-      this.log = function (html, newCard, newLine, colour) {
+      this.Log = function (html, newCard, newLine, colour) {
         if (newLine === undefined) { newLine = true; }
         if (newCard) {
           game.CurrentCard = $(document.createElement('div'))
@@ -247,12 +247,12 @@
         }
       }
 
-      this.clearLog = function () {
+      this.ClearLog = function () {
         $("#divLog").empty();
       }
 
-      game.log("Who's playing? ", true);
-      game.onInput(this.setPlayer, "", "text");
+      game.Log("Who's playing? ", true);
+      game.OnInput(game.SetPlayer, "", "text");
     }
 
     function Sum(game) {
