@@ -49,6 +49,7 @@
 <body>
   <main role="main" class="container">
     <div id="divLog" class="my-2"></div>
+    <div id="scroller"></div>
   </main>
 
   <footer class="footer bg-black fixed-bottom container" data-bs-theme="dark">
@@ -246,7 +247,9 @@
           .html(html)
           .appendTo(game.CurrentCard.children(".card-body").last().children("div").last());
 
-        $("main").scrollTop(Number.MAX_SAFE_INTEGER);
+        window.setTimeout(function () {
+          document.getElementById("scroller").scrollIntoView({ behavior: "smooth", block: "end" });
+        }, 10);
       }
 
       this.clearLog = function () {
