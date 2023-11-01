@@ -209,7 +209,7 @@
       this.MoveInputs = function () {
         $("#inputs")
           .appendTo(game.CurrentCard.children(".card-footer").last())
-          .children().hide();;
+          .children().hide();
       }
 
       this.log = function (html, newCard, colour) {
@@ -231,14 +231,11 @@
           .css("color", colour ? colour : "inherit")
           .html(html)
           .appendTo(game.CurrentCard.children(".card-body").last());
-
-        //$(window).scrollTop(Number.MAX_SAFE_INTEGER);
       }
 
       this.clearLog = function () {
         $("#inputs").appendTo("body");
         $("#divLog").empty();
-        //$(window).scrollTop(0);
       }
 
       game.log("Who's playing?", true);
