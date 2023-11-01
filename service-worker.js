@@ -1,4 +1,4 @@
-const version = "231027.1604";
+const version = "231101.2100";
 
 if (typeof Site === "undefined") { var Site = {}; }
 
@@ -106,6 +106,7 @@ Site.ServiceWorker = {
     'favicon/ms-icon-144x144.png',
     'favicon/ms-icon-150x150.png',
     'favicon/ms-icon-310x310.png',
+    'images/logo.png',
     'scripts/jquery-3.7.1.min.js',
     'scripts/site.js'
   ]

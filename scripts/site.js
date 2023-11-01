@@ -1,3 +1,16 @@
+$(function () {
+  $("#input").on("keyup", function (e) {
+    if (e.key == 'Enter') {
+      let value = $(e.target).val();
+      switch (value.toLowerCase()) {
+        case "home": window.location.href = "/index.html"; break;
+        case "maths": window.location.href = "/maths.html"; break;
+      }
+      $(e.target).val("");
+    }
+  })
+});
+
 window.addEventListener('load', () => {
   const base = document.querySelector('base');
   let baseUrl = base && base.href || '';

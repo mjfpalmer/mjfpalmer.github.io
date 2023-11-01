@@ -1,5 +1,5 @@
 html {
-  min-height: 100%;
+  height: 100%;
 }
 
 body {
@@ -10,9 +10,22 @@ body {
   font-size: 14px;
   color: #ffffff;
   height: 100%;
+  margin-bottom: 44px;
+}
+
+main {
+  height: calc(100% - 50px);
+  overflow-y: auto;
 }
 
 .footer {
-  height: 144px;
-  line-height: 144px;
+  height: 44px;
+  line-height: 44px;
+}
+
+@font-face {
+  font-family: 'photograph_signatureregular';
+  src: url('/fonts/photograph_signature-webfont.woff2') format('woff2'), url('/fonts/photograph_signature-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
 }
