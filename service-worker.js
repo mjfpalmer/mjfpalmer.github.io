@@ -1,4 +1,4 @@
-const version = "231102.0032";
+const version = "231102.0100";
 
 if (typeof Site === "undefined") { var Site = {}; }
 
@@ -110,6 +110,7 @@ Site.ServiceWorker = {
     'fonts/photograph_signature-webfont.woff2',
     'images/logo.png',
     'scripts/jquery-3.7.1.min.js',
+    'scripts/maths.js',
     'scripts/site.js'
   ]
 }

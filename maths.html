@@ -29,21 +29,6 @@
   <meta name="msapplication-TileColor" content="#585858">
   <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png">
   <meta name="theme-color" content="#585858">
-
-  <style>
-    body {
-      margin-bottom: 88px;
-    }
-
-    main {
-      height: calc(100dvh - 92px);
-      overflow-y: auto;
-    }
-
-    .footer {
-      height: 88px;
-    }
-  </style>
 </head>
 
 <body>
@@ -52,35 +37,50 @@
   </main>
 
   <footer class="footer bg-black fixed-bottom container" data-bs-theme="dark">
-    <div>
-      <input type="text" id="mi" class="form-control bg-transparent text-white" value="" min="0" max="1000" step="1" />
-    </div>
-    <div class="mt-1">
-      <input type="text" id="ci" class="w-100 bg-transparent text-white form-control" />
-    </div>
+    <input type="text" id="ci" class="w-100 bg-transparent text-white form-control" />
   </footer>
 
   <script type="text/javascript" src="/scripts/jquery-3.7.1.min.js"></script>
   <script type="text/javascript" src="/bootstrap-5.3.2-dist/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="/scripts/site.js"></script>
+  <script type="text/javascript" src="/scripts/maths.js"></script>
 
   <script type="text/javascript">
     $(function () {
       let game = new Game();
+
+      $("#ci")
+        .off("keyup")
+        .on("keyup", function (e) {
+          if (e.key == 'Enter') {
+            let value = $(e.target).val();
+            $(e.target).val("");
+
+            if (value !== "") {
+              if (game.OnInputHandler) {
+                game.OnInputHandler(value);
+              }
+            }
+
+            site.OnConsoleKeyUpEnter(value);
+          }
+        })
     });
 
     function Game() {
       let game = this;
 
-      this.Player = null;
-      this.MaxMultiply = 12;
-      this.MaxDivide = 12;
-      this.MaxAdd = 50;
-      this.MaxSubtract = 50;
-      this.SumCount = 20;
+      this.OnInputHandler = null;
 
-      this.Sums = [];
-      this.Sum = new Sum();
+      this.Maths = null;
+
+      this.Player = null;
+      this.Grade = 4;
+      this.QuestionCount = 20;
+
+      this.Questions = [];
+      this.QuestionIndex = 0;
+      this.Question = null;
 
       this.CurrentCard = null;
 
@@ -101,62 +101,41 @@
       this.SetPlayer = function (player) {
         game.Player = player;
         game.Log(game.Player, false, false);
-        game.Log("Maximum number to multiply? ", true);
-        game.OnInput(game.SetMaxMultiply, "12", "number");
+        game.Log("What grade are you in? ", true);
+        game.OnInput(game.SetGrade, "4", "number");
       }
 
-      this.SetMaxMultiply = function (maxMultiply) {
-        if (maxMultiply !== "" && !isNaN(maxMultiply)) {
-          game.MaxMultiply = parseInt(maxMultiply);
+      this.SetGrade = function (grade) {
+        if (grade !== "" && !isNaN(grade)) {
+          game.Grade = parseInt(grade);
+          game.Maths = new Maths(game.Grade);
         }
-        game.Log(game.MaxMultiply, false, false);
-        game.Log("Maximum number to divide? ", true);
-        game.OnInput(game.SetMaxDivide, "12", "number");
+
+        game.Log("How many questions? ", true);
+        game.OnInput(game.SetQuestionCount, "20", "number");
       }
 
-      this.SetMaxDivide = function (maxDivide) {
-        if (maxDivide !== "" && !isNaN(maxDivide)) {
-          game.MaxDivide = parseInt(maxDivide);
+      this.SetQuestionCount = function (questionCount) {
+        if (questionCount !== "" && !isNaN(questionCount)) {
+          game.QuestionCount = parseInt(questionCount);
         }
-        game.Log(game.MaxDivide);
-        game.Log("Maximum number to add? ", true);
-        game.OnInput(game.SetMaxAdd, "50", "number");
-      }
 
-      this.SetMaxAdd = function (maxAdd) {
-        if (maxAdd !== "" && !isNaN(maxAdd)) {
-          game.MaxAdd = parseInt(maxAdd);
-        }
-        game.Log(game.MaxAdd, false, false);
-        game.Log("Maximum number to subtract? ", true);
-        game.OnInput(game.SetMaxSubtract, "50", "number");
-      }
-
-      this.SetMaxSubtract = function (maxSubtract) {
-        if (maxSubtract !== "" && !isNaN(maxSubtract)) {
-          game.MaxSubtract = parseInt(maxSubtract);
-        }
-        game.Log(game.MaxSubtract, false, false);
-        game.Log("How many sums? ", true);
-        game.OnInput(game.SetSumCount, "20", "number");
-      }
-
-      this.SetSumCount = function (sumCount) {
-        if (sumCount !== "" && !isNaN(sumCount)) {
-          game.SumCount = parseInt(sumCount);
-        }
-        game.Log(game.SumCount, false, false);
+        game.Log(game.QuestionCount, false, false);
         game.ClearLog();
 
-        game.NextSum();
+        game.NextQuestion();
       }
 
-      this.NextSum = function () {
-        if (game.Sums.length < game.SumCount) {
-          game.Sum = new Sum(game);
-          game.Sums.push(game.Sum);
-          game.Log(`${game.Sum.Num1} ${game.Sum.OperatorSymbol()} ${game.Sum.Num2} = `, true);
-          game.OnInput(game.Answer, "", "number");
+      this.NextQuestion = function () {
+        if (game.Questions.length === 0) {
+          game.Questions = game.Maths.GetQuestions(game.QuestionCount);
+        }
+
+        if (game.QuestionIndex < game.QuestionCount) {
+          game.Question = game.Questions[game.QuestionIndex++];
+
+          game.Log(game.Question.Question, true);
+          game.OnInput(game.Answer, "", game.Question.AnswerType);
         } else {
           game.GameOver();
         }
@@ -164,55 +143,46 @@
 
       this.Answer = function (answer) {
         if (answer !== "" && !isNaN(answer)) {
-          game.Sum.PlayerAnswer = parseInt(answer);
+          game.Question.PlayerAnswer = parseInt(answer);
         }
-        game.Log(game.Sum.PlayerAnswer, false, false);
+        game.Log(game.Question.PlayerAnswer, false, false);
 
-        if (game.Sum.Correct()) {
+        if (game.Question.Correct()) {
           game.Log("&nbsp;&nbsp;&check;", false, false, "#0ed145");
         } else {
           game.Log("&nbsp;&nbsp;&cross;", false, false, "#ec1c24");
-          game.Log(`The correct answer was <span style="color: #0ed145;">${game.Sum.Answer}</span>`, false, true);
+          game.Log(`The correct answer was <span style="color: #0ed145;">${game.Question.Answer}</span>`, false, true);
         }
 
-        game.NextSum();
+        game.NextQuestion();
       }
 
       this.GameOver = function () {
-        let correct = game.Sums.filter((s) => s.Correct()).length;
-        let incorrect = game.Sums.length - correct;
-        let percentage = Math.round(correct / game.Sums.length * 100);
+        let correct = game.Questions.filter((q) => q.Correct()).length;
+        let incorrect = game.Questions.length - correct;
+        let percentage = Math.round(correct / game.Questions.length * 100);
         let feedback = game.Feedback[Math.floor(percentage / 10)][Math.floor(Math.random() * game.Feedback[Math.floor(percentage / 10)].length)];
         game.Log(`${feedback} ${game.Player}, you got ${percentage}% (${correct} correct and ${incorrect} incorrect).`, true);
         game.Log("Play again (y/n)? ", true);
-        game.OnInput(game.PlayAgain, "y", "text");
+        game.OnInput(game.PlayAgain, "", "text");
       }
 
       this.PlayAgain = function (playAgain) {
         if (playAgain.toLowerCase() === "y") {
           game.ClearLog();
-          game.Sums = [];
-          game.NextSum();
+          game.Questions = [];
+          game.QuestionIndex = 0;
+          game.NextQuestion();
         } else {
           window.location.href = "/index.html";
         }
       }
 
       this.OnInput = function (handler, value, type) {
-        $(`#mi`)
+        game.OnInputHandler = handler;
+
+        $(`#ci`)
           .prop({ type: type })
-          .on("keyup", function (e) {
-            if (e.key == 'Enter') {
-              $(e.target).trigger("focusout");
-            }
-          })
-          .on("focusout", function (e) {
-            let v = $(e.target).val();
-            if (v !== "") {
-              $(e.target).off().val("");
-              handler(v);
-            }
-          })
           .val(value)
           .trigger("focus");
       }
@@ -253,102 +223,6 @@
 
       game.Log("Who's playing? ", true);
       game.OnInput(game.SetPlayer, "", "text");
-    }
-
-    function Sum(game) {
-      let sum = this;
-
-      this.Operators = {
-        Multiply: 0,
-        Divide: 1,
-        Add: 2,
-        Subtract: 3
-      };
-
-      this.Game = game;
-
-      this.Operator = 0;
-      this.Num1 = 0;
-      this.Num2 = 0;
-      this.Answer = 0;
-
-      this.Num1s = [];
-      this.Num2s = [];
-
-      this.PlayerAnswer = null;
-
-      this.SetNum1s = () => {
-        sum.Num1s = [];
-
-        switch (sum.Operator) {
-          case sum.Operators.Multiply: sum.Num1s = new Array(sum.Game.MaxMultiply + 1).fill(0).map((n, i) => i); break;
-          case sum.Operators.Divide:
-            for (let i = 2; i <= sum.Game.MaxDivide; i++) {
-              for (let j = i; j <= sum.Game.MaxDivide; j++) {
-                let product = i * j;
-                if (sum.Num1s.indexOf(product) === -1) {
-                  sum.Num1s.push(product);
-                }
-              }
-            }
-            break;
-          case sum.Operators.Add: sum.Num1s = new Array(sum.Game.MaxAdd + 1).fill(0).map((n, i) => i); break;
-          case sum.Operators.Subtract: sum.Num1s = new Array(sum.Game.MaxSubtract + 1).fill(0).map((n, i) => i); break;
-        }
-      };
-
-      this.SetNum2s = () => {
-        sum.Num2s = [];
-
-        switch (sum.Operator) {
-          case sum.Operators.Multiply: sum.Num2s = new Array(sum.Game.MaxMultiply + 1).fill(0).map((n, i) => i); break;
-          case sum.Operators.Divide:
-            for (let i = 1; i <= sum.Game.MaxDivide; i++) {
-              if (sum.Num1 % i == 0) {
-                if (sum.Num2s.indexOf(i) === -1) {
-                  sum.Num2s.push(i);
-                }
-              }
-            }
-            break;
-          case sum.Operators.Add: sum.Num2s = new Array(sum.Game.MaxAdd + 1).fill(0).map((n, i) => i); break;
-          case sum.Operators.Subtract: sum.Num2s = new Array(sum.Num1 + 1).fill(0).map((n, i) => i); break;
-        }
-      };
-
-      this.OperatorSymbol = () => {
-        switch (sum.Operator) {
-          case sum.Operators.Multiply: return "&times;";
-          case sum.Operators.Divide: return "&divide;";
-          case sum.Operators.Add: return "&plus;";
-          case sum.Operators.Subtract: return "&minus;";
-        }
-      };
-
-      this.Correct = () => {
-        return sum.PlayerAnswer === sum.Answer;
-      };
-
-      if (game) {
-        do {
-          sum.Operator = Math.floor(Math.random() * 4);
-          sum.SetNum1s();
-          sum.Num1 = sum.Num1s[Math.floor(Math.random() * sum.Num1s.length)];
-          sum.SetNum2s();
-          sum.Num2 = sum.Num2s[Math.floor(Math.random() * sum.Num2s.length)];
-        } while (sum.Game.Sums.some((s) => {
-          return s.Operator === sum.Operator
-            && Math.min(s.Num1, s.Num2) === Math.min(sum.Num1, sum.Num2)
-            && Math.max(s.Num1, s.Num2) === Math.max(sum.Num1, sum.Num2);
-        }));
-
-        switch (sum.Operator) {
-          case sum.Operators.Multiply: sum.Answer = sum.Num1 * sum.Num2; break;
-          case sum.Operators.Divide: sum.Answer = sum.Num1 / sum.Num2; break;
-          case sum.Operators.Add: sum.Answer = sum.Num1 + sum.Num2; break;
-          case sum.Operators.Subtract: sum.Answer = sum.Num1 - sum.Num2; break;
-        }
-      }
     }
   </script>
 </body>

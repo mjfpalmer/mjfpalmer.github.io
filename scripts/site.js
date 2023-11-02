@@ -1,15 +1,31 @@
+let site;
+
 $(function () {
-  $("#ci").on("keyup", function (e) {
+  site = new Site();
+
+  $("#ci")
+    .on("keyup", site.OnConsoleKeyUp)
+    .trigger("focus");
+});
+
+function Site() {
+  let site = this;
+
+  this.OnConsoleKeyUp = function (e) {
     if (e.key == 'Enter') {
       let value = $(e.target).val();
-      switch (value.toLowerCase()) {
-        case "home": window.location.href = "/index.html"; break;
-        case "maths": window.location.href = "/maths.html"; break;
-      }
       $(e.target).val("");
+      site.OnConsoleKeyUpEnter(value);
     }
-  })
-});
+  }
+
+  this.OnConsoleKeyUpEnter = function (value) {
+    switch (value.toLowerCase()) {
+      case "home": window.location.href = "/index.html"; break;
+      case "maths": window.location.href = "/maths.html"; break;
+    }
+  }
+}
 
 window.addEventListener('load', () => {
   const base = document.querySelector('base');
