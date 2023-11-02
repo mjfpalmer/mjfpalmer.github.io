@@ -102,28 +102,30 @@
         game.Player = player;
         game.Log(game.Player, false, false);
         game.Log("What grade are you in? ", true);
-        game.OnInput(game.SetGrade, "4", "number");
+        game.OnInput(game.SetGrade, "", { type: "number", min: 0, max: 12, step: 1 });
       }
 
       this.SetGrade = function (grade) {
-        if (grade !== "" && !isNaN(grade)) {
-          game.Grade = parseInt(grade);
+        grade = Number.parseFloat(grade);
+        if (Number.isInteger(grade)) {
+          game.Grade = grade;
+          game.Log(game.Grade, false, false);
           game.Maths = new Maths(game.Grade);
-        }
 
-        game.Log("How many questions? ", true);
-        game.OnInput(game.SetQuestionCount, "20", "number");
+          game.Log("How many questions? ", true);
+          game.OnInput(game.SetQuestionCount, "20", { type: "number", min: 1, max: 200, step: 1 });
+        }
       }
 
       this.SetQuestionCount = function (questionCount) {
-        if (questionCount !== "" && !isNaN(questionCount)) {
+        questionCount = Number.parseFloat(questionCount);
+        if (Number.isInteger(questionCount)) {
           game.QuestionCount = parseInt(questionCount);
+          game.Log(game.QuestionCount, false, false);
+
+          game.ClearLog();
+          game.NextQuestion();
         }
-
-        game.Log(game.QuestionCount, false, false);
-        game.ClearLog();
-
-        game.NextQuestion();
       }
 
       this.NextQuestion = function () {
@@ -135,26 +137,27 @@
           game.Question = game.Questions[game.QuestionIndex++];
 
           game.Log(game.Question.Question, true);
-          game.OnInput(game.Answer, "", game.Question.AnswerType);
+          game.OnInput(game.Answer, "", game.Question.InputProperties);
         } else {
           game.GameOver();
         }
       }
 
       this.Answer = function (answer) {
-        if (answer !== "" && !isNaN(answer)) {
-          game.Question.PlayerAnswer = parseInt(answer);
-        }
-        game.Log(game.Question.PlayerAnswer, false, false);
+        answer = Number.parseFloat(answer);
+        if (!Number.isNaN(answer)) {
+          game.Question.PlayerAnswer = answer;
+          game.Log(game.Question.PlayerAnswer, false, false);
 
-        if (game.Question.Correct()) {
-          game.Log("&nbsp;&nbsp;&check;", false, false, "#0ed145");
-        } else {
-          game.Log("&nbsp;&nbsp;&cross;", false, false, "#ec1c24");
-          game.Log(`The correct answer was <span style="color: #0ed145;">${game.Question.Answer}</span>`, false, true);
-        }
+          if (game.Question.Correct()) {
+            game.Log("&nbsp;&nbsp;&check;", false, false, "#0ed145");
+          } else {
+            game.Log("&nbsp;&nbsp;&cross;", false, false, "#ec1c24");
+            game.Log(`The correct answer was <span style="color: #0ed145;">${game.Question.Answer}</span>`, false, true);
+          }
 
-        game.NextQuestion();
+          game.NextQuestion();
+        }
       }
 
       this.GameOver = function () {
@@ -164,7 +167,7 @@
         let feedback = game.Feedback[Math.floor(percentage / 10)][Math.floor(Math.random() * game.Feedback[Math.floor(percentage / 10)].length)];
         game.Log(`${feedback} ${game.Player}, you got ${percentage}% (${correct} correct and ${incorrect} incorrect).`, true);
         game.Log("Play again (y/n)? ", true);
-        game.OnInput(game.PlayAgain, "", "text");
+        game.OnInput(game.PlayAgain, "", { type: "text" });
       }
 
       this.PlayAgain = function (playAgain) {
@@ -178,11 +181,11 @@
         }
       }
 
-      this.OnInput = function (handler, value, type) {
+      this.OnInput = function (handler, value, properties) {
         game.OnInputHandler = handler;
 
         $(`#ci`)
-          .prop({ type: type })
+          .prop(properties)
           .val(value)
           .trigger("focus");
       }
@@ -222,7 +225,7 @@
       }
 
       game.Log("Who's playing? ", true);
-      game.OnInput(game.SetPlayer, "", "text");
+      game.OnInput(game.SetPlayer, "", { type: "text" });
     }
   </script>
 </body>
