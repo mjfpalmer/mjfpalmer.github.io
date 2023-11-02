@@ -20,11 +20,25 @@ function Site() {
   }
 
   this.OnConsoleKeyUpEnter = function (value) {
-    switch (value.toLowerCase()) {
-      case "home": window.location.href = "/index.html"; break;
-      case "maths": window.location.href = "/maths.html"; break;
-      case "version": alert("v231102.1430"); break;
+    value = value.toLowerCase();
+    switch (true) {
+      case value.startsWith("home"): window.location.href = "/index.html"; break;
+      case value.startsWith("maths"): window.location.href = "/maths.html"; break;
+      case value.startsWith("version"): site.respond("v231102.1700"); break;
+      case value.startsWith("hi"):
+      case value.startsWith("hello"):
+        site.respond("Hi, how are you?");
+        break;
     }
+  }
+
+  this.respond = (text) => {
+    $("#ci").val(text);
+    setTimeout(() => {
+      if ($("#ci").val() === text) {
+        $("#ci").val("");
+      }
+    }, 4000);
   }
 }
 
