@@ -26,7 +26,7 @@ function Site() {
       case value.startsWith("maths"): window.location.href = "/maths/maths.html"; break;
       case value.startsWith("sean moments"): window.location.href = "/timelines/sean.html"; break;
       case value.startsWith("anika moments"): window.location.href = "/timelines/anika.html"; break;
-      case value.startsWith("version"): site.respond("v231102.2000"); break;
+      case value.startsWith("version"): site.respond("v231102.2030"); break;
       case value.startsWith("hi"):
       case value.startsWith("hello"):
         site.respond("Hi, how are you?");
