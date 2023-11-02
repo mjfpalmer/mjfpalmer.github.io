@@ -26,7 +26,7 @@ function Site() {
       case value.startsWith("maths"): window.location.href = "/maths/maths.html"; break;
       case value.startsWith("sean moments"): window.location.href = "/timelines/sean.html"; break;
       case value.startsWith("anika moments"): window.location.href = "/timelines/anika.html"; break;
-      case value.startsWith("version"): site.respond("v231102.2040"); break;
+      case value.startsWith("version"): site.respond("v231102.2115"); break;
       case value.startsWith("hi"):
       case value.startsWith("hello"):
         site.respond("Hi, how are you?");
@@ -79,7 +79,6 @@ window.addEventListener('load', () => {
   window["isUpdateAvailable"]
     .then(isAvailable => {
       if (isAvailable) {
-        alert("New version available. Click Ok to reload.");
         window.location.reload(true);
       }
       return isAvailable;
