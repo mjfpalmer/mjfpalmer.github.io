@@ -1,0 +1,52 @@
+::-webkit-scrollbar {
+  width: 0;
+  background: transparent;
+}
+
+.timelineContainer {
+  overflow-y: scroll;
+  width: 100%;
+  height: calc(100% - 80px);
+}
+
+.event {
+  background-color: #ffffff;
+  color: #003366;
+}
+
+.scrollContainer {
+  position: absolute;
+  top: 66px;
+  right: 0px;
+  height: calc(100% - 80px);
+  width: 80px;
+}
+
+.scroller {
+  position: absolute;
+  top: 0px;
+  right: -8px;
+  border-radius: 20px 20px 20px 20px;
+  height: 40px;
+  width: 40px;
+  padding-top: 10px;
+  padding-left: 10px;
+}
+
+img.icon24 {
+  height: 24px;
+  width: 24px;
+}
+
+img.icon32 {
+  height: 32px;
+  width: 32px;
+}
+
+.cat-selected {
+  background-color: #ffffff;
+}
+
+.cat-deselected {
+  background-color: #e5e5e5;
+}

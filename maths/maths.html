@@ -5,12 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, shrink-to-fit=no, interactive-widget=resizes-content">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Michael Palmer</title>
+  <title>Maths</title>
   <base href="/">
 
   <link rel="manifest" href="/manifest.json">
 
-  <link rel="stylesheet" href="/bootstrap-5.3.2-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/lib/bootstrap-5.3.2-dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="/css/site.css">
 
   <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png">
@@ -26,9 +26,10 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
-  <meta name="msapplication-TileColor" content="#585858">
+
+  <meta name="msapplication-TileColor" content="#212529">
   <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png">
-  <meta name="theme-color" content="#585858">
+  <meta name="theme-color" content="#212529">
 </head>
 
 <body>
@@ -40,10 +41,10 @@
     <input type="text" id="ci" class="w-100 bg-transparent text-white form-control" />
   </footer>
 
-  <script type="text/javascript" src="/scripts/jquery-3.7.1.min.js"></script>
-  <script type="text/javascript" src="/bootstrap-5.3.2-dist/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/lib/jquery/jquery-3.7.1.min.js"></script>
+  <script type="text/javascript" src="/lib/bootstrap-5.3.2-dist/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="/scripts/site.js"></script>
-  <script type="text/javascript" src="/scripts/maths.js"></script>
+  <script type="text/javascript" src="/maths/maths.js"></script>
 
   <script type="text/javascript">
     $(function () {
@@ -113,17 +114,17 @@
           game.Maths = new Maths(game.Grade);
 
           game.Log("How many questions? ", true);
-          game.OnInput(game.SetQuestionCount, "20", { type: "number", min: 1, max: 200, step: 1 });
+          game.OnInput(game.SetQuestionCount, "20", { type: "number", min: 1, max: 50, step: 1 });
         }
       }
 
       this.SetQuestionCount = function (questionCount) {
         questionCount = Number.parseFloat(questionCount);
         if (Number.isInteger(questionCount)) {
+          questionCount = Math.min(questionCount, 50);
           game.QuestionCount = parseInt(questionCount);
           game.Log(game.QuestionCount, false, false);
 
-          game.ClearLog();
           game.NextQuestion();
         }
       }
@@ -171,7 +172,7 @@
       }
 
       this.PlayAgain = function (playAgain) {
-        if (playAgain.toLowerCase() === "y") {
+        if (playAgain.toLowerCase().startsWith("y")) {
           game.ClearLog();
           game.Questions = [];
           game.QuestionIndex = 0;
