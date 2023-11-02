@@ -105,7 +105,6 @@ Site.ServiceWorker = {
     'favicon/ms-icon-310x310.png',
     'fonts/photograph_signature-webfont.woff',
     'fonts/photograph_signature-webfont.woff2',
-    'images/logo.png',
     'images/categories/weight.png',
     'images/categories/first.png',
     'images/categories/general.png',
