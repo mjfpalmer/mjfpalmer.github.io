@@ -1,4 +1,4 @@
-const version = "231102.2030";
+const version = "231102.2040";
 
 if (typeof Site === "undefined") { var Site = {}; }
 
@@ -113,6 +113,9 @@ Site.ServiceWorker = {
     'images/categories/quote.png',
     'images/categories/tooth.png',
     'images/elements/scroll-y.png',
+    'images/icons/github.svg',
+    'images/icons/linkedin.svg',
+    'images/icons/twitter.svg',
     'lib/bootstrap-5.3.2-dist/css/bootstrap.min.css',
     'lib/bootstrap-5.3.2-dist/js/bootstrap.min.js',
     'lib/jquery/jquery-3.7.1.min.js',
