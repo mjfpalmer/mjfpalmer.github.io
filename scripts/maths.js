@@ -5,7 +5,7 @@ function Maths(grade) {
   this.SubtractionOperation = new MathsOperation(1, '&minus;');
   this.MultiplicationOperation = new MathsOperation(2, '&times;');
   this.DivisionOperation = new MathsOperation(3, '&divide;');
-  this.FactorOfOperation = new MathsOperation(4, '/');
+  this.FactorOfOperation = new MathsOperation(4, '&frasl;');
 
   this.MathsOperations = [
     maths.AdditionOperation,
@@ -78,7 +78,7 @@ function Maths(grade) {
     // Subtraction
     // https://www.splashlearn.com/math-vocabulary/subtraction/subtract
     for (let minuend of new Array(Math.abs(minSubtract) + maxSubtract + 1).fill(0).map((n, i) => i + minSubtract)) {
-      for (let subtrahend of new Array(Math.abs(minSubtract) + minSubtract + 1).fill(0).map((n, i) => i + minSubtract)) {
+      for (let subtrahend of new Array(Math.abs(minSubtract) + maxSubtract + 1).fill(0).map((n, i) => i + minSubtract)) {
         question = new MathsQuestion(
           0,
           maths.SubtractionOperation,
@@ -131,14 +131,18 @@ function Maths(grade) {
     for (let dividend of new Array(Math.abs(minDivide) + maxDivide + 1).fill(0).map((n, i) => i + minDivide)) {
       for (let divisor of new Array(Math.abs(minDivide) + maxDivide + 1).fill(0).map((n, i) => i + minDivide)) {
         if (divisor !== 0) {
+          let answer = dividend / divisor;
+          if (!Number.isInteger(answer)) { answer = answer.toFixed(2); }
+
           question = new MathsQuestion(
             0,
             maths.DivisionOperation,
             `${dividend} ${maths.DivisionOperation.Symbol} ${divisor} = `,
-            dividend / divisor,
+            answer,
             { type: "number", min: maxDivide * -3, max: maxDivide * 3, step: "" });
 
           switch (true) {
+            case dividend % divisor !== 0 && (dividend < 0 || divisor < 0): question.Grade = 6; break;
             case dividend < 0:
             case divisor < 0:
               question.Grade = 5;
@@ -194,7 +198,7 @@ function MathsQuestion(grade, mathsOperation, question, answer, inputProperties)
   this.PlayerAnswer = null;
 
   this.Correct = () => {
-    return mathsQuestion.PlayerAnswer === mathsQuestion.Answer;
+    return mathsQuestion.PlayerAnswer == mathsQuestion.Answer;
   };
 }
 

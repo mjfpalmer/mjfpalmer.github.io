@@ -23,6 +23,7 @@ function Site() {
     switch (value.toLowerCase()) {
       case "home": window.location.href = "/index.html"; break;
       case "maths": window.location.href = "/maths.html"; break;
+      case "version": alert("v231102.1430"); break;
     }
   }
 }
