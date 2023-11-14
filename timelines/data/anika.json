@@ -1,7 +1,5 @@
-var data = {
+{
   "events": [
-    // Start Reviewed -----------------------------------------------------------------------
-    // End Reviewed -------------------------------------------------------------------------
     { "date": "2022-04-24", "category": "quote", "body": "Anika: I stook it there. I mean I sticked it there.\\nPappa: You mean you stuck it there?\\nAnika: Yes, I stuck it there." },
     { "date": "2022-04-10", "category": "first", "body": "First homework.\\nHaving to find and cut out something starting with S to take to school." },
     { "date": "2022-04-02", "category": "quote", "body": "\"Mazapoza\" = Ramaphosa" },

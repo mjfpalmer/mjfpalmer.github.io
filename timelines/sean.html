@@ -73,7 +73,20 @@
   <script type="text/javascript" src="/lib/jquery-ui/jquery.ui.touch-punch.min.js"></script>
   <script type="text/javascript" src="/lib/bootstrap-5.3.2-dist/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="/scripts/site.js"></script>
-  <script type="text/javascript" src="/timelines/scripts/sean.js"></script>
   <script type="text/javascript" src="/timelines/scripts/timeline.js"></script>
+
+  <script type="text/javascript">
+    $(function () {
+      $.ajax({
+        url: '/timelines/data/sean.json',
+        type: 'GET',
+        dataType: 'json',
+        success: function (jsonData) {
+          data = jsonData;
+          init();
+        }
+      });
+    });
+  </script>
 </body>
 </html>

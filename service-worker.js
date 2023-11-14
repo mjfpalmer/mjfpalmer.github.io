@@ -1,4 +1,4 @@
-const version = "231102.2115";
+const version = "231114.2100";
 
 if (typeof Site === "undefined") { var Site = {}; }
 
@@ -136,12 +136,12 @@ Site.ServiceWorker = {
     'timelines/css/anika.css',
     'timelines/css/sean.css',
     'timelines/css/timeline.css',
+    'timelines/data/anika.json',
+    'timelines/data/sean.json',
     'timelines/images/anika-192.png',
     'timelines/images/anika-512.png',
     'timelines/images/sean-192.png',
     'timelines/images/sean-512.png',
-    'timelines/scripts/anika.js',
-    'timelines/scripts/sean.js',
     'timelines/scripts/timeline.js',
   ]
 }

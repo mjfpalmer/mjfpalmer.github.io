@@ -1,4 +1,5 @@
 let timeline;
+let data;
 
 function init() {
   delete timeline;
@@ -270,7 +271,7 @@ function Timeline(data, navCategories) {
   this.init();
 }
 
-$(document).ready(() => {
+$(function () {
   $('#navCategories').find('span').each((i, e) => {
     let span = $(e);
     span.addClass('cat-selected').click(() => {
@@ -287,7 +288,6 @@ $(document).ready(() => {
       init();
     });
   });
-
-  init();
 });
+
 $(window).resize(init);

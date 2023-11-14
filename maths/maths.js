@@ -65,9 +65,9 @@ function Maths(grade) {
           case addend2 < 0:
             question.Grade = 5;
             break;
-          case question.Answer <= 20: question.Grade = 1; break;
-          case question.Answer <= 40: question.Grade = 2; break;
-          case question.Answer <= 60: question.Grade = 3; break;
+          case question.Answer <= 10: question.Grade = 1; break;
+          case question.Answer <= 20: question.Grade = 2; break;
+          case question.Answer <= 40: question.Grade = 3; break;
           default: question.Grade = 4; break;
         }
 
@@ -92,8 +92,8 @@ function Maths(grade) {
           case subtrahend < 0:
             question.Grade = 5;
             break;
-          case minuend <= 20: question.Grade = 1; break;
-          case minuend <= 40: question.Grade = 2; break;
+          case minuend <= 10: question.Grade = 1; break;
+          case minuend <= 20: question.Grade = 2; break;
           default: question.Grade = 3; break;
         }
 

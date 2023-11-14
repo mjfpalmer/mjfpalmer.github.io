@@ -1,7 +1,5 @@
-﻿var data = {
+{
   "events": [
-    // Start Reviewed -----------------------------------------------------------------------
-    // End Reviewed -------------------------------------------------------------------------
     { "date": "2022-05-01", "category": "first", "body": "Takealot order\\nYou've been wanting a Pikachu V Pokemon TCG card for a while and have even found a few on Amazon for crazy prices. Pappa found a set on Takealot so you placed your first Takealot order. You're very excited for the Takealot motorbike to arrive with something for you.\\n\\nYou've even decided not to tell your friends before you actually get it (though we'll see if you manage to hold out)." },
     { "date": "2022-04-26", "category": "general", "body": "You've started a Pokemon craze at school.\\n\\nFor a while, you've been taking Pokemon cards to school to trade with a few other kids who know about them. Now it seems that the whole Grade 3 and a few other grades have caught on to the craze. All the parents are asking Mamma where to get the cards because \"Sean has the best cards\"!" },
     { "date": "2022-04-22", "category": "quote", "body": "Watching the F1 qualifying, Sean sees the pit crew rebuilding Carlos Sainz's car...\\nSean: Pappa, if uncle Quintin was a Formula 1 dude...\\nPappa: Yes?\\nSean: He would be the dude who would drop the tyre on his foot.\\nPappa: 🤣🤣🤣" },
