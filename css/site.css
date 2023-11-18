@@ -28,6 +28,11 @@ main {
   width: 2em;
 }
 
+.clock {
+  height: 4em;
+  width: 4em;
+}
+
 @font-face {
   font-family: 'photograph_signatureregular';
   src: url('/fonts/photograph_signature-webfont.woff2') format('woff2'), url('/fonts/photograph_signature-webfont.woff') format('woff');

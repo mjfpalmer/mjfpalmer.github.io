@@ -6,6 +6,7 @@ function Maths(grade) {
   this.MultiplicationOperation = new MathsOperation(2, '&times;');
   this.DivisionOperation = new MathsOperation(3, '&divide;');
   this.FactorOfOperation = new MathsOperation(4, '&frasl;');
+  this.TimeOperation = new MathsOperation(4);
 
   this.MathsOperations = [
     maths.AdditionOperation,
@@ -13,6 +14,7 @@ function Maths(grade) {
     maths.MultiplicationOperation,
     maths.DivisionOperation,
     maths.FactorOfOperation,
+    maths.TimeOperation
   ];
 
   this.Grade = grade;
@@ -26,6 +28,7 @@ function Maths(grade) {
 
     while (questions.length < questionCount) {
       let mathsOperation = applicableMathsOperations[Math.floor(Math.random() * applicableMathsOperations.length)];
+      // mathsOperation = maths.TimeOperation;
       let applicableQuestions = maths.Questions.filter((q) => q.MathsOperation === mathsOperation);
       do {
         question = applicableQuestions[Math.floor(Math.random() * applicableQuestions.length)];
@@ -180,13 +183,120 @@ function Maths(grade) {
       }
     }
 
+    // Time
+    for (let hour = 0; hour < 12; hour++) {
+      for (let minute = 0; minute < 60; minute += 5) {
+        // Analogue to digital
+        question = new MathsQuestion(
+          4,
+          maths.TimeOperation,
+          `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0') }.svg" class="clock" /> to digital form. `,
+          `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`,
+          { type: "time", step: 300 },
+          { value: '00:00' });
+
+        // TODO: Set grade
+
+        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+
+        // Analogue to digital (AM)
+        question = new MathsQuestion(
+          4,
+          maths.TimeOperation,
+          `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> AM to digital form. `,
+          `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`,
+          { type: "time", step: 300 },
+          { value: '00:00' });
+
+        // TODO: Set grade
+
+        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+
+        // Analogue to digital (PM)
+        question = new MathsQuestion(
+          4,
+          maths.TimeOperation,
+          `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> PM to digital form. `,
+          `${(hour + 12).toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`,
+          { type: "time", step: 300 },
+          { value: '00:00' });
+
+        // TODO: Set grade
+
+        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+
+        // Analogue to description
+        question = new MathsQuestion(
+          4,
+          maths.TimeOperation,
+          `Describe <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" />. `,
+          '',
+          { type: "text" });
+
+        switch (minute) {
+          case 0: question.Answer = hour === 0 ? 'midnight' : `${hour} o'clock`; break;
+          case 5: case 10: case 20: case 25: question.Answer = `${minute} past ${hour}`; break;
+          case 15: question.Answer = `quarter past ${hour}`; break;
+          case 30: question.Answer = `half past ${hour}`; break;
+          case 35: case 40: case 50: case 55: question.Answer = `${60 - minute} to ${hour + 1}`; break;
+          case 45: question.Answer = `quarter to ${hour + 1}`; break;
+        }
+
+        // TODO: Set grade
+
+        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+
+        // Analogue to description (AM)
+        question = new MathsQuestion(
+          4,
+          maths.TimeOperation,
+          `Describe <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> AM. `,
+          '',
+          { type: "text" });
+
+        switch (minute) {
+          case 0: question.Answer = hour === 0 ? 'midnight' : `${hour} o'clock`; break;
+          case 5: case 10: case 20: case 25: question.Answer = `${minute} past ${hour} am`; break;
+          case 15: question.Answer = `quarter past ${hour} am`; break;
+          case 30: question.Answer = `half past ${hour} am`; break;
+          case 35: case 40: case 50: case 55: question.Answer = `${60 - minute} to ${hour + 1} am`; break;
+          case 45: question.Answer = `quarter to ${hour + 1} am`; break;
+        }
+
+        // TODO: Set grade
+
+        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+
+        // Analogue to description (PM)
+        question = new MathsQuestion(
+          4,
+          maths.TimeOperation,
+          `Describe <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> PM. `,
+          '',
+          { type: "text" });
+
+        switch (minute) {
+          case 0: question.Answer = hour === 0 ? 'midday' : `${hour} o'clock`; break;
+          case 5: case 10: case 20: case 25: question.Answer = `${minute} past ${hour} pm`; break;
+          case 15: question.Answer = `quarter past ${hour} pm`; break;
+          case 30: question.Answer = `half past ${hour} pm`; break;
+          case 35: case 40: case 50: case 55: question.Answer = `${60 - minute} to ${hour + 1} pm`; break;
+          case 45: question.Answer = `quarter to ${hour + 1} pm`; break;
+        }
+
+        // TODO: Set grade
+
+        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+      }
+    }
+
     console.debug(maths.Questions);
   };
 
   this.Init();
 }
 
-function MathsQuestion(grade, mathsOperation, question, answer, inputProperties) {
+function MathsQuestion(grade, mathsOperation, question, answer, inputProperties, inputAttributes) {
   let mathsQuestion = this;
 
   this.Grade = grade;
@@ -194,6 +304,7 @@ function MathsQuestion(grade, mathsOperation, question, answer, inputProperties)
   this.Question = question.replace(/-/g, '&minus;');
   this.Answer = answer;
   this.InputProperties = inputProperties;
+  this.InputAttributes = inputAttributes;
 
   this.PlayerAnswer = null;
 

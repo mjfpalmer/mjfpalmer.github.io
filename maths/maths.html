@@ -103,7 +103,7 @@
         game.Player = player;
         game.Log(game.Player, false, false);
         game.Log("What grade are you in? ", true);
-        game.OnInput(game.SetGrade, "", { type: "number", min: 0, max: 12, step: 1 });
+        game.OnInput(game.SetGrade, { value: "" }, { type: "number", min: 0, max: 12, step: 1 });
       }
 
       this.SetGrade = function (grade) {
@@ -114,7 +114,7 @@
           game.Maths = new Maths(game.Grade);
 
           game.Log("How many questions? ", true);
-          game.OnInput(game.SetQuestionCount, "20", { type: "number", min: 1, max: 50, step: 1 });
+          game.OnInput(game.SetQuestionCount, { value: "20" }, { type: "number", min: 1, max: 50, step: 1 });
         }
       }
 
@@ -138,15 +138,27 @@
           game.Question = game.Questions[game.QuestionIndex++];
 
           game.Log(game.Question.Question, true);
-          game.OnInput(game.Answer, "", game.Question.InputProperties);
+          game.OnInput(game.Answer, game.Question.InputAttributes, game.Question.InputProperties);
         } else {
           game.GameOver();
         }
       }
 
       this.Answer = function (answer) {
-        answer = Number.parseFloat(answer);
-        if (!Number.isNaN(answer)) {
+        let valid = true;
+        switch ($('#ci').prop('type')) {
+          case 'text':
+            answer = answer.toLowerCase();
+            break;
+          case 'number':
+            answer = Number.parseFloat(answer);
+            valid = !Number.isNaN(answer);
+            break;
+          case 'time': break;
+          default: alert(`Unhandled input type: ${$('#ci').type}`);
+        }
+
+        if (valid) {
           game.Question.PlayerAnswer = answer;
           game.Log(game.Question.PlayerAnswer, false, false);
 
@@ -168,7 +180,7 @@
         let feedback = game.Feedback[Math.floor(percentage / 10)][Math.floor(Math.random() * game.Feedback[Math.floor(percentage / 10)].length)];
         game.Log(`${feedback} ${game.Player}, you got ${percentage}% (${correct} correct and ${incorrect} incorrect).`, true);
         game.Log("Play again (y/n)? ", true);
-        game.OnInput(game.PlayAgain, "", { type: "text" });
+        game.OnInput(game.PlayAgain, { value: "" }, { type: "text" });
       }
 
       this.PlayAgain = function (playAgain) {
@@ -182,13 +194,15 @@
         }
       }
 
-      this.OnInput = function (handler, value, properties) {
+      this.OnInput = function (handler, attributes, properties) {
         game.OnInputHandler = handler;
 
-        $(`#ci`)
-          .prop(properties)
-          .val(value)
+        $('#ci')
+          .prop(properties ? properties : {})
+          .attr(attributes ? attributes : {})
           .trigger("focus");
+
+        if (attributes && attributes.value) { $('#ci').val(attributes.value); }
       }
 
       this.Log = function (html, newCard, newLine, colour) {
@@ -226,7 +240,7 @@
       }
 
       game.Log("Who's playing? ", true);
-      game.OnInput(game.SetPlayer, "", { type: "text" });
+      game.OnInput(game.SetPlayer, { value: "" }, { type: "text" });
     }
   </script>
 </body>
