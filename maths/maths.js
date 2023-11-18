@@ -6,7 +6,8 @@ function Maths(grade) {
   this.MultiplicationOperation = new MathsOperation(2, '&times;');
   this.DivisionOperation = new MathsOperation(3, '&divide;');
   this.FactorOfOperation = new MathsOperation(4, '&frasl;');
-  this.TimeOperation = new MathsOperation(4);
+  this.TimeAnalogueOperation = new MathsOperation(4);
+  this.TimeDigitalOperation = new MathsOperation(4);
 
   this.MathsOperations = [
     maths.AdditionOperation,
@@ -14,7 +15,8 @@ function Maths(grade) {
     maths.MultiplicationOperation,
     maths.DivisionOperation,
     maths.FactorOfOperation,
-    maths.TimeOperation
+    maths.TimeAnalogueOperation,
+    maths.TimeDigitalOperation
   ];
 
   this.Grade = grade;
@@ -28,7 +30,7 @@ function Maths(grade) {
 
     while (questions.length < questionCount) {
       let mathsOperation = applicableMathsOperations[Math.floor(Math.random() * applicableMathsOperations.length)];
-      // mathsOperation = maths.TimeOperation;
+      // mathsOperation = maths.TimeAnalogueOperation;
       let applicableQuestions = maths.Questions.filter((q) => q.MathsOperation === mathsOperation);
       do {
         question = applicableQuestions[Math.floor(Math.random() * applicableQuestions.length)];
@@ -43,24 +45,30 @@ function Maths(grade) {
   };
 
   this.InitQuestions = () => {
+    maths.InitQuestionsAddition();
+    maths.InitQuestionsSubtraction();
+    maths.initQuestionsMultiplication();
+    maths.InitQuestionsDivision();
+    maths.initQuestionsFactorOf();
+    maths.initQuestionsTimeAnalogue();
+    maths.initQuestionsTimeDigital();
+
+    console.debug(maths.Questions);
+  };
+
+  this.InitQuestionsAddition = () => {
     let question = null;
+    let min = -50, max = 50;
 
-    let minAdd = -50, maxAdd = 50;
-    let minSubtract = -50, maxSubtract = 50;
-    let minMultiply = -12, maxMultiply = 12;
-    let minDivide = -12, maxDivide = 12;
-    let maxFactorDenominator = 12, minFactorValue = -100, maxFactorValue = 100;
-
-    // Addition
     // https://www.splashlearn.com/math-vocabulary/addition/addition
-    for (let addend1 of new Array(Math.abs(minAdd) + maxAdd + 1).fill(0).map((n, i) => i + minAdd)) {
-      for (let addend2 of new Array(Math.abs(minAdd) + maxAdd + 1).fill(0).map((n, i) => i + minAdd)) {
+    for (let addend1 of new Array(Math.abs(min) + max + 1).fill(0).map((n, i) => i + min)) {
+      for (let addend2 of new Array(Math.abs(min) + max + 1).fill(0).map((n, i) => i + min)) {
         question = new MathsQuestion(
           0,
           maths.AdditionOperation,
           `${addend1} ${maths.AdditionOperation.Symbol} ${addend2} = `,
           addend1 + addend2,
-          { type: "number", min: maxAdd * -3, max: maxAdd * 3, step: "" });
+          { type: "number", min: max * -3, max: max * 3, step: "" });
 
         switch (true) {
           case question.Answer <= 0:
@@ -77,17 +85,21 @@ function Maths(grade) {
         if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
       }
     }
+  };
 
-    // Subtraction
+  this.InitQuestionsSubtraction = () => {
+    let question;
+    let min = -50, max = 50;
+
     // https://www.splashlearn.com/math-vocabulary/subtraction/subtract
-    for (let minuend of new Array(Math.abs(minSubtract) + maxSubtract + 1).fill(0).map((n, i) => i + minSubtract)) {
-      for (let subtrahend of new Array(Math.abs(minSubtract) + maxSubtract + 1).fill(0).map((n, i) => i + minSubtract)) {
+    for (let minuend of new Array(Math.abs(min) + max + 1).fill(0).map((n, i) => i + min)) {
+      for (let subtrahend of new Array(Math.abs(min) + max + 1).fill(0).map((n, i) => i + min)) {
         question = new MathsQuestion(
           0,
           maths.SubtractionOperation,
           `${minuend} ${maths.SubtractionOperation.Symbol} ${subtrahend} = `,
           minuend - subtrahend,
-          { type: "number", min: maxSubtract * -3, max: maxSubtract * 3, step: "" });
+          { type: "number", min: max * -3, max: max * 3, step: "" });
 
         switch (true) {
           case question.Answer <= 0:
@@ -103,17 +115,21 @@ function Maths(grade) {
         if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
       }
     }
+  };
 
-    // Multiplication
+  this.initQuestionsMultiplication = () => {
+    let question;
+    let min = -12, max = 12;
+
     // https://www.splashlearn.com/math-vocabulary/multiplication/multiplication
-    for (let multiplicand of new Array(Math.abs(minMultiply) + maxMultiply + 1).fill(0).map((n, i) => i + minMultiply)) {
-      for (let multiplier of new Array(Math.abs(minMultiply) + maxMultiply + 1).fill(0).map((n, i) => i + minMultiply)) {
+    for (let multiplicand of new Array(Math.abs(min) + max + 1).fill(0).map((n, i) => i + min)) {
+      for (let multiplier of new Array(Math.abs(min) + max + 1).fill(0).map((n, i) => i + min)) {
         question = new MathsQuestion(
           0,
           maths.MultiplicationOperation,
           `${multiplicand} ${maths.MultiplicationOperation.Symbol} ${multiplier} = `,
           multiplicand * multiplier,
-          { type: "number", min: maxMultiply * -3, max: maxMultiply * 3, step: "" });
+          { type: "number", min: max * -3, max: max * 3, step: "" });
 
         switch (true) {
           case multiplicand < 0:
@@ -128,11 +144,15 @@ function Maths(grade) {
         if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
       }
     }
+  };
 
-    // Division
+  this.InitQuestionsDivision = () => {
+    let question;
+    let min = -12, max = 12;
+
     // https://www.splashlearn.com/math-vocabulary/division/division
-    for (let dividend of new Array(Math.abs(minDivide) + maxDivide + 1).fill(0).map((n, i) => i + minDivide)) {
-      for (let divisor of new Array(Math.abs(minDivide) + maxDivide + 1).fill(0).map((n, i) => i + minDivide)) {
+    for (let dividend of new Array(Math.abs(min) + max + 1).fill(0).map((n, i) => i + min)) {
+      for (let divisor of new Array(Math.abs(min) + max + 1).fill(0).map((n, i) => i + min)) {
         if (divisor !== 0) {
           let answer = dividend / divisor;
           if (!Number.isInteger(answer)) { answer = answer.toFixed(2); }
@@ -142,7 +162,7 @@ function Maths(grade) {
             maths.DivisionOperation,
             `${dividend} ${maths.DivisionOperation.Symbol} ${divisor} = `,
             answer,
-            { type: "number", min: maxDivide * -3, max: maxDivide * 3, step: "" });
+            { type: "number", min: max * -3, max: max * 3, step: "" });
 
           switch (true) {
             case dividend % divisor !== 0 && (dividend < 0 || divisor < 0): question.Grade = 6; break;
@@ -159,17 +179,22 @@ function Maths(grade) {
         }
       }
     }
+  };
+
+  this.initQuestionsFactorOf = () => {
+    let question;
+    let maxDenominator = 12, minValue = -100, maxValue = 100;
 
     // Factor Of
-    for (let denominator of new Array(maxFactorDenominator - 1).fill(0).map((n, i) => i + 2)) {
+    for (let denominator of new Array(maxDenominator - 1).fill(0).map((n, i) => i + 2)) {
       for (let numerator of new Array(denominator).fill(0).map((n, i) => i + 1)) {
-        for (let value of new Array(Math.abs(-minFactorValue) + maxFactorValue + 1).fill(0).map((n, i) => i + minFactorValue)) {
+        for (let value of new Array(Math.abs(-minValue) + maxValue + 1).fill(0).map((n, i) => i + minValue)) {
           question = new MathsQuestion(
             0,
             maths.FactorOfOperation,
             `${numerator}${maths.FactorOfOperation.Symbol}${denominator} of ${value} = `,
             value / denominator * numerator,
-            { type: "number", min: maxFactorValue * -3, max: maxFactorValue * 3, step: "" });
+            { type: "number", min: maxValue * -3, max: maxValue * 3, step: "" });
 
           switch (true) {
             case value % denominator !== 0: question.Grade = Number.MAX_SAFE_INTEGER; break;
@@ -182,103 +207,84 @@ function Maths(grade) {
         }
       }
     }
+  };
 
-    // Time
+  this.initQuestionsTimeAnalogue = () => {
+    maths.initQuestionsTimeAnalogueToDigital();
+    maths.initQuestionsTimeAnalogueToDigitalAM();
+    maths.initQuestionsTimeAnalogueToDigitalPM();
+    maths.initQuestionsTimeAnalogueToDescriptionAM();
+    maths.initQuestionsTimeAnalogueToDescriptionPM();
+  };
+
+  this.initQuestionsTimeAnalogueToDigital = () => {
     for (let hour = 0; hour < 12; hour++) {
       for (let minute = 0; minute < 60; minute += 5) {
-        // Analogue to digital
-        question = new MathsQuestion(
+        let question = new MathsQuestion(
           4,
-          maths.TimeOperation,
-          `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0') }.svg" class="clock" /> to digital form. `,
+          maths.TimeAnalogueOperation,
+          `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> to digital. `,
           `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`,
           { type: "text" });
 
         // TODO: Set grade
 
         if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+      }
+    }
+  };
 
-        // Analogue to digital (AM)
-        question = new MathsQuestion(
+  this.initQuestionsTimeAnalogueToDigitalAM = () => {
+    for (let hour = 0; hour < 12; hour++) {
+      for (let minute = 0; minute < 60; minute += 5) {
+        let question = new MathsQuestion(
           4,
-          maths.TimeOperation,
-          `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> AM to digital form. `,
+          maths.TimeAnalogueOperation,
+          `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> AM to digital. `,
           `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`,
           { type: "text" });
 
         // TODO: Set grade
 
         if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+      }
+    }
+  };
 
-        // Analogue to digital (PM)
-        question = new MathsQuestion(
+  this.initQuestionsTimeAnalogueToDigitalPM = () => {
+    for (let hour = 0; hour < 12; hour++) {
+      for (let minute = 0; minute < 60; minute += 5) {
+        let question = new MathsQuestion(
           4,
-          maths.TimeOperation,
-          `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> PM to digital form. `,
+          maths.TimeAnalogueOperation,
+          `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> PM to digital. `,
           `${(hour + 12).toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`,
           { type: "text" });
 
         // TODO: Set grade
 
         if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+      }
+    }
+  };
 
-        // Analogue to description
-        question = new MathsQuestion(
+  this.initQuestionsTimeAnalogueToDescriptionAM = () => {
+    for (let hour = 0; hour < 12; hour++) {
+      for (let minute = 0; minute < 60; minute += 5) {
+        let question = new MathsQuestion(
           4,
-          maths.TimeOperation,
-          `Describe <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" />. `,
-          '',
-          { type: "text" });
-
-        switch (minute) {
-          case 0: question.Answer = hour === 0 ? 'midnight' : `${hour} o'clock`; break;
-          case 5: case 10: case 20: case 25: question.Answer = `${minute} past ${hour}`; break;
-          case 15: question.Answer = `quarter past ${hour}`; break;
-          case 30: question.Answer = `half past ${hour}`; break;
-          case 35: case 40: case 50: case 55: question.Answer = `${60 - minute} to ${hour + 1}`; break;
-          case 45: question.Answer = `quarter to ${hour + 1}`; break;
-        }
-
-        // TODO: Set grade
-
-        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
-
-        // Analogue to description (AM)
-        question = new MathsQuestion(
-          4,
-          maths.TimeOperation,
+          maths.TimeAnalogueOperation,
           `Describe <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> AM. `,
           '',
           { type: "text" });
 
         switch (minute) {
-          case 0: question.Answer = hour === 0 ? 'midnight' : `${hour} o'clock`; break;
-          case 5: case 10: case 20: case 25: question.Answer = `${minute} past ${hour} am`; break;
-          case 15: question.Answer = `quarter past ${hour} am`; break;
-          case 30: question.Answer = `half past ${hour} am`; break;
-          case 35: case 40: case 50: case 55: question.Answer = `${60 - minute} to ${hour + 1} am`; break;
-          case 45: question.Answer = `quarter to ${hour + 1} am`; break;
-        }
-
-        // TODO: Set grade
-
-        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
-
-        // Analogue to description (PM)
-        question = new MathsQuestion(
-          4,
-          maths.TimeOperation,
-          `Describe <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> PM. `,
-          '',
-          { type: "text" });
-
-        switch (minute) {
-          case 0: question.Answer = hour === 0 ? 'midday' : `${hour} o'clock`; break;
-          case 5: case 10: case 20: case 25: question.Answer = `${minute} past ${hour} pm`; break;
-          case 15: question.Answer = `quarter past ${hour} pm`; break;
-          case 30: question.Answer = `half past ${hour} pm`; break;
-          case 35: case 40: case 50: case 55: question.Answer = `${60 - minute} to ${hour + 1} pm`; break;
-          case 45: question.Answer = `quarter to ${hour + 1} pm`; break;
+          case 0: question.Answer = maths.hourOn(hour, true); break;
+          case 5: case 10: case 20: case 25: question.Answer = `${minute} past ${maths.hourPast(hour)}`; break;
+          case 15: question.Answer = `quarter past ${maths.hourPast(hour)}`; break;
+          case 30: question.Answer = `half past ${maths.hourPast(hour)}`; break;
+          case 35: case 40: case 50: case 55: question.Answer = `${60 - minute} to ${maths.hourTo(hour + 1)}`; break;
+          case 45: question.Answer = `quarter to  ${hour + 1 == 12 ? 'midnight' : `${maths.hourTo(hour + 1)}`}`; break;
         }
 
         // TODO: Set grade
@@ -286,8 +292,169 @@ function Maths(grade) {
         if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
       }
     }
+  };
 
-    console.debug(maths.Questions);
+  this.initQuestionsTimeAnalogueToDescriptionPM = () => {
+    for (let hour = 12; hour < 24; hour++) {
+      for (let minute = 0; minute < 60; minute += 5) {
+        let question = new MathsQuestion(
+          4,
+          maths.TimeAnalogueOperation,
+          `Describe <img src="/images/clocks/${(hour - 12).toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> PM. `,
+          '',
+          { type: "text" });
+
+        switch (minute) {
+          case 0: question.Answer = maths.hourOn(hour, true); break;
+          case 5: case 10: case 20: case 25: question.Answer = `${minute} past ${maths.hourPast(hour)}`; break;
+          case 15: question.Answer = `quarter past ${maths.hourPast(hour)}`; break;
+          case 30: question.Answer = `half past ${maths.hourPast(hour)}`; break;
+          case 35: case 40: case 50: case 55: question.Answer = `${60 - minute} to ${maths.hourTo(hour + 1)}`; break;
+          case 45: question.Answer = `quarter to  ${hour + 1 == 12 ? 'midnight' : `${maths.hourTo(hour + 1)}`}`; break;
+        }
+
+        // TODO: Set grade
+
+        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+      }
+    }
+  };
+
+  this.initQuestionsTimeDigital = () => {
+    maths.initQuestionsTimeDigitalToAnalogue();
+    maths.initQuestionsTimeDigitalToDescription24H();
+    maths.initQuestionsTimeDigitalToDescription12HAM();
+    maths.initQuestionsTimeDigitalToDescription12HPM();
+  };
+
+  this.initQuestionsTimeDigitalToAnalogue = () => {
+    for (let hour = 0; hour < 12; hour++) {
+      for (let minute = 0; minute < 60; minute += 5) {
+        let optionCorrect = `${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}`;
+        let options = [optionCorrect];
+        while (options.length < 4) {
+          let changeHour = Math.random() < 0.5;
+          let option = `${(changeHour ? Math.floor(Math.random() * 12) : hour).toString().padStart(2, '0')}${(changeHour ? minute : (Math.floor(Math.random() * 12) * 5)).toString().padStart(2, '0')}`;
+          if (options.indexOf(options) === -1) { options.push(option); }
+        }
+        options.sort(() => Math.random() < 0.5 ? -1 : 1);
+
+        let optionsTable = ['<table class="w-100"><thead><tr><td class="text-center">A</td><td style="text-align: center;">B</td><td style="text-align: center;">C</td><td style="text-align: center;">D</td></tr></thead>',
+          '<tbody><tr>',
+          options.map((option, i) => `<td><img src="/images/clocks/${option}.svg" class="w-100" /></td>`).join(''),
+          '</tr></tbody>',
+          '</table> '].join("");
+
+        let question = new MathsQuestion(
+          4,
+          maths.TimeDigitalOperation,
+          `How do you show ${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} on a clock?${optionsTable}`,
+          String.fromCharCode(65 + options.indexOf(optionCorrect)),
+          { type: "text" });
+
+        // TODO: Set grade
+
+        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+      }
+    }
+  };
+
+  this.initQuestionsTimeDigitalToDescription24H = () => {
+    for (let hour = 0; hour < 24; hour++) {
+      for (let minute = 0; minute < 60; minute += 5) {
+        let question = new MathsQuestion(
+          4,
+          maths.TimeDigitalOperation,
+          `Describe ${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}. `,
+          '',
+          { type: "text" });
+
+        switch (minute) {
+          case 0: question = maths.hourOn(hour, false); break;
+          case 5: case 10: case 20: case 25: question.Answer = `${minute} past ${maths.hourPast(hour)}`; break;
+          case 15: question.Answer = `quarter past ${maths.hourPast(hour)}`; break;
+          case 30: question.Answer = `half past ${maths.hourPast(hour)}`; break;
+          case 35: case 40: case 50: case 55: question.Answer = `${60 - minute} to ${maths.hourTo(hour + 1)}`; break;
+          case 45: question.Answer = `quarter to ${maths.hourTo(hour + 1)}`; break;
+        }
+      }
+    }
+  };
+
+  this.initQuestionsTimeDigitalToDescription12HAM = () => {
+    for (let hour = 0; hour < 12; hour++) {
+      for (let minute = 0; minute < 60; minute += 5) {
+        let question = new MathsQuestion(
+          4,
+          maths.TimeDigitalOperation,
+          `Describe ${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} AM. `,
+          '',
+          { type: "text" });
+
+        switch (minute) {
+          case 0: question.Answer = maths.hourOn(hour, false); break;
+          case 5: case 10: case 20: case 25: question.Answer = `${minute} past ${maths.hourPast(hour)}`; break;
+          case 15: question.Answer = `quarter past ${maths.hourPast(hour)}`; break;
+          case 30: question.Answer = `half past ${maths.hourPast(hour)}`; break;
+          case 35: case 40: case 50: case 55: question.Answer = `${60 - minute} to ${maths.hourTo(hour + 1)}`; break;
+          case 45: question.Answer = `quarter to ${maths.hourTo(hour + 1)}`; break;
+        }
+
+        // TODO: Set grade
+
+        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+      }
+    }
+  };
+
+  this.initQuestionsTimeDigitalToDescription12HPM = () => {
+    for (let hour = 12; hour < 24; hour++) {
+      for (let minute = 0; minute < 60; minute += 5) {
+        let question = new MathsQuestion(
+          4,
+          maths.TimeDigitalOperation,
+          `Describe ${(hour - 12).toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} PM. `,
+          '',
+          { type: "text" });
+
+        switch (minute) {
+          case 0: question.Answer = maths.hourOn(hour, false); break;
+          case 5: case 10: case 20: case 25: question.Answer = `${minute} past ${maths.hourPast(hour)}`; break;
+          case 15: question.Answer = `quarter past ${maths.hourPast(hour)}`; break;
+          case 30: question.Answer = `half past ${maths.hourPast(hour)}`; break;
+          case 35: case 40: case 50: case 55: question.Answer = `${60 - minute} to ${maths.hourTo(hour + 1)}`; break;
+          case 45: question.Answer = `quarter to ${maths.hourTo(hour + 1)}`; break;
+        }
+
+        // TODO: Set grade
+
+        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+      }
+    }
+  };
+
+  this.hourOn = (hour, analogue) => {
+    switch (hour) {
+      case 0: return 'midnight';
+      case 12: return 'midday';
+      default: return `${hour % 12} ${(analogue ? "o'clock" : (hour < 12 ? 'am' : 'pm'))}`;
+    }
+  };
+
+  this.hourPast = (hour) => {
+    switch (hour) {
+      case 0: return 'midnight';
+      case 12: return 'midday';
+      default: return `${hour % 12} ${hour < 12 ? 'am' : 'pm'}`;
+    }
+  };
+
+  this.hourTo = (hour) => {
+    switch (hour + 1) {
+      case 12: return 'midday';
+      case 24: return 'midnight';
+      default: return `${hour % 12} ${hour < 12 ? 'am' : 'pm'}`;
+    }
   };
 
   this.Init();
@@ -298,7 +465,7 @@ function MathsQuestion(grade, mathsOperation, question, answer, inputProperties,
 
   this.Grade = grade;
   this.MathsOperation = mathsOperation;
-  this.Question = question.replace(/-/g, '&minus;');
+  this.Question = question;
   this.Answer = answer;
   this.InputProperties = inputProperties;
   this.InputAttributes = inputAttributes;
@@ -306,7 +473,10 @@ function MathsQuestion(grade, mathsOperation, question, answer, inputProperties,
   this.PlayerAnswer = null;
 
   this.Correct = () => {
-    return mathsQuestion.PlayerAnswer == mathsQuestion.Answer;
+    switch (mathsQuestion.InputProperties.type) {
+      case "text": return mathsQuestion.PlayerAnswer.toLowerCase() === mathsQuestion.Answer.toLowerCase();
+      default: return mathsQuestion.PlayerAnswer === mathsQuestion.Answer;
+    }
   };
 }
 

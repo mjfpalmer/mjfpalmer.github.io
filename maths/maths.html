@@ -227,6 +227,7 @@
           .css("color", colour ? colour : "inherit")
           .html(html)
           .appendTo(game.CurrentCard.children(".card-body").last().children("div").last())
+          .hide()
           .fadeIn();
 
         if (newCard) {
