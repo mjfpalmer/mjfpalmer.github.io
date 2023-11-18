@@ -192,8 +192,7 @@ function Maths(grade) {
           maths.TimeOperation,
           `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0') }.svg" class="clock" /> to digital form. `,
           `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`,
-          { type: "time", step: 300 },
-          { value: '00:00' });
+          { type: "text" });
 
         // TODO: Set grade
 
@@ -205,8 +204,7 @@ function Maths(grade) {
           maths.TimeOperation,
           `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> AM to digital form. `,
           `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`,
-          { type: "time", step: 300 },
-          { value: '00:00' });
+          { type: "text" });
 
         // TODO: Set grade
 
@@ -218,8 +216,7 @@ function Maths(grade) {
           maths.TimeOperation,
           `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> PM to digital form. `,
           `${(hour + 12).toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`,
-          { type: "time", step: 300 },
-          { value: '00:00' });
+          { type: "text" });
 
         // TODO: Set grade
 
