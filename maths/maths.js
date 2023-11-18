@@ -413,7 +413,7 @@ function Maths(grade) {
         let question = new MathsQuestion(
           4,
           maths.TimeDigitalOperation,
-          `Describe ${(hour - 12).toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} PM. `,
+          `Describe ${(hour === 12 ? hour : hour - 12).toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} PM. `,
           '',
           { type: "text" });
 
