@@ -113,9 +113,18 @@
           game.Log(game.Grade, false, false);
           game.Maths = new Maths(game.Grade);
 
-          game.Log("How many questions? ", true);
-          game.OnInput(game.SetQuestionCount, { value: "20" }, { type: "number", min: 1, max: 50, step: 1 });
+          game.Log(`What types of questions?<br />${game.Maths.MathsOperations.filter(mo => mo.Grade <= game.Grade).map(mo => mo.Description).join('<br />')}`, true);
+          game.OnInput(game.SetOperations, { value: `${game.Maths.MathsOperations.filter(mo => mo.Grade <= game.Grade).map(mo => mo.Description).join(', ') }` }, { type: "text" });
         }
+      }
+
+      this.SetOperations = function (operations) {
+        operations = operations.split(',').map(q => q.trim());
+        game.Log(game.Grade, false, false);
+        game.Maths.FilterOperations(operations);
+
+        game.Log("How many questions? ", true);
+        game.OnInput(game.SetQuestionCount, { value: "20" }, { type: "number", min: 1, max: 50, step: 1 });
       }
 
       this.SetQuestionCount = function (questionCount) {
@@ -147,9 +156,7 @@
       this.Answer = function (answer) {
         let valid = true;
         switch ($('#ci').prop('type')) {
-          case 'text':
-            answer = answer.toLowerCase();
-            break;
+          case 'text': break;
           case 'number':
             answer = Number.parseFloat(answer);
             valid = !Number.isNaN(answer);

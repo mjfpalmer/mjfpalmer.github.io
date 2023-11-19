@@ -1,13 +1,15 @@
 function Maths(grade) {
   let maths = this;
 
-  this.AdditionOperation = new MathsOperation(1, '&plus;');
-  this.SubtractionOperation = new MathsOperation(1, '&minus;');
-  this.MultiplicationOperation = new MathsOperation(2, '&times;');
-  this.DivisionOperation = new MathsOperation(3, '&divide;');
-  this.FactorOfOperation = new MathsOperation(4, '&frasl;');
-  this.TimeAnalogueOperation = new MathsOperation(4);
-  this.TimeDigitalOperation = new MathsOperation(4);
+  this.AdditionOperation = new MathsOperation(1, 'Addition', '&plus;');
+  this.SubtractionOperation = new MathsOperation(1, 'Subtraction', '&minus;');
+  this.MultiplicationOperation = new MathsOperation(2, 'Multiplication', '&times;');
+  this.DivisionOperation = new MathsOperation(3, 'Division', '&divide;');
+  this.FactorOfOperation = new MathsOperation(4, 'Fractions', '&frasl;');
+  this.TimeAnalogueOperation = new MathsOperation(4, 'Analogue Time');
+  this.TimeDigitalOperation = new MathsOperation(4, 'Digital Time');
+  this.LengthConversionOperation = new MathsOperation(4, 'Length Conversion');
+  this.LengthAdditionOperation = new MathsOperation(4, 'Length Addition');
 
   this.MathsOperations = [
     maths.AdditionOperation,
@@ -16,12 +18,18 @@ function Maths(grade) {
     maths.DivisionOperation,
     maths.FactorOfOperation,
     maths.TimeAnalogueOperation,
-    maths.TimeDigitalOperation
+    maths.TimeDigitalOperation,
+    maths.LengthConversionOperation,
+    maths.LengthAdditionOperation
   ];
 
   this.Grade = grade;
 
   this.Questions = [];
+
+  this.FilterOperations = (operations) => {
+    maths.MathsOperations = maths.MathsOperations.filter(mo => operations.length === 0 || operations.indexOf(mo.Description) > -1);
+  };
 
   this.GetQuestions = (questionCount) => {
     let questions = [];
@@ -30,7 +38,6 @@ function Maths(grade) {
 
     while (questions.length < questionCount) {
       let mathsOperation = applicableMathsOperations[Math.floor(Math.random() * applicableMathsOperations.length)];
-      // mathsOperation = maths.TimeAnalogueOperation;
       let applicableQuestions = maths.Questions.filter((q) => q.MathsOperation === mathsOperation);
       do {
         question = applicableQuestions[Math.floor(Math.random() * applicableQuestions.length)];
@@ -52,6 +59,8 @@ function Maths(grade) {
     maths.initQuestionsFactorOf();
     maths.initQuestionsTimeAnalogue();
     maths.initQuestionsTimeDigital();
+    maths.initQuestionsLengthConversion();
+    maths.initQuestionsLengthAddition();
 
     console.debug(maths.Questions);
   };
@@ -450,10 +459,85 @@ function Maths(grade) {
   };
 
   this.hourTo = (hour) => {
-    switch (hour + 1) {
+    switch (hour) {
       case 12: return 'midday';
       case 24: return 'midnight';
       default: return `${hour % 12} ${hour < 12 ? 'am' : 'pm'}`;
+    }
+  };
+
+  this.initQuestionsLengthConversion = () => {
+    let question;
+
+    for (let cm = 0; cm <= 10; cm++) {
+      // cm to mm
+      question = new MathsQuestion(4, maths.LengthConversionOperation, `${cm}cm  =?mm `, cm * 10, { type: "number", min: 0, max: 10000, step: 1 });
+      if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+    }
+
+    for (let m = 0; m <= 10; m++) {
+      // m to cm
+      question = new MathsQuestion(4, maths.LengthConversionOperation, `${m}m = ?cm `, m * 100, { type: "number", min: 0, max: 10000, step: 1 });
+      if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+
+      // m to mm
+      question = new MathsQuestion(4, maths.LengthConversionOperation, `${m}m = ?mm `, m * 1000, { type: "number", min: 0, max: 10000, step: 1 });
+      if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+    }
+
+    for (let km = 0; km <= 10; km++) {
+      // km to m
+      question = new MathsQuestion(4, maths.LengthConversionOperation, `${km}km = ?m `, km * 1000, { type: "number", min: 0, max: 10000, step: 1 });
+      if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+    }
+
+    for (let mm = 0; mm <= 100; mm += 10) {
+      // mm to cm
+      question = new MathsQuestion(4, maths.LengthConversionOperation, `${mm}mm = ?cm `, mm / 10, { type: "number", min: 0, max: 10000, step: 1 });
+      if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+    }
+
+    for (let mm = 0; mm <= 10000; mm += 1000) {
+      // mm to m
+      question = new MathsQuestion(4, maths.LengthConversionOperation, `${mm}mm = ?m `, mm / 1000, { type: "number", min: 0, max: 10000, step: 1 });
+      if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+    }
+
+    for (let cm = 0; cm <= 1000; cm += 100) {
+      // cm to m
+      question = new MathsQuestion(4, maths.LengthConversionOperation, `${cm}cm = ?m `, cm / 100, { type: "number", min: 0, max: 10000, step: 1 });
+      if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+    }
+
+    for (let m = 0; m <= 10000; m += 1000) {
+      // m to km
+      question = new MathsQuestion(4, maths.LengthConversionOperation, `${m}m = ?km `, m / 1000, { type: "number", min: 0, max: 10000, step: 1 });
+      if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+    }
+
+    for (let cm = 0; cm < 10; cm++) {
+      for (let mm = 0; mm < 10; mm++) {
+        // cm, mm to mm
+        question = new MathsQuestion(4, maths.LengthConversionOperation, `${cm}cm ${mm}mm = ?mm `, cm * 10 + mm, { type: "number", min: 0, max: 10000, step: 1 });
+        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+      }
+    }
+  };
+
+  this.initQuestionsLengthAddition = () => {
+    let question;
+
+    for (let cm = 0; cm < 10; cm++) {
+      for (let mm1 = 0; mm1 < 10; mm1++) {
+        for (let mm2 = 0; mm2 < 10; mm2++) {
+          // cm + mm + mm to mm
+          let sum = [`${cm}cm`, `${mm1}mm`, `${mm2}mm`];
+          sum.sort(() => Math.random() < 0.5 ? -1 : 1);
+
+          question = new MathsQuestion(4, maths.LengthAdditionOperation, `${sum.join(' + ')} = ?mm `, cm * 10 + mm1 + mm2, { type: "number", min: 0, max: 10000, step: 1 });
+          if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+        }
+      }
     }
   };
 
@@ -480,7 +564,8 @@ function MathsQuestion(grade, mathsOperation, question, answer, inputProperties,
   };
 }
 
-function MathsOperation(grade, symbol) {
+function MathsOperation(grade, description, symbol) {
   this.Grade = grade;
+  this.Description = description;
   this.Symbol = symbol;
 }
