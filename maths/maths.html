@@ -113,14 +113,14 @@
           game.Log(game.Grade, false, false);
           game.Maths = new Maths(game.Grade);
 
-          game.Log(`What types of questions?<br />${game.Maths.MathsOperations.filter(mo => mo.Grade <= game.Grade).map(mo => mo.Description).join('<br />')}`, true);
+          game.Log(`What types of questions?<br />${game.Maths.MathsOperations.filter(mo => mo.Grade <= game.Grade).map(mo => mo.Description).join('<br />')}<br />`, true);
           game.OnInput(game.SetOperations, { value: `${game.Maths.MathsOperations.filter(mo => mo.Grade <= game.Grade).map(mo => mo.Description).join(', ') }` }, { type: "text" });
         }
       }
 
       this.SetOperations = function (operations) {
         operations = operations.split(',').map(q => q.trim());
-        game.Log(game.Grade, false, false);
+        game.Log(operations.join(', '), false, false);
         game.Maths.FilterOperations(operations);
 
         game.Log("How many questions? ", true);

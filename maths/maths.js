@@ -10,6 +10,10 @@ function Maths(grade) {
   this.TimeDigitalOperation = new MathsOperation(4, 'Digital Time');
   this.LengthConversionOperation = new MathsOperation(4, 'Length Conversion');
   this.LengthAdditionOperation = new MathsOperation(4, 'Length Addition');
+  this.AreaUnitsOperation = new MathsOperation(4, 'Unit Area');
+  this.AreaBlocksOperation = new MathsOperation(4, 'Block Area');
+  this.PerimeterUnitsOperation = new MathsOperation(4, 'Unit Perimeter');
+  this.PerimeterBlocksOperation = new MathsOperation(4, 'Block Perimeter');
 
   this.MathsOperations = [
     maths.AdditionOperation,
@@ -20,7 +24,11 @@ function Maths(grade) {
     maths.TimeAnalogueOperation,
     maths.TimeDigitalOperation,
     maths.LengthConversionOperation,
-    maths.LengthAdditionOperation
+    maths.LengthAdditionOperation,
+    maths.AreaUnitsOperation,
+    maths.AreaBlocksOperation,
+    maths.PerimeterUnitsOperation,
+    maths.PerimeterBlocksOperation
   ];
 
   this.Grade = grade;
@@ -61,6 +69,10 @@ function Maths(grade) {
     maths.initQuestionsTimeDigital();
     maths.initQuestionsLengthConversion();
     maths.initQuestionsLengthAddition();
+    maths.initQuestionsAreaUnits();
+    maths.initQuestionsAreaBlocks();
+    maths.initQuestionsPerimeterUnits();
+    maths.initQuestionsPerimeterBlocks();
 
     console.debug(maths.Questions);
   };
@@ -537,6 +549,148 @@ function Maths(grade) {
           question = new MathsQuestion(4, maths.LengthAdditionOperation, `${sum.join(' + ')} = ?mm `, cm * 10 + mm1 + mm2, { type: "number", min: 0, max: 10000, step: 1 });
           if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
         }
+      }
+    }
+  };
+
+  this.initQuestionsAreaUnits = () => {
+    let question;
+
+    for (let height = 1; height <= 10; height++) {
+      for (let width = 1; width <= 10; width++) {
+        question = new MathsQuestion(
+          4,
+          maths.AreaUnitsOperation,
+          `What is the area of a ${height}cm x ${width}cm block in cm<sup>2</sup>? `,
+          height * width,
+          { type: "number", min: 0, max: 1000, step: 1 }
+        );
+
+        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+
+        let block = [
+          '<table>',
+          '  <tbody>',
+          `    <tr><td class="text-center">${width}cm</td></tr>`,
+          '    <tr>',
+          `      <td class="border" style="height: ${6 * height}dvw; width: ${6 * width}dvw"></td>`,
+          `      <td class="align-middle">&nbsp;${height}cm</td>`,
+          '    </tr>',
+          '  </tbody>',
+          '</table>'];
+
+        question = new MathsQuestion(
+          4,
+          maths.AreaUnitsOperation,
+          `What is the area in cm<sup>2</sup>?${block.join('') }<br/>`,
+          height * width,
+          { type: "number", min: 0, max: 1000, step: 1 }
+        );
+
+        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+      }
+    }
+  };
+
+  this.initQuestionsAreaBlocks = () => {
+    let question;
+
+    for (let height = 1; height <= 10; height++) {
+      for (let width = 1; width <= 10; width++) {
+        let block = [];
+        block.push('<table>');
+        block.push('  <tbody>');
+        for (let h = 0; h < height; h++) {
+          block.push('    <tr>');
+          for (let w = 0; w < width; w++) {
+            block.push('    <td class="border" style="height: 6dvw; width: 6dvw">');
+            block.push('    </td>');
+          }
+          block.push('    </tr>');
+        }
+        block.push('  </tbody>');
+        block.push('</table>');
+        
+        question = new MathsQuestion(
+          4,
+          maths.AreaBlocksOperation,
+          `What is the area in sq<sup>2</sup>?${block.join('')}<br/>`,
+          height * width,
+          { type: "number", min: 0, max: 1000, step: 1 }
+        );
+
+        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+      }
+    }
+  };
+
+  this.initQuestionsPerimeterUnits = () => {
+    let question;
+
+    for (let height = 1; height <= 10; height++) {
+      for (let width = 1; width <= 10; width++) {
+        question = new MathsQuestion(
+          4,
+          maths.PerimeterUnitsOperation,
+          `What is the perimeter of a ${height}cm x ${width}cm block in cm? `,
+          (height + width) * 2,
+          { type: "number", min: 0, max: 1000, step: 1 }
+        );
+
+        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+
+        let block = [
+          '<table>',
+          '  <tbody>',
+          `    <tr><td class="text-center">${width}cm</td></tr>`,
+          '    <tr>',
+          `      <td class="border" style="height: ${6 * height}dvw; width: ${6 * width}dvw"></td>`,
+          `      <td class="align-middle">&nbsp;${height}cm</td>`,
+          '    </tr>',
+          '  </tbody>',
+          '</table>'];
+
+        question = new MathsQuestion(
+          4,
+          maths.PerimeterUnitsOperation,
+          `What is the perimeter in cm?${block.join('')}<br/>`,
+          (height + width) * 2,
+          { type: "number", min: 0, max: 1000, step: 1 }
+        );
+
+        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+      }
+    }
+  };
+
+  this.initQuestionsPerimeterBlocks = () => {
+    let question;
+
+    for (let height = 1; height <= 10; height++) {
+      for (let width = 1; width <= 10; width++) {
+        let block = [];
+        block.push('<table>');
+        block.push('  <tbody>');
+        for (let h = 0; h < height; h++) {
+          block.push('    <tr>');
+          for (let w = 0; w < width; w++) {
+            block.push('    <td class="border" style="height: 6dvw; width: 6dvw">');
+            block.push('    </td>');
+          }
+          block.push('    </tr>');
+        }
+        block.push('  </tbody>');
+        block.push('</table>');
+
+        question = new MathsQuestion(
+          4,
+          maths.PerimeterBlocksOperation,
+          `What is the perimeter?${block.join('')}<br/>`,
+          (height + width) * 2,
+          { type: "number", min: 0, max: 1000, step: 1 }
+        );
+
+        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
       }
     }
   };
