@@ -573,7 +573,7 @@ function Maths(grade) {
           '  <tbody>',
           `    <tr><td class="text-center">${width}cm</td></tr>`,
           '    <tr>',
-          `      <td class="border" style="height: ${6 * height}dvw; width: ${6 * width}dvw"></td>`,
+          `      <td class="border" style="height: ${30 * height}px; width: ${30 * width}px"></td>`,
           `      <td class="align-middle">&nbsp;${height}cm</td>`,
           '    </tr>',
           '  </tbody>',
@@ -603,7 +603,7 @@ function Maths(grade) {
         for (let h = 0; h < height; h++) {
           block.push('    <tr>');
           for (let w = 0; w < width; w++) {
-            block.push('    <td class="border" style="height: 6dvw; width: 6dvw">');
+            block.push('    <td class="border" style="height: 30px; width: 30px">');
             block.push('    </td>');
           }
           block.push('    </tr>');
@@ -644,7 +644,7 @@ function Maths(grade) {
           '  <tbody>',
           `    <tr><td class="text-center">${width}cm</td></tr>`,
           '    <tr>',
-          `      <td class="border" style="height: ${6 * height}dvw; width: ${6 * width}dvw"></td>`,
+          `      <td class="border" style="height: ${30 * height}px; width: ${30 * width}px"></td>`,
           `      <td class="align-middle">&nbsp;${height}cm</td>`,
           '    </tr>',
           '  </tbody>',
@@ -674,7 +674,7 @@ function Maths(grade) {
         for (let h = 0; h < height; h++) {
           block.push('    <tr>');
           for (let w = 0; w < width; w++) {
-            block.push('    <td class="border" style="height: 6dvw; width: 6dvw">');
+            block.push('    <td class="border" style="height: 30px; width: 30px">');
             block.push('    </td>');
           }
           block.push('    </tr>');
