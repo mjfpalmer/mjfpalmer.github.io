@@ -147,13 +147,13 @@
           game.Question = game.Questions[game.QuestionIndex++];
 
           game.Log(game.Question.Question, true);
-          game.OnInput(game.Answer, game.Question.InputAttributes, game.Question.InputProperties);
+          game.OnInput((answer) => { game.Answer(answer, 1); }, game.Question.InputAttributes, game.Question.InputProperties);
         } else {
           game.GameOver();
         }
       }
 
-      this.Answer = function (answer) {
+      this.Answer = function (answer, attempt) {
         let valid = true;
         switch ($('#ci').prop('type')) {
           case 'text': break;
@@ -170,12 +170,19 @@
 
           if (game.Question.Correct()) {
             game.Log("&nbsp;&nbsp;&check;", false, false, "#0ed145");
+            game.NextQuestion();
           } else {
-            game.Log("&nbsp;&nbsp;&cross;", false, false, "#ec1c24");
-            game.Log(`The correct answer was <span style="color: #0ed145;">${game.Question.Answer}</span>`, false, true);
-          }
+            if (attempt < 2) {
+              game.Log("  &cross;", false, false, "#ec1c24");
+              game.Log(`Try again. `, false, true);
+              game.OnInput((answer) => { game.Answer(answer, attempt + 1); }, game.Question.InputAttributes, game.Question.InputProperties);
+            } else {
+              game.Log("  &cross;", false, false, "#ec1c24");
+              game.Log(`The correct answer was <span style="color: #0ed145;">${game.Question.Answer}</span>`, false, true);
 
-          game.NextQuestion();
+              game.NextQuestion();
+            }
+          }
         }
       }
 
