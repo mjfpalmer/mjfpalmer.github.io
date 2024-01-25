@@ -11,9 +11,9 @@ function Maths(grade) {
   this.LengthConversionOperation = new MathsOperation(4, 'Length Conversion');
   this.LengthAdditionOperation = new MathsOperation(4, 'Length Addition');
   this.AreaUnitsOperation = new MathsOperation(4, 'Unit Area');
-  this.AreaBlocksOperation = new MathsOperation(4, 'Block Area');
+  this.Area2DOperation = new MathsOperation(4, '2D Area');
   this.PerimeterUnitsOperation = new MathsOperation(4, 'Unit Perimeter');
-  this.PerimeterBlocksOperation = new MathsOperation(4, 'Block Perimeter');
+  this.Perimeter2DOperation = new MathsOperation(4, '2D Perimeter');
 
   this.MathsOperations = [
     maths.AdditionOperation,
@@ -26,9 +26,9 @@ function Maths(grade) {
     maths.LengthConversionOperation,
     maths.LengthAdditionOperation,
     maths.AreaUnitsOperation,
-    maths.AreaBlocksOperation,
+    maths.Area2DOperation,
     maths.PerimeterUnitsOperation,
-    maths.PerimeterBlocksOperation
+    maths.Perimeter2DOperation
   ];
 
   this.Grade = grade;
@@ -70,9 +70,9 @@ function Maths(grade) {
     maths.initQuestionsLengthConversion();
     maths.initQuestionsLengthAddition();
     maths.initQuestionsAreaUnits();
-    maths.initQuestionsAreaBlocks();
+    maths.initQuestionsArea2D();
     maths.initQuestionsPerimeterUnits();
-    maths.initQuestionsPerimeterBlocks();
+    maths.initQuestionsPerimeter2D();
 
     console.debug(maths.Questions);
   };
@@ -592,7 +592,7 @@ function Maths(grade) {
     }
   };
 
-  this.initQuestionsAreaBlocks = () => {
+  this.initQuestionsArea2D = () => {
     let question;
 
     for (let height = 1; height <= 10; height++) {
@@ -613,7 +613,7 @@ function Maths(grade) {
         
         question = new MathsQuestion(
           4,
-          maths.AreaBlocksOperation,
+          maths.Area2DOperation,
           `What is the area in sq<sup>2</sup>?${block.join('')}<br/>`,
           height * width,
           { type: "number", min: 0, max: 1000, step: 1 }
@@ -663,7 +663,7 @@ function Maths(grade) {
     }
   };
 
-  this.initQuestionsPerimeterBlocks = () => {
+  this.initQuestionsPerimeter2D = () => {
     let question;
 
     for (let height = 1; height <= 10; height++) {
@@ -684,7 +684,7 @@ function Maths(grade) {
 
         question = new MathsQuestion(
           4,
-          maths.PerimeterBlocksOperation,
+          maths.Perimeter2DOperation,
           `What is the perimeter?${block.join('')}<br/>`,
           (height + width) * 2,
           { type: "number", min: 0, max: 1000, step: 1 }
