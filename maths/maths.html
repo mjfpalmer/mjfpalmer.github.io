@@ -38,7 +38,10 @@
   </main>
 
   <footer class="footer bg-black fixed-bottom container" data-bs-theme="dark">
-    <input type="text" id="ci" class="w-100 bg-transparent text-white form-control" />
+    <div class="d-flex">
+      <div class="flex-fill"><input type="text" id="ci" class="bg-transparent text-white form-control" /></div>
+      <div id="timer" class="p-1 text-white" style="font-family: 'Courier New'; font-size: 20px"></div>
+    </div>
   </footer>
 
   <script type="text/javascript" src="/lib/jquery/jquery-3.7.1.min.js"></script>
@@ -49,6 +52,11 @@
   <script type="text/javascript">
     $(function () {
       let game = new Game();
+
+      setInterval(() => {
+        if (game.TimerOn) { game.EndTime = new Date(); }
+        $("#timer").html(game.GetTime());
+      }, 100);
 
       $("#ci")
         .off("keyup")
@@ -79,6 +87,10 @@
       this.Grade = 4;
       this.QuestionCount = 20;
 
+      this.StartTime = null;
+      this.EndTime = null;
+      this.TimerOn = false;
+
       this.Questions = [];
       this.QuestionIndex = 0;
       this.Question = null;
@@ -99,6 +111,13 @@
         ["Spectacular", "Perfect", "Brilliant", "Whoop whoop"]
       ];
 
+      this.GetTime = function () {
+        if (game.StartTime === null) { return '00:00'; }
+
+        let time = (game.EndTime - game.StartTime) / 1000;
+        return `${Math.floor(time / 60).toString().padStart(2, '0')}:${Math.floor(time % 60).toString().padStart(2, '0')}`;
+      }
+
       this.SetPlayer = function (player) {
         game.Player = player;
         game.Log(game.Player, false, false);
@@ -114,7 +133,7 @@
           game.Maths = new Maths(game.Grade);
 
           game.Log(`What types of questions?<br />${game.Maths.MathsOperations.filter(mo => mo.Grade <= game.Grade).map(mo => mo.Description).join('<br />')}<br />`, true);
-          game.OnInput(game.SetOperations, { value: `${game.Maths.MathsOperations.filter(mo => mo.Grade <= game.Grade).map(mo => mo.Description).join(', ') }` }, { type: "text" });
+          game.OnInput(game.SetOperations, { value: `${game.Maths.MathsOperations.filter(mo => mo.Grade <= game.Grade).map(mo => mo.Description).join(', ')}` }, { type: "text" });
         }
       }
 
@@ -134,6 +153,8 @@
           game.QuestionCount = parseInt(questionCount);
           game.Log(game.QuestionCount, false, false);
 
+          game.StartTime = new Date();
+          game.TimerOn = true;
           game.NextQuestion();
         }
       }
@@ -187,11 +208,12 @@
       }
 
       this.GameOver = function () {
+        game.TimerOn = false;
         let correct = game.Questions.filter((q) => q.Correct()).length;
         let incorrect = game.Questions.length - correct;
         let percentage = Math.round(correct / game.Questions.length * 100);
         let feedback = game.Feedback[Math.floor(percentage / 10)][Math.floor(Math.random() * game.Feedback[Math.floor(percentage / 10)].length)];
-        game.Log(`${feedback} ${game.Player}, you got ${percentage}% (${correct} correct and ${incorrect} incorrect).`, true);
+        game.Log(`${feedback} ${game.Player}<br>You got ${percentage}%<br>${correct} correct and ${incorrect} incorrect<br>Time: ${game.GetTime()}`, true);
         game.Log("Play again (y/n)? ", true);
         game.OnInput(game.PlayAgain, { value: "" }, { type: "text" });
       }
@@ -201,6 +223,8 @@
           game.ClearLog();
           game.Questions = [];
           game.QuestionIndex = 0;
+          game.StartTime = new Date();
+          game.TimerOn = true;
           game.NextQuestion();
         } else {
           window.location.href = "/index.html";
