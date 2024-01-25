@@ -22,11 +22,11 @@ function Site() {
   this.OnConsoleKeyUpEnter = function (value) {
     value = value.toLowerCase();
     switch (true) {
-      case value === 'h': case value.startsWith("home"): window.location.href = "/index.html"; break;
-      case value === 'm': case value.startsWith("maths"): window.location.href = "/maths/maths.html"; break;
-      case value === 's': case value.startsWith("sean moments"): window.location.href = "/timelines/sean.html"; break;
-      case value === 'a': case value.startsWith("anika moments"): window.location.href = "/timelines/anika.html"; break;
-      case value === 'v': case value.startsWith("version"): site.respond("v240125.2020"); break;
+      case value.startsWith("home"): window.location.href = "/index.html"; break;
+      case value.startsWith("maths"): window.location.href = "/maths/maths.html"; break;
+      case value.startsWith("sean moments"): window.location.href = "/timelines/sean.html"; break;
+      case value.startsWith("anika moments"): window.location.href = "/timelines/anika.html"; break;
+      case value.startsWith("version"): site.respond("v240125.2030"); break;
       case value.startsWith("hi"):
       case value.startsWith("hello"):
         site.respond("Hi, how are you?");
