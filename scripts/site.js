@@ -26,7 +26,7 @@ function Site() {
       case value === 'm': case value.startsWith("maths"): window.location.href = "/maths/maths.html"; break;
       case value === 's': case value.startsWith("sean moments"): window.location.href = "/timelines/sean.html"; break;
       case value === 'a': case value.startsWith("anika moments"): window.location.href = "/timelines/anika.html"; break;
-      case value === 'v': case value.startsWith("version"): site.respond("v231119.1110"); break;
+      case value === 'v': case value.startsWith("version"): site.respond("v240125.2020"); break;
       case value.startsWith("hi"):
       case value.startsWith("hello"):
         site.respond("Hi, how are you?");
