@@ -1090,12 +1090,12 @@ function Maths(grade) {
     }
   };
 
-  this.randomInteger = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+  this.randomInteger = (min, max) => Math.floor(Math.random() * (max - min)) + min;
 
-  this.randomElement = (a) => a[Math.floor(Math.random() * a.length)];
+  this.randomElement = (a) => a[maths.randomInteger(0, a.length - 1)];
 
   this.fillArray = (a, min, max, step, randomCount) => {
-    if (step === undefined) { step = 1; }
+    step = step || 1;
 
     if (randomCount) {
       while (a.length < randomCount) {
