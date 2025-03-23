@@ -1,6 +1,8 @@
 function Maths(grade) {
   let maths = this;
 
+  this.QuestionsPerOperation = 100;
+
   this.AdditionOperation = new MathsOperation(1, 'Addition', '&plus;');
   this.SubtractionOperation = new MathsOperation(1, 'Subtraction', '&minus;');
   this.MultiplicationOperation = new MathsOperation(2, 'Multiplication', '&times;');
@@ -78,64 +80,71 @@ function Maths(grade) {
   };
 
   this.InitQuestionsAddition = () => {
-    let question = null;
-    let min = -50, max = 50;
-
     // https://www.splashlearn.com/math-vocabulary/addition/addition
-    for (let addend1 of new Array(Math.abs(min) + max + 1).fill(0).map((n, i) => i + min)) {
-      for (let addend2 of new Array(Math.abs(min) + max + 1).fill(0).map((n, i) => i + min)) {
-        question = new MathsQuestion(
-          0,
+    let minAddend, maxAddend, minAnswer, maxAnswer;
+
+    switch (maths.Grade) {
+      case 1: minAddend = 0; maxAddend = 10; minAnswer = 0; maxAnswer = 10; break;
+      case 2: minAddend = 0; maxAddend = 20; minAnswer = 0; maxAnswer = 20; break;
+      case 3: minAddend = 0; maxAddend = 40; minAnswer = 0; maxAnswer = 40; break;
+      case 4: minAddend = 0; maxAddend = 50; minAnswer = 0; maxAnswer = 50; break;
+      case 5: minAddend = 0; maxAddend = 1000; minAnswer = 0; maxAnswer = 1000; break;
+      case 6: minAddend = 10000; maxAddend = 1000000; minAnswer = 0; maxAnswer = 2000000; break;
+    }
+
+    let questions = [];
+    while (questions.length < maths.QuestionsPerOperation) {
+      let addend1 = Math.floor(Math.random() * (maxAddend - minAddend + 1)) + minAddend;
+      let addend2 = Math.floor(Math.random() * (maxAddend - minAddend + 1)) + minAddend;
+      let answer = addend1 + addend2;
+
+      if (answer >= minAnswer && answer <= maxAnswer) {
+        let question = new MathsQuestion(
+          maths.Grade,
           maths.AdditionOperation,
           `${addend1} ${maths.AdditionOperation.Symbol} ${addend2} = `,
-          addend1 + addend2,
-          { type: "number", min: max * -3, max: max * 3, step: "" });
+          answer,
+          { type: "number", min: minAnswer * 2, max: maxAnswer * 2, step: 1 });
 
-        switch (true) {
-          case question.Answer <= 0:
-          case addend1 < 0:
-          case addend2 < 0:
-            question.Grade = 5;
-            break;
-          case question.Answer <= 10: question.Grade = 1; break;
-          case question.Answer <= 20: question.Grade = 2; break;
-          case question.Answer <= 40: question.Grade = 3; break;
-          default: question.Grade = 4; break;
-        }
-
-        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+        questions.push(question);
       }
     }
+
+    maths.Questions.push(...questions);
   };
 
   this.InitQuestionsSubtraction = () => {
-    let question;
-    let min = -50, max = 50;
+    // https://www.splashlearn.com/math-vocabulary/addition/addition
+    let minMinuend, maxMinuend, minSubtrahend, maxSubtrahend, minAnswer, maxAnswer;
 
-    // https://www.splashlearn.com/math-vocabulary/subtraction/subtract
-    for (let minuend of new Array(Math.abs(min) + max + 1).fill(0).map((n, i) => i + min)) {
-      for (let subtrahend of new Array(Math.abs(min) + max + 1).fill(0).map((n, i) => i + min)) {
-        question = new MathsQuestion(
-          0,
+    switch (maths.Grade) {
+      case 1: minMinuend = 0; maxMinuend = 10; minSubtrahend = 0; maxSubtrahend = 10; minAnswer = 0; maxAnswer = 10; break;
+      case 2: minMinuend = 0; maxMinuend = 20; minSubtrahend = 0; maxSubtrahend = 20; minAnswer = 0; maxAnswer = 20; break;
+      case 3: minMinuend = 0; maxMinuend = 40; minSubtrahend = 0; maxSubtrahend = 40; minAnswer = 0; maxAnswer = 40; break;
+      case 4: minMinuend = 0; maxMinuend = 50; minSubtrahend = 0; maxSubtrahend = 50; minAnswer = 0; maxAnswer = 50; break;
+      case 5: minMinuend = 0; maxMinuend = 1000; minSubtrahend = 0; maxSubtrahend = 1000; minAnswer = 0; maxAnswer = 1000; break;
+      case 6: minMinuend = 10000; maxMinuend = 1000000; minSubtrahend = 0; maxSubtrahend = 1000000; minAnswer = 0; maxAnswer = 1000000; break;
+    }
+
+    let questions = [];
+    while (questions.length < maths.QuestionsPerOperation) {
+      let minuend = Math.floor(Math.random() * (maxMinuend - minMinuend + 1)) + minMinuend;
+      let subtrahend = Math.floor(Math.random() * (maxSubtrahend - minSubtrahend + 1)) + minSubtrahend;
+      let answer = minuend - subtrahend;
+
+      if (answer >= minAnswer && answer <= maxAnswer) {
+        let question = new MathsQuestion(
+          maths.Grade,
           maths.SubtractionOperation,
           `${minuend} ${maths.SubtractionOperation.Symbol} ${subtrahend} = `,
-          minuend - subtrahend,
-          { type: "number", min: max * -3, max: max * 3, step: "" });
+          answer,
+          { type: "number", min: minAnswer * 2, max: maxAnswer * 2, step: 1 });
 
-        switch (true) {
-          case question.Answer <= 0:
-          case minuend < 0:
-          case subtrahend < 0:
-            question.Grade = 5;
-            break;
-          case minuend <= 10: question.Grade = 1; break;
-          case minuend <= 20: question.Grade = 2; break;
-          default: question.Grade = 3; break;
-        }
-
-        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+        questions.push(question);
       }
     }
+
+    maths.Questions.push(...questions);
   };
 
   this.initQuestionsMultiplication = () => {
@@ -582,7 +591,7 @@ function Maths(grade) {
         question = new MathsQuestion(
           4,
           maths.AreaUnitsOperation,
-          `What is the area in cm<sup>2</sup>?${block.join('') }<br/>`,
+          `What is the area in cm<sup>2</sup>?${block.join('')}<br/>`,
           height * width,
           { type: "number", min: 0, max: 1000, step: 1 }
         );
@@ -610,7 +619,7 @@ function Maths(grade) {
         }
         block.push('  </tbody>');
         block.push('</table>');
-        
+
         question = new MathsQuestion(
           4,
           maths.Area2DOperation,
