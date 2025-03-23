@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, shrink-to-fit=no, interactive-widget=resizes-content">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Americano</title>
+  <base href="/">
+
+  <link rel="manifest" href="/manifest.json">
+
+  <link rel="stylesheet" href="/lib/bootstrap-5.3.2-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/site.css">
+
+  <link rel="apple-touch-icon" sizes="57x57" href="/favicon/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="/favicon/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="/favicon/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="/favicon/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="/favicon/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="/favicon/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="/favicon/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/favicon/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+
+  <meta name="msapplication-TileColor" content="#212529">
+  <meta name="msapplication-TileImage" content="/favicon/ms-icon-144x144.png">
+  <meta name="theme-color" content="#212529">
+</head>
+
+<body>
+  <main role="main" class="container">
+    <div class="card text-bg-dark mt-2">
+      <div class="card-header">Players</div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-9"><label class="form-label">Name</label></div>
+          <div class="col-3"><label class="form-label">Seed/Rating</label></div>
+        </div>
+        <p id="divPlayerList" class="card-text"></p>
+      </div>
+    </div>
+
+    <div class="card text-bg-dark mt-2">
+      <div class="card-header">Americano</div>
+      <div class="card-body">
+        <p id="divMatches" class="card-text"></p>
+      </div>
+    </div>
+
+    <div class="card text-bg-dark mt-2">
+      <div class="card-header">Results</div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-6"><label class="form-label">Player</label></div>
+          <div class="col-3"><label class="form-label">Points</label></div>
+          <div class="col-3"><label class="form-label">Wins</label></div>
+        </div>
+        <p id="divResults" class="card-text"></p>
+      </div>
+    </div>
+  </main>
+
+  <script type="text/javascript" src="/lib/jquery/jquery-3.7.1.min.js"></script>
+  <script type="text/javascript" src="/lib/bootstrap-5.3.2-dist/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/scripts/site.js"></script>
+  <script type="text/javascript" src="/padel/americano.js"></script>
+  <script type="text/javascript" src="/padel/models/match.js"></script>
+  <script type="text/javascript" src="/padel/models/pair.js"></script>
+  <script type="text/javascript" src="/padel/models/player.js"></script>
+  <script type="text/javascript" src="/padel/models/round.js"></script>
+  <script type="text/javascript" src="/padel/models/tournament.js"></script>
+
+
+  <script type="text/javascript">
+    let americano;
+
+    $(function () {
+      americano = new Americano();
+      americano.newAmericano();
+    });
+
+    function Americano() {
+      let americano = this;
+
+      this.tournament = null;
+      this.playerCount = 8;
+
+      this.players = [];
+      this.pairs = [];
+      this.matches = [];
+
+      this.newAmericano = function () {
+        americano.generateTournament(5);
+        americano.drawTournament();
+      }
+
+      this.roundCount = function () {
+        switch (americano.playerCount % 4) {
+          case 0: return americano.playerCount - 1; break;
+          case 1: return americano.playerCount; break;
+          default: throw new Error("Invalid number of players");
+        }
+      }
+
+      this.matchesPerRound = function () {
+        return Math.floor(americano.playerCount / 4);
+      }
+
+      this.totalMatches = function () {
+        return americano.roundCount() * americano.matchesPerRound();
+      }
+
+      this.generateTournaments = function (previousMatches, previousAvailable, tournaments) {
+        while (previousAvailable.length > 0) {
+          let match = previousAvailable.shift();
+          let matches = [...previousMatches];
+          matches.push(match);
+
+          if (matches.length === americano.totalMatches()) {
+            if (tournaments.findIndex(t => americano.matchesEqual(t.matches, matches))) {
+              let tournament = new Tournament(americano.players, americano.pairs, matches, americano.matchesPerRound());
+              tournaments.push(tournament);
+            } else {
+              debugger
+            }
+          } else {
+            let available = previousAvailable.filter(m => !m.anyPairsMatch(match));
+            /*
+            console.log([
+              matches.length,
+              matches.map(m => [m.pair1.player1.index, m.pair1.player2.index, m.pair2.player1.index, m.pair2.player2.index]),
+              available.length,
+              available.map(m => [m.pair1.player1.index, m.pair1.player2.index, m.pair2.player1.index, m.pair2.player2.index])]);
+            */
+            americano.generateTournaments(matches, available, tournaments);
+          }
+        }
+      }
+
+      this.generateTournament = function (playerCount) {
+        americano.players = [];
+        for (let p1 = 0; p1 < this.playerCount; p1++) {
+          americano.players.push(new Player(p1));
+        }
+
+        americano.pairs = [];
+        for (let p1 = 0; p1 < this.playerCount; p1++) {
+          for (let p2 = p1 + 1; p2 < this.playerCount; p2++) {
+            let pair = new Pair(americano.pairs.length, americano.players[p1], americano.players[p2]);
+            americano.pairs.push(pair);
+          }
+        }
+
+        americano.matches = [];
+        for (pair1 of americano.pairs) {
+          for (pair2 of americano.pairs.filter(pair => pair1.player1.index < pair.player1.index && !pair.hasSamePlayers(pair1))) {
+            let match = new Match(americano.matches.length, pair1, pair2);
+            americano.matches.push(match);
+          }
+        }
+
+        console.log(americano.matches);
+
+        let tournaments = []
+        //debugger
+        this.generateTournaments([], [...americano.matches], tournaments);
+        console.log(["tournaments", tournaments]);
+
+        let minFairness = tournaments.reduce((minFairness, tournament) => Math.min(minFairness, tournament.fairness), Number.MAX_SAFE_INTEGER);
+        americano.tournament = tournaments.filter(tournament => tournament.fairness == minFairness).sort((t1, t2) => 0.5 - Math.random())[0];
+        americano.tournament.initialise();
+
+        console.log(americano.tournament);
+        console.log([americano.tournament.averageDifficulty, americano.tournament.fairness])
+      }
+
+      this.drawTournament = function () {
+        americano.drawPlayers();
+        americano.drawMatches();
+        americano.drawResults();
+      }
+
+      this.drawPlayers = function () {
+        $("#divPlayerList").empty();
+
+        for (player of americano.tournament.players) {
+          let row = $(document.createElement("div")).addClass("row mt-2").appendTo("#divPlayerList");
+
+          let col = $(document.createElement("div")).addClass("col-9").appendTo(row);
+          $(document.createElement("input"))
+            .prop({ type: "text" })
+            .prop({ player: player })
+            .addClass("bg-transparent text-white form-control")
+            .val(player.name)
+            .on("change", function (e) {
+              let player = $(e.target).prop("player");
+              player.name = $(e.target).val();
+              americano.drawTournament();
+              americano.drawResults();
+            })
+            .appendTo(col);
+
+          col = $(document.createElement("div")).addClass("col-3").appendTo(row)
+          $(document.createElement("input"))
+            .prop({ type: "number", min: 1, max: americano.tournament.playerCount, step: 1 })
+            .prop({ player: player })
+            .addClass("bg-transparent text-white form-control")
+            .val(player.rating)
+            .on("change", function (e) {
+              let player = $(e.target).prop("player");
+              player.rating = parseFloat($(e.target).val());
+              americano.generateTournament();
+              americano.drawResults();
+            })
+            .appendTo(col);
+        }
+      }
+
+      this.drawMatches = function () {
+        $("#divMatches").empty();
+
+        for (round of americano.tournament.rounds) {
+          let roundCard = $(document.createElement("div")).addClass("card text-bg-dark mt-2").appendTo($("#divMatches"));
+          $(document.createElement("div")).addClass("card-header").text(`Round ${round.index + 1}`).appendTo(roundCard);
+          let roundCardBody = $(document.createElement("div")).addClass("card-body").appendTo(roundCard);
+
+          for (match of round.matches) {
+            let matchCard = $(document.createElement("div")).addClass("card text-bg-dark mt-2").appendTo(roundCardBody);
+            let matchCardBody = $(document.createElement("div")).addClass("card-body").appendTo(matchCard);
+            let matchCardText = $(document.createElement("p")).addClass("card-text").appendTo(matchCardBody);
+
+            row = $(document.createElement("div")).addClass("row mt-2").appendTo(matchCardText);
+
+            $(document.createElement("div")).addClass("col-4 pt-2").text(match.pair1.player1.name || `Player ${match.pair1.player1.index + 1}`).appendTo(row);
+            $(document.createElement("div")).addClass("col-4 pt-2").text(match.pair1.player2.name || `Player ${match.pair1.player2.index + 1}`).appendTo(row);
+
+            col = $(document.createElement("div")).addClass("col-4").appendTo(row);
+            $(document.createElement("input"))
+              .prop({ type: "number", min: 0, max: 24, step: 1 })
+              .prop({ match: match })
+              .addClass("bg-transparent text-white form-control")
+              .val(match.pair1.score)
+              .on("change", function (e) {
+                let match = $(e.target).prop("match");
+                match.pair1Score = parseInt($(e.target).val());
+
+                americano.drawResults();
+              })
+              .appendTo(col);
+
+            row = $(document.createElement("div")).addClass("row mt-2").appendTo(matchCardText);
+
+            $(document.createElement("div")).addClass("col-4 pt-2").text(match.pair2.player1.name || `Player ${match.pair2.player1.index + 1}`).appendTo(row);
+            $(document.createElement("div")).addClass("col-4 pt-2").text(match.pair2.player2.name || `Player ${match.pair2.player2.index + 1}`).appendTo(row);
+
+            col = $(document.createElement("div")).addClass("col-4").appendTo(row);
+            $(document.createElement("input"))
+              .prop({ type: "number", min: 0, max: 24, step: 1 })
+              .prop({ match: match })
+              .addClass("bg-transparent text-white form-control")
+              .val(match.pair2.score)
+              .on("change", function (e) {
+                let match = $(e.target).prop("match");
+                match.pair2Score = parseInt($(e.target).val());
+
+                americano.drawResults();
+              })
+              .appendTo(col);
+          }
+        }
+      }
+
+      this.drawResults = function () {
+        $("#divResults").empty();
+
+        let players = americano.tournament.players.concat([])
+          .sort((p1, p2) => p1.compareByScore(p2))
+          .sort((p1, p2) => p1.compareByWins(p2));
+        let position = 1;
+        for (player of players) {
+          let row = $(document.createElement("div")).addClass("row mt-2").appendTo("#divResults");
+
+          $(document.createElement("div")).addClass("col-6")
+            .text(`${position++}. ${player.name || `Player ${player.index + 1}`}`)
+            .appendTo(row);
+
+          $(document.createElement("div")).addClass("col-3")
+            .text(player.score())
+            .appendTo(row);
+
+          $(document.createElement("div")).addClass("col-3")
+            .text(player.wins())
+            .appendTo(row);
+        }
+      }
+
+      this.matchesEqual = function (matches1, matches2) {
+        return new Set(matches1.map(m => m.index)).difference(new Set(matches2.map(m => m.index))).size === 0;
+      }
+    }
+  </script>
+</body>
+</html>
