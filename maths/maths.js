@@ -2,6 +2,7 @@ function Maths(grade) {
   let maths = this;
 
   this.QuestionsPerOperation = 100;
+  this.QuestionsPerOperationPerGrade = 100;
 
   this.AdditionOperation = new MathsOperation(1, 'Addition', '&plus;');
   this.SubtractionOperation = new MathsOperation(1, 'Subtraction', '&minus;');
@@ -93,8 +94,8 @@ function Maths(grade) {
       case 2: maths.fillArray(addends, 0, 20); maxAnswer = 20; break;
       case 3: maths.fillArray(addends, 0, 40); maxAnswer = 40; break;
       case 4: maths.fillArray(addends, 0, 50); maxAnswer = 50; break;
-      case 5: maths.fillArray(addends, 0, 1000); break;
-      case 6: maths.fillArray(addends, 10000, 1000000, 1000); break;
+      case 5: maths.fillArray(addends, 0, 1, maths.QuestionsPerOperationPerGrade); break;
+      case 6: maths.fillArray(addends, 10000, 1000000, 1, maths.QuestionsPerOperationPerGrade); break;
     }
 
     if (addends.length > 0) {
@@ -133,8 +134,8 @@ function Maths(grade) {
       case 2: maths.fillArray(minuends, 0, 20); maths.fillArray(subtrahends, 0, 20); minAnswer = 0; break;
       case 3: maths.fillArray(minuends, 0, 40); maths.fillArray(subtrahends, 0, 40); minAnswer = 0; break;
       case 4: maths.fillArray(minuends, 0, 50); maths.fillArray(subtrahends, 0, 50); minAnswer = 0; break;
-      case 5: maths.fillArray(minuends, 0, 1000); maths.fillArray(subtrahends, 0, 1000); minAnswer = 0; break;
-      case 6: maths.fillArray(minuends, 10000, 1000000, 1000); maths.fillArray(subtrahends, 10000, 1000000, 1000); minAnswer = 0; break;
+      case 5: maths.fillArray(minuends, 0, 1, maths.QuestionsPerOperationPerGrade); maths.fillArray(subtrahends, 0, 1, maths.QuestionsPerOperationPerGrade); minAnswer = 0; break;
+      case 6: maths.fillArray(minuends, 10000, 1000000, 1, maths.QuestionsPerOperationPerGrade); maths.fillArray(subtrahends, 10000, 1000000, 1, maths.QuestionsPerOperationPerGrade); minAnswer = 0; break;
     }
 
     if (minuends.length > 0 && subtrahends.length > 0) {
@@ -170,7 +171,7 @@ function Maths(grade) {
     switch (maths.Grade) {
       case 1: break;
       case 2: multiplicands = [0, 1, 2, 5, 10]; multipliers = [0, 1, 2, 5, 10]; break;
-      case 3: multiplicands = [0, 1, 2, 3, 4, 5, 8, 10]; multipliers = [0, 1, 2, 3, 4, 5, 8, 10]; break;
+      case 3: maths.fillArray(multiplicands, 0, 12); maths.fillArray(multipliers, 0, 12); break;
       case 4: maths.fillArray(multiplicands, 0, 12); maths.fillArray(multipliers, 0, 12); break;
       case 5: maths.fillArray(multiplicands, -12, 12); maths.fillArray(multipliers, -12, 12); break;
       case 6: maths.fillArray(multiplicands, -100, 100); maths.fillArray(multipliers, -100, 100); break;
@@ -301,105 +302,198 @@ function Maths(grade) {
   };
 
   this.initQuestionsTimeAnalogueToDigital = () => {
-    for (let hour = 0; hour < 12; hour++) {
-      for (let minute = 0; minute < 60; minute += 5) {
-        let question = new MathsQuestion(
-          4,
-          maths.TimeAnalogueOperation,
-          `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> to digital. `,
-          `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`,
-          { type: "text" });
+    let hours = [], minutes = [];
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: break;
+      case 3: break;
+      case 4: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+      case 5: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+      case 6: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+    }
 
-        // TODO: Set grade
+    if (hours.length > 0 && minutes.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let hour = maths.randomElement(hours);
+        let minute = maths.randomElement(minutes);
+        let answer = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
 
-        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+        let isValid = true;
+
+        if (isValid) {
+          let question = new MathsQuestion(
+            maths.Grade,
+            maths.FactorOfOperation,
+            `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> to digital. `,
+            answer,
+            { type: "text" });
+
+          questions.push(question);
+        }
       }
+
+      maths.Questions.push(...questions);
     }
   };
 
   this.initQuestionsTimeAnalogueToDigitalAM = () => {
-    for (let hour = 0; hour < 12; hour++) {
-      for (let minute = 0; minute < 60; minute += 5) {
-        let question = new MathsQuestion(
-          4,
-          maths.TimeAnalogueOperation,
-          `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> AM to digital. `,
-          `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`,
-          { type: "text" });
+    let hours = [], minutes = [];
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: break;
+      case 3: break;
+      case 4: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+      case 5: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+      case 6: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+    }
 
-        // TODO: Set grade
+    if (hours.length > 0 && minutes.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let hour = maths.randomElement(hours);
+        let minute = maths.randomElement(minutes);
+        let answer = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
 
-        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+        let isValid = true;
+
+        if (isValid) {
+          let question = new MathsQuestion(
+            maths.Grade,
+            maths.TimeAnalogueOperation,
+            `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> AM to digital. `,
+            answer,
+            { type: "text" });
+
+          questions.push(question);
+        }
       }
+
+      maths.Questions.push(...questions);
     }
   };
 
   this.initQuestionsTimeAnalogueToDigitalPM = () => {
-    for (let hour = 0; hour < 12; hour++) {
-      for (let minute = 0; minute < 60; minute += 5) {
-        let question = new MathsQuestion(
-          4,
-          maths.TimeAnalogueOperation,
-          `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> PM to digital. `,
-          `${(hour + 12).toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`,
-          { type: "text" });
+    let hours = [], minutes = [];
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: break;
+      case 3: break;
+      case 4: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+      case 5: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+      case 6: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+    }
 
-        // TODO: Set grade
+    if (hours.length > 0 && minutes.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let hour = maths.randomElement(hours);
+        let minute = maths.randomElement(minutes);
+        let answer = `${(hour + 12).toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
 
-        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+        let isValid = true;
+
+        if (isValid) {
+          let question = new MathsQuestion(
+            maths.Grade,
+            maths.TimeAnalogueOperation,
+            `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> PM to digital. `,
+            answer,
+            { type: "text" });
+
+          questions.push(question);
+        }
       }
+
+      maths.Questions.push(...questions);
     }
   };
 
   this.initQuestionsTimeAnalogueToDescriptionAM = () => {
-    for (let hour = 0; hour < 12; hour++) {
-      for (let minute = 0; minute < 60; minute += 5) {
-        let question = new MathsQuestion(
-          4,
-          maths.TimeAnalogueOperation,
-          `Describe <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> AM. `,
-          '',
-          { type: "text" });
+    let hours = [], minutes = [];
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: break;
+      case 3: break;
+      case 4: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+      case 5: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+      case 6: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+    }
 
-        switch (minute) {
-          case 0: question.Answer = maths.hourOn(hour, true); break;
-          case 5: case 10: case 20: case 25: question.Answer = `${minute} past ${maths.hourPast(hour)}`; break;
-          case 15: question.Answer = `quarter past ${maths.hourPast(hour)}`; break;
-          case 30: question.Answer = `half past ${maths.hourPast(hour)}`; break;
-          case 35: case 40: case 50: case 55: question.Answer = `${60 - minute} to ${maths.hourTo(hour + 1)}`; break;
-          case 45: question.Answer = `quarter to  ${hour + 1 == 12 ? 'midnight' : `${maths.hourTo(hour + 1)}`}`; break;
+    if (hours.length > 0 && minutes.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let hour = maths.randomElement(hours);
+        let minute = maths.randomElement(minutes);
+
+        let isValid = true;
+
+        if (isValid) {
+          let question = new MathsQuestion(
+            maths.Grade,
+            maths.TimeAnalogueOperation,
+            `Describe <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> AM. `,
+            '',
+            { type: "text" });
+
+          switch (minute) {
+            case 0: question.Answer = maths.hourOn(hour, true); break;
+            case 5: case 10: case 20: case 25: question.Answer = `${minute} past ${maths.hourPast(hour)}`; break;
+            case 15: question.Answer = `quarter past ${maths.hourPast(hour)}`; break;
+            case 30: question.Answer = `half past ${maths.hourPast(hour)}`; break;
+            case 35: case 40: case 50: case 55: question.Answer = `${60 - minute} to ${maths.hourTo(hour + 1)}`; break;
+            case 45: question.Answer = `quarter to  ${hour + 1 == 12 ? 'midnight' : `${maths.hourTo(hour + 1)}`}`; break;
+          }
+
+          questions.push(question);
         }
-
-        // TODO: Set grade
-
-        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
       }
+
+      maths.Questions.push(...questions);
     }
   };
 
   this.initQuestionsTimeAnalogueToDescriptionPM = () => {
-    for (let hour = 12; hour < 24; hour++) {
-      for (let minute = 0; minute < 60; minute += 5) {
-        let question = new MathsQuestion(
-          4,
-          maths.TimeAnalogueOperation,
-          `Describe <img src="/images/clocks/${(hour - 12).toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> PM. `,
-          '',
-          { type: "text" });
+    let hours = [], minutes = [];
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: break;
+      case 3: break;
+      case 4: maths.fillArray(hours, 12, 23); maths.fillArray(minutes, 0, 55, 5); break;
+      case 5: maths.fillArray(hours, 12, 23); maths.fillArray(minutes, 0, 55, 5); break;
+      case 6: maths.fillArray(hours, 12, 23); maths.fillArray(minutes, 0, 55, 5); break;
+    }
 
-        switch (minute) {
-          case 0: question.Answer = maths.hourOn(hour, true); break;
-          case 5: case 10: case 20: case 25: question.Answer = `${minute} past ${maths.hourPast(hour)}`; break;
-          case 15: question.Answer = `quarter past ${maths.hourPast(hour)}`; break;
-          case 30: question.Answer = `half past ${maths.hourPast(hour)}`; break;
-          case 35: case 40: case 50: case 55: question.Answer = `${60 - minute} to ${maths.hourTo(hour + 1)}`; break;
-          case 45: question.Answer = `quarter to  ${hour + 1 == 12 ? 'midnight' : `${maths.hourTo(hour + 1)}`}`; break;
+    if (hours.length > 0 && minutes.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let hour = maths.randomElement(hours);
+        let minute = maths.randomElement(minutes);
+
+        let isValid = true;
+
+        if (isValid) {
+          let question = new MathsQuestion(
+            maths.Grade,
+            maths.TimeAnalogueOperation,
+            `Describe <img src="/images/clocks/${(hour - 12).toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> PM. `,
+            '',
+            { type: "text" });
+
+          switch (minute) {
+            case 0: question.Answer = maths.hourOn(hour, true); break;
+            case 5: case 10: case 20: case 25: question.Answer = `${minute} past ${maths.hourPast(hour)}`; break;
+            case 15: question.Answer = `quarter past ${maths.hourPast(hour)}`; break;
+            case 30: question.Answer = `half past ${maths.hourPast(hour)}`; break;
+            case 35: case 40: case 50: case 55: question.Answer = `${60 - minute} to ${maths.hourTo(hour + 1)}`; break;
+            case 45: question.Answer = `quarter to  ${hour + 1 == 12 ? 'midnight' : `${maths.hourTo(hour + 1)}`}`; break;
+          }
+
+          questions.push(question);
         }
-
-        // TODO: Set grade
-
-        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
       }
+
+      maths.Questions.push(...questions);
     }
   };
 
@@ -411,108 +505,184 @@ function Maths(grade) {
   };
 
   this.initQuestionsTimeDigitalToAnalogue = () => {
-    for (let hour = 0; hour < 12; hour++) {
-      for (let minute = 0; minute < 60; minute += 5) {
-        let optionCorrect = `${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}`;
-        let options = [optionCorrect];
-        while (options.length < 4) {
-          let changeHour = Math.random() < 0.5;
-          let option = `${(changeHour ? Math.floor(Math.random() * 12) : hour).toString().padStart(2, '0')}${(changeHour ? minute : (Math.floor(Math.random() * 12) * 5)).toString().padStart(2, '0')}`;
-          if (options.indexOf(options) === -1) { options.push(option); }
+    let hours = [], minutes = [];
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: break;
+      case 3: break;
+      case 4: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+      case 5: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+      case 6: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+    }
+
+    if (hours.length > 0 && minutes.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let hour = maths.randomElement(hours);
+        let minute = maths.randomElement(minutes);
+
+        let isValid = true;
+
+        if (isValid) {
+          let optionCorrect = `${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}`;
+          let options = [optionCorrect];
+          while (options.length < 4) {
+            let changeHour = Math.random() < 0.5;
+            let option = `${(changeHour ? Math.floor(Math.random() * 12) : hour).toString().padStart(2, '0')}${(changeHour ? minute : (Math.floor(Math.random() * 12) * 5)).toString().padStart(2, '0')}`;
+            if (options.indexOf(options) === -1) { options.push(option); }
+          }
+          options.sort(() => Math.random() < 0.5 ? -1 : 1);
+
+          let optionsTable = ['<table class="w-100"><thead><tr><td class="text-center">A</td><td style="text-align: center;">B</td><td style="text-align: center;">C</td><td style="text-align: center;">D</td></tr></thead>',
+            '<tbody><tr>',
+            options.map((option, i) => `<td><img src="/images/clocks/${option}.svg" class="w-100" /></td>`).join(''),
+            '</tr></tbody>',
+            '</table> '].join("");
+
+          let question = new MathsQuestion(
+            maths.Grade,
+            maths.TimeDigitalOperation,
+            `How do you show ${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} on a clock?${optionsTable}`,
+            String.fromCharCode(65 + options.indexOf(optionCorrect)),
+            { type: "text" });
+
+          questions.push(question);
         }
-        options.sort(() => Math.random() < 0.5 ? -1 : 1);
-
-        let optionsTable = ['<table class="w-100"><thead><tr><td class="text-center">A</td><td style="text-align: center;">B</td><td style="text-align: center;">C</td><td style="text-align: center;">D</td></tr></thead>',
-          '<tbody><tr>',
-          options.map((option, i) => `<td><img src="/images/clocks/${option}.svg" class="w-100" /></td>`).join(''),
-          '</tr></tbody>',
-          '</table> '].join("");
-
-        let question = new MathsQuestion(
-          4,
-          maths.TimeDigitalOperation,
-          `How do you show ${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} on a clock?${optionsTable}`,
-          String.fromCharCode(65 + options.indexOf(optionCorrect)),
-          { type: "text" });
-
-        // TODO: Set grade
-
-        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
       }
+
+      maths.Questions.push(...questions);
     }
   };
 
   this.initQuestionsTimeDigitalToDescription24H = () => {
-    for (let hour = 0; hour < 24; hour++) {
-      for (let minute = 0; minute < 60; minute += 5) {
-        let question = new MathsQuestion(
-          4,
-          maths.TimeDigitalOperation,
-          `Describe ${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}. `,
-          '',
-          { type: "text" });
+    let hours = [], minutes = [];
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: break;
+      case 3: break;
+      case 4: maths.fillArray(hours, 0, 23); maths.fillArray(minutes, 0, 55, 5); break;
+      case 5: maths.fillArray(hours, 0, 23); maths.fillArray(minutes, 0, 55, 5); break;
+      case 6: maths.fillArray(hours, 0, 23); maths.fillArray(minutes, 0, 55, 5); break;
+    }
 
-        switch (minute) {
-          case 0: question = maths.hourOn(hour, false); break;
-          case 5: case 10: case 20: case 25: question.Answer = `${minute} past ${maths.hourPast(hour)}`; break;
-          case 15: question.Answer = `quarter past ${maths.hourPast(hour)}`; break;
-          case 30: question.Answer = `half past ${maths.hourPast(hour)}`; break;
-          case 35: case 40: case 50: case 55: question.Answer = `${60 - minute} to ${maths.hourTo(hour + 1)}`; break;
-          case 45: question.Answer = `quarter to ${maths.hourTo(hour + 1)}`; break;
+    if (hours.length > 0 && minutes.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let hour = maths.randomElement(hours);
+        let minute = maths.randomElement(minutes);
+
+        let isValid = true;
+
+        if (isValid) {
+          let question = new MathsQuestion(
+            maths.Grade,
+            maths.TimeDigitalOperation,
+            `Describe ${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}. `,
+            '',
+            { type: "text" });
+
+          switch (minute) {
+            case 0: question = maths.hourOn(hour, false); break;
+            case 5: case 10: case 20: case 25: question.Answer = `${minute} past ${maths.hourPast(hour)}`; break;
+            case 15: question.Answer = `quarter past ${maths.hourPast(hour)}`; break;
+            case 30: question.Answer = `half past ${maths.hourPast(hour)}`; break;
+            case 35: case 40: case 50: case 55: question.Answer = `${60 - minute} to ${maths.hourTo(hour + 1)}`; break;
+            case 45: question.Answer = `quarter to ${maths.hourTo(hour + 1)}`; break;
+          }
+
+          questions.push(question);
         }
       }
+
+      maths.Questions.push(...questions);
     }
   };
 
   this.initQuestionsTimeDigitalToDescription12HAM = () => {
-    for (let hour = 0; hour < 12; hour++) {
-      for (let minute = 0; minute < 60; minute += 5) {
-        let question = new MathsQuestion(
-          4,
-          maths.TimeDigitalOperation,
-          `Describe ${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} AM. `,
-          '',
-          { type: "text" });
+    let hours = [], minutes = [];
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: break;
+      case 3: break;
+      case 4: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+      case 5: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+      case 6: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+    }
 
-        switch (minute) {
-          case 0: question.Answer = maths.hourOn(hour, false); break;
-          case 5: case 10: case 20: case 25: question.Answer = `${minute} past ${maths.hourPast(hour)}`; break;
-          case 15: question.Answer = `quarter past ${maths.hourPast(hour)}`; break;
-          case 30: question.Answer = `half past ${maths.hourPast(hour)}`; break;
-          case 35: case 40: case 50: case 55: question.Answer = `${60 - minute} to ${maths.hourTo(hour + 1)}`; break;
-          case 45: question.Answer = `quarter to ${maths.hourTo(hour + 1)}`; break;
+    if (hours.length > 0 && minutes.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let hour = maths.randomElement(hours);
+        let minute = maths.randomElement(minutes);
+
+        let isValid = true;
+
+        if (isValid) {
+          let question = new MathsQuestion(
+            maths.Grade,
+            maths.TimeDigitalOperation,
+            `Describe ${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} AM. `,
+            '',
+            { type: "text" });
+
+          switch (minute) {
+            case 0: question.Answer = maths.hourOn(hour, false); break;
+            case 5: case 10: case 20: case 25: question.Answer = `${minute} past ${maths.hourPast(hour)}`; break;
+            case 15: question.Answer = `quarter past ${maths.hourPast(hour)}`; break;
+            case 30: question.Answer = `half past ${maths.hourPast(hour)}`; break;
+            case 35: case 40: case 50: case 55: question.Answer = `${60 - minute} to ${maths.hourTo(hour + 1)}`; break;
+            case 45: question.Answer = `quarter to ${maths.hourTo(hour + 1)}`; break;
+          }
+
+          questions.push(question);
         }
-
-        // TODO: Set grade
-
-        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
       }
+
+      maths.Questions.push(...questions);
     }
   };
 
   this.initQuestionsTimeDigitalToDescription12HPM = () => {
-    for (let hour = 12; hour < 24; hour++) {
-      for (let minute = 0; minute < 60; minute += 5) {
-        let question = new MathsQuestion(
-          4,
-          maths.TimeDigitalOperation,
-          `Describe ${(hour === 12 ? hour : hour - 12).toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} PM. `,
-          '',
-          { type: "text" });
+    let hours = [], minutes = [];
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: break;
+      case 3: break;
+      case 4: maths.fillArray(hours, 12, 23); maths.fillArray(minutes, 0, 55, 5); break;
+      case 5: maths.fillArray(hours, 12, 23); maths.fillArray(minutes, 0, 55, 5); break;
+      case 6: maths.fillArray(hours, 12, 23); maths.fillArray(minutes, 0, 55, 5); break;
+    }
 
-        switch (minute) {
-          case 0: question.Answer = maths.hourOn(hour, false); break;
-          case 5: case 10: case 20: case 25: question.Answer = `${minute} past ${maths.hourPast(hour)}`; break;
-          case 15: question.Answer = `quarter past ${maths.hourPast(hour)}`; break;
-          case 30: question.Answer = `half past ${maths.hourPast(hour)}`; break;
-          case 35: case 40: case 50: case 55: question.Answer = `${60 - minute} to ${maths.hourTo(hour + 1)}`; break;
-          case 45: question.Answer = `quarter to ${maths.hourTo(hour + 1)}`; break;
+    if (hours.length > 0 && minutes.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let hour = maths.randomElement(hours);
+        let minute = maths.randomElement(minutes);
+
+        let isValid = true;
+
+        if (isValid) {
+          let question = new MathsQuestion(
+            maths.Grade,
+            maths.TimeDigitalOperation,
+            `Describe ${(hour === 12 ? hour : hour - 12).toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} PM. `,
+            '',
+            { type: "text" });
+
+          switch (minute) {
+            case 0: question.Answer = maths.hourOn(hour, false); break;
+            case 5: case 10: case 20: case 25: question.Answer = `${minute} past ${maths.hourPast(hour)}`; break;
+            case 15: question.Answer = `quarter past ${maths.hourPast(hour)}`; break;
+            case 30: question.Answer = `half past ${maths.hourPast(hour)}`; break;
+            case 35: case 40: case 50: case 55: question.Answer = `${60 - minute} to ${maths.hourTo(hour + 1)}`; break;
+            case 45: question.Answer = `quarter to ${maths.hourTo(hour + 1)}`; break;
+          }
+
+          questions.push(question);
         }
-
-        // TODO: Set grade
-
-        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
       }
+
+      maths.Questions.push(...questions);
     }
   };
 
@@ -811,14 +981,15 @@ function Maths(grade) {
 
   this.randomElement = (a) => a[Math.floor(Math.random() * a.length)];
 
-  this.fillArray = (a, min, max, randomCount) => {
+  this.fillArray = (a, min, max, step, randomCount) => {
+    if (step === undefined) { step = 1; }
     if (randomCount) {
       while (a.length < randomCount) {
         let n = maths.randomInteger(min, max);
         if (a.indexOf(n) === -1) { a.push(n); }
       }
     } else {
-      for (let i = min; i <= max; i++) {
+      for (let i = min; i <= max; i += step) {
         a.push(i);
       }
     }
