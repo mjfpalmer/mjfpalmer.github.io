@@ -711,219 +711,332 @@ function Maths(grade) {
   };
 
   this.initQuestionsLengthConversion = () => {
-    let question;
+    let modes = ["cm to mm", "m to cm", "m to mm", "km to m", "mm to cm", "mm to m", "cm to m", "m to km", "cm, mm to mm"];
 
-    for (let cm = 0; cm <= 10; cm++) {
-      // cm to mm
-      question = new MathsQuestion(4, maths.LengthConversionOperation, `${cm}cm  =?mm `, cm * 10, { type: "number", min: 0, max: 10000, step: 1 });
-      if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
-    }
+    let questions = [];
+    while (questions.length < maths.QuestionsPerOperation) {
+      let as = [], bs = [];
 
-    for (let m = 0; m <= 10; m++) {
-      // m to cm
-      question = new MathsQuestion(4, maths.LengthConversionOperation, `${m}m = ?cm `, m * 100, { type: "number", min: 0, max: 10000, step: 1 });
-      if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+      switch (maths.Grade) {
+        case 1: break;
+        case 2: break;
+        case 3: break;
+        case 4: mode = maths.randomInteger(0, modes.length - 1); break;
+        case 5: mode = maths.randomInteger(0, modes.length - 1); break;
+        case 6: mode = maths.randomInteger(0, modes.length - 1); break;
+      }
 
-      // m to mm
-      question = new MathsQuestion(4, maths.LengthConversionOperation, `${m}m = ?mm `, m * 1000, { type: "number", min: 0, max: 10000, step: 1 });
-      if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
-    }
+      switch (maths.Grade) {
+        case 1:
+        case 2:
+        case 3: break;
+        case 4:
+        case 5:
+        case 6:
+          switch (mode) {
+            case 0: maths.fillArray(as, 0, 10); break;
+            case 1: maths.fillArray(as, 0, 10); break;
+            case 2: maths.fillArray(as, 0, 10); break;
+            case 3: maths.fillArray(as, 0, 10); break;
+            case 4: maths.fillArray(as, 0, 100, 10); break;
+            case 5: maths.fillArray(as, 0, 10000, 1000); break;
+            case 6: maths.fillArray(as, 0, 1000, 100); break;
+            case 7: maths.fillArray(as, 0, 10000); break;
+            case 8: maths.fillArray(as, 0, 10); maths.fillArray(bs, 0, 10); break;
+          }
+          break;
+      }
 
-    for (let km = 0; km <= 10; km++) {
-      // km to m
-      question = new MathsQuestion(4, maths.LengthConversionOperation, `${km}km = ?m `, km * 1000, { type: "number", min: 0, max: 10000, step: 1 });
-      if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
-    }
+      let a = maths.randomElement(as);
+      let b = bs.length + 0 ? maths.randomElement(bs) : null;
 
-    for (let mm = 0; mm <= 100; mm += 10) {
-      // mm to cm
-      question = new MathsQuestion(4, maths.LengthConversionOperation, `${mm}mm = ?cm `, mm / 10, { type: "number", min: 0, max: 10000, step: 1 });
-      if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
-    }
+      let answer, questionText;
+      switch (mode) {
+        case 0: answer = a * 10; questionText = `${a}cm = ?mm `; break;
+        case 1: answer = a * 100; questionText = `${a}m = ?cm `; break;
+        case 2: answer = a * 1000; questionText = `${a}m = ?mm `; break;
+        case 3: answer = a * 1000; questionText = `${a}km = ?m `; break;
+        case 4: answer = a / 10; questionText = `${a}mm = ?cm `; break;
+        case 5: answer = a / 1000; questionText = `${a}mm = ?m `; break;
+        case 6: answer = a / 100; questionText = `${a}cm = ?m `; break;
+        case 7: answer = a / 1000; questionText = `${a}m = ?km `; break;
+        case 8: answer = a * 10 + b; questionText = `${a}cm ${b}mm = ?mm `; break;
+      }
 
-    for (let mm = 0; mm <= 10000; mm += 1000) {
-      // mm to m
-      question = new MathsQuestion(4, maths.LengthConversionOperation, `${mm}mm = ?m `, mm / 1000, { type: "number", min: 0, max: 10000, step: 1 });
-      if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
-    }
+      if (as.length) {
+        let isValid = true;
 
-    for (let cm = 0; cm <= 1000; cm += 100) {
-      // cm to m
-      question = new MathsQuestion(4, maths.LengthConversionOperation, `${cm}cm = ?m `, cm / 100, { type: "number", min: 0, max: 10000, step: 1 });
-      if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
-    }
+        if (isValid) {
+          let question = new MathsQuestion(
+            maths.Grade,
+            maths.LengthConversionOperation,
+            questionText,
+            answer,
+            { type: "number" });
 
-    for (let m = 0; m <= 10000; m += 1000) {
-      // m to km
-      question = new MathsQuestion(4, maths.LengthConversionOperation, `${m}m = ?km `, m / 1000, { type: "number", min: 0, max: 10000, step: 1 });
-      if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
-    }
-
-    for (let cm = 0; cm < 10; cm++) {
-      for (let mm = 0; mm < 10; mm++) {
-        // cm, mm to mm
-        question = new MathsQuestion(4, maths.LengthConversionOperation, `${cm}cm ${mm}mm = ?mm `, cm * 10 + mm, { type: "number", min: 0, max: 10000, step: 1 });
-        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+          questions.push(question);
+        }
       }
     }
+
+    maths.Questions.push(...questions);
   };
 
   this.initQuestionsLengthAddition = () => {
-    let question;
+    let cms = [], mm1s = [], mm2s = [];
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: break;
+      case 3: break;
+      case 4: maths.fillArray(cms, 0, 10); maths.fillArray(mm1s, 0, 10); maths.fillArray(mm2s, 0, 10); break;
+      case 5: maths.fillArray(cms, 0, 10); maths.fillArray(mm1s, 0, 10); maths.fillArray(mm2s, 0, 10); break;
+      case 6: maths.fillArray(cms, 0, 10); maths.fillArray(mm1s, 0, 10); maths.fillArray(mm2s, 0, 10); break;
+    }
 
-    for (let cm = 0; cm < 10; cm++) {
-      for (let mm1 = 0; mm1 < 10; mm1++) {
-        for (let mm2 = 0; mm2 < 10; mm2++) {
-          // cm + mm + mm to mm
-          let sum = [`${cm}cm`, `${mm1}mm`, `${mm2}mm`];
-          sum.sort(() => Math.random() < 0.5 ? -1 : 1);
+    if (cms.length > 0 && mm1s.length > 0 && mm2s.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let cm = maths.randomElement(cms);
+        let mm1 = maths.randomElement(mm1s);
+        let mm2 = maths.randomElement(mm2s);
 
-          question = new MathsQuestion(4, maths.LengthAdditionOperation, `${sum.join(' + ')} = ?mm `, cm * 10 + mm1 + mm2, { type: "number", min: 0, max: 10000, step: 1 });
-          if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+        let sum = [`${cm}cm`, `${mm1}mm`, `${mm2}mm`];
+        sum.sort(() => Math.random() < 0.5 ? -1 : 1);
+
+        let answer = cm * 10 + mm1 + mm2;
+
+        let isValid = true;
+
+        if (isValid) {
+          let question = new MathsQuestion(
+            maths.Grade,
+            maths.LengthAdditionOperation,
+            `${sum.join(' + ')} = ?mm `,
+            answer,
+            { type: "number" });
+
+          questions.push(question);
         }
       }
+
+      maths.Questions.push(...questions);
     }
   };
 
   this.initQuestionsAreaUnits = () => {
-    let question;
+    let heights = [], widths = [];
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: break;
+      case 3: break;
+      case 4: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
+      case 5: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
+      case 6: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
+    }
 
-    for (let height = 1; height <= 10; height++) {
-      for (let width = 1; width <= 10; width++) {
-        question = new MathsQuestion(
-          4,
-          maths.AreaUnitsOperation,
-          `What is the area of a ${height}cm x ${width}cm block in cm<sup>2</sup>? `,
-          height * width,
-          { type: "number", min: 0, max: 1000, step: 1 }
-        );
+    if (heights.length > 0 && widths.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let height = maths.randomElement(heights);
+        let width = maths.randomElement(widths);
 
-        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+        let answer = height * width;
 
-        let block = [
-          '<table>',
-          '  <tbody>',
-          `    <tr><td class="text-center">${width}cm</td></tr>`,
-          '    <tr>',
-          `      <td class="border" style="height: ${30 * height}px; width: ${30 * width}px"></td>`,
-          `      <td class="align-middle">&nbsp;${height}cm</td>`,
-          '    </tr>',
-          '  </tbody>',
-          '</table>'];
+        let isValid = true;
 
-        question = new MathsQuestion(
-          4,
-          maths.AreaUnitsOperation,
-          `What is the area in cm<sup>2</sup>?${block.join('')}<br/>`,
-          height * width,
-          { type: "number", min: 0, max: 1000, step: 1 }
-        );
+        if (isValid) {
+          let question = new MathsQuestion(
+            maths.Grade,
+            maths.AreaUnitsOperation,
+            `What is the area of a ${height}cm x ${width}cm block in cm<sup>2</sup>? `,
+            answer,
+            { type: "number" });
 
-        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+          questions.push(question);
+
+          let block = [
+            '<table>',
+            '  <tbody>',
+            `    <tr><td class="text-center">${width}cm</td></tr>`,
+            '    <tr>',
+            `      <td class="border" style="height: ${30 * height}px; width: ${30 * width}px"></td>`,
+            `      <td class="align-middle">&nbsp;${height}cm</td>`,
+            '    </tr>',
+            '  </tbody>',
+            '</table>'];
+
+          question = new MathsQuestion(
+            maths.Grade,
+            maths.AreaUnitsOperation,
+            `What is the area in cm<sup>2</sup>?${block.join('')}<br/>`,
+            answer,
+            { type: "number" }
+          );
+
+          questions.push(question);
+        }
       }
+
+      maths.Questions.push(...questions);
     }
   };
 
   this.initQuestionsArea2D = () => {
-    let question;
+    let heights = [], widths = [];
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: break;
+      case 3: break;
+      case 4: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
+      case 5: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
+      case 6: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
+    }
 
-    for (let height = 1; height <= 10; height++) {
-      for (let width = 1; width <= 10; width++) {
-        let block = [];
-        block.push('<table>');
-        block.push('  <tbody>');
-        for (let h = 0; h < height; h++) {
-          block.push('    <tr>');
-          for (let w = 0; w < width; w++) {
-            block.push('    <td class="border" style="height: 30px; width: 30px">');
-            block.push('    </td>');
+    if (heights.length > 0 && widths.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let height = maths.randomElement(heights);
+        let width = maths.randomElement(widths);
+
+        let answer = height * width;
+
+        let isValid = true;
+
+        if (isValid) {
+          let block = [];
+          block.push('<table>');
+          block.push('  <tbody>');
+          for (let h = 0; h < height; h++) {
+            block.push('    <tr>');
+            for (let w = 0; w < width; w++) {
+              block.push('    <td class="border" style="height: 30px; width: 30px">');
+              block.push('    </td>');
+            }
+            block.push('    </tr>');
           }
-          block.push('    </tr>');
+          block.push('  </tbody>');
+          block.push('</table>');
+
+          let question = new MathsQuestion(
+            maths.Grade,
+            maths.Area2DOperation,
+            `What is the area in sq<sup>2</sup>?${block.join('')}<br/>`,
+            answer,
+            { type: "number" });
+
+          questions.push(question);
         }
-        block.push('  </tbody>');
-        block.push('</table>');
-
-        question = new MathsQuestion(
-          4,
-          maths.Area2DOperation,
-          `What is the area in sq<sup>2</sup>?${block.join('')}<br/>`,
-          height * width,
-          { type: "number", min: 0, max: 1000, step: 1 }
-        );
-
-        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
       }
+
+      maths.Questions.push(...questions);
     }
   };
 
   this.initQuestionsPerimeterUnits = () => {
-    let question;
+    let heights = [], widths = [];
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: break;
+      case 3: break;
+      case 4: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
+      case 5: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
+      case 6: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
+    }
 
-    for (let height = 1; height <= 10; height++) {
-      for (let width = 1; width <= 10; width++) {
-        question = new MathsQuestion(
-          4,
-          maths.PerimeterUnitsOperation,
-          `What is the perimeter of a ${height}cm x ${width}cm block in cm? `,
-          (height + width) * 2,
-          { type: "number", min: 0, max: 1000, step: 1 }
-        );
+    if (heights.length > 0 && widths.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let height = maths.randomElement(heights);
+        let width = maths.randomElement(widths);
 
-        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+        let answer = (height + width) * 2;
 
-        let block = [
-          '<table>',
-          '  <tbody>',
-          `    <tr><td class="text-center">${width}cm</td></tr>`,
-          '    <tr>',
-          `      <td class="border" style="height: ${30 * height}px; width: ${30 * width}px"></td>`,
-          `      <td class="align-middle">&nbsp;${height}cm</td>`,
-          '    </tr>',
-          '  </tbody>',
-          '</table>'];
+        let isValid = true;
 
-        question = new MathsQuestion(
-          4,
-          maths.PerimeterUnitsOperation,
-          `What is the perimeter in cm?${block.join('')}<br/>`,
-          (height + width) * 2,
-          { type: "number", min: 0, max: 1000, step: 1 }
-        );
+        if (isValid) {
+          let question = new MathsQuestion(
+            maths.Grade,
+            maths.PerimeterUnitsOperation,
+            `What is the perimeter of a ${height}cm x ${width}cm block in cm? `,
+            answer,
+            { type: "number" });
 
-        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+          questions.push(question);
+
+          let block = [
+            '<table>',
+            '  <tbody>',
+            `    <tr><td class="text-center">${width}cm</td></tr>`,
+            '    <tr>',
+            `      <td class="border" style="height: ${30 * height}px; width: ${30 * width}px"></td>`,
+            `      <td class="align-middle">&nbsp;${height}cm</td>`,
+            '    </tr>',
+            '  </tbody>',
+            '</table>'];
+
+          question = new MathsQuestion(
+            maths.Grade,
+            maths.PerimeterUnitsOperation,
+            `What is the perimeter in cm?${block.join('')}<br/>`,
+            answer,
+            { type: "number" });
+
+          questions.push(question);
+        }
       }
+
+      maths.Questions.push(...questions);
     }
   };
 
   this.initQuestionsPerimeter2D = () => {
-    let question;
+    let heights = [], widths = [];
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: break;
+      case 3: break;
+      case 4: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
+      case 5: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
+      case 6: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
+    }
 
-    for (let height = 1; height <= 10; height++) {
-      for (let width = 1; width <= 10; width++) {
-        let block = [];
-        block.push('<table>');
-        block.push('  <tbody>');
-        for (let h = 0; h < height; h++) {
-          block.push('    <tr>');
-          for (let w = 0; w < width; w++) {
-            block.push('    <td class="border" style="height: 30px; width: 30px">');
-            block.push('    </td>');
+    if (heights.length > 0 && widths.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let height = maths.randomElement(heights);
+        let width = maths.randomElement(widths);
+
+        let answer = (height + width) * 2;
+
+        let isValid = true;
+
+        if (isValid) {
+          let block = [];
+          block.push('<table>');
+          block.push('  <tbody>');
+          for (let h = 0; h < height; h++) {
+            block.push('    <tr>');
+            for (let w = 0; w < width; w++) {
+              block.push('    <td class="border" style="height: 30px; width: 30px">');
+              block.push('    </td>');
+            }
+            block.push('    </tr>');
           }
-          block.push('    </tr>');
+          block.push('  </tbody>');
+          block.push('</table>');
+
+          let question = new MathsQuestion(
+            maths.Grade,
+            maths.Perimeter2DOperation,
+            `What is the perimeter?${block.join('')}<br/>`,
+            answer,
+            { type: "number" });
+
+          questions.push(question);
         }
-        block.push('  </tbody>');
-        block.push('</table>');
-
-        question = new MathsQuestion(
-          4,
-          maths.Perimeter2DOperation,
-          `What is the perimeter?${block.join('')}<br/>`,
-          (height + width) * 2,
-          { type: "number", min: 0, max: 1000, step: 1 }
-        );
-
-        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
       }
+
+      maths.Questions.push(...questions);
     }
   };
 
@@ -949,7 +1062,7 @@ function Maths(grade) {
         let d = maths.randomElement(values);
         let form = maths.randomInteger(0, forms.length - 1);
 
-        let questionText, answer;
+        let answer, questionText;
         switch (form) {
           case 0: answer = a * b + c * d; questionText = `${a} ${maths.MultiplicationOperation.Symbol} ${b} ${maths.AdditionOperation.Symbol} ${c} ${maths.MultiplicationOperation.Symbol} ${d} = `; break;
           case 1: answer = a * b - c * d; questionText = `${a} ${maths.MultiplicationOperation.Symbol} ${b} ${maths.SubtractionOperation.Symbol} ${c} ${maths.MultiplicationOperation.Symbol} ${d} = `; break;
@@ -983,6 +1096,7 @@ function Maths(grade) {
 
   this.fillArray = (a, min, max, step, randomCount) => {
     if (step === undefined) { step = 1; }
+
     if (randomCount) {
       while (a.length < randomCount) {
         let n = maths.randomInteger(min, max);
