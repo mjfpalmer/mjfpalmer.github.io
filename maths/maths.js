@@ -16,6 +16,7 @@ function Maths(grade) {
   this.Area2DOperation = new MathsOperation(4, '2D Area');
   this.PerimeterUnitsOperation = new MathsOperation(4, 'Unit Perimeter');
   this.Perimeter2DOperation = new MathsOperation(4, '2D Perimeter');
+  this.BODMASOperation = new MathsOperation(6, 'BODMAS');
 
   this.MathsOperations = [
     maths.AdditionOperation,
@@ -30,7 +31,8 @@ function Maths(grade) {
     maths.AreaUnitsOperation,
     maths.Area2DOperation,
     maths.PerimeterUnitsOperation,
-    maths.Perimeter2DOperation
+    maths.Perimeter2DOperation,
+    maths.BODMASOperation,
   ];
 
   this.Grade = grade;
@@ -75,167 +77,218 @@ function Maths(grade) {
     maths.initQuestionsArea2D();
     maths.initQuestionsPerimeterUnits();
     maths.initQuestionsPerimeter2D();
+    maths.initQuestionsBODMAS();
 
     console.debug(maths.Questions);
   };
 
   this.InitQuestionsAddition = () => {
     // https://www.splashlearn.com/math-vocabulary/addition/addition
-    let minAddend, maxAddend, minAnswer, maxAnswer;
+
+    let addends = [];
+    let maxAnswer = null;
 
     switch (maths.Grade) {
-      case 1: minAddend = 0; maxAddend = 10; minAnswer = 0; maxAnswer = 10; break;
-      case 2: minAddend = 0; maxAddend = 20; minAnswer = 0; maxAnswer = 20; break;
-      case 3: minAddend = 0; maxAddend = 40; minAnswer = 0; maxAnswer = 40; break;
-      case 4: minAddend = 0; maxAddend = 50; minAnswer = 0; maxAnswer = 50; break;
-      case 5: minAddend = 0; maxAddend = 1000; minAnswer = 0; maxAnswer = 1000; break;
-      case 6: minAddend = 10000; maxAddend = 1000000; minAnswer = 0; maxAnswer = 2000000; break;
+      case 1: maths.fillArray(addends, 0, 10); maxAnswer = 10; break;
+      case 2: maths.fillArray(addends, 0, 20); maxAnswer = 20; break;
+      case 3: maths.fillArray(addends, 0, 40); maxAnswer = 40; break;
+      case 4: maths.fillArray(addends, 0, 50); maxAnswer = 50; break;
+      case 5: maths.fillArray(addends, 0, 1000); break;
+      case 6: maths.fillArray(addends, 10000, 1000000, 1000); break;
     }
 
-    let questions = [];
-    while (questions.length < maths.QuestionsPerOperation) {
-      let addend1 = Math.floor(Math.random() * (maxAddend - minAddend + 1)) + minAddend;
-      let addend2 = Math.floor(Math.random() * (maxAddend - minAddend + 1)) + minAddend;
-      let answer = addend1 + addend2;
+    if (addends.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let addend1 = maths.randomElement(addends);
+        let addend2 = maths.randomElement(addends);
+        let answer = addend1 + addend2;
 
-      if (answer >= minAnswer && answer <= maxAnswer) {
-        let question = new MathsQuestion(
-          maths.Grade,
-          maths.AdditionOperation,
-          `${addend1} ${maths.AdditionOperation.Symbol} ${addend2} = `,
-          answer,
-          { type: "number", min: minAnswer * 2, max: maxAnswer * 2, step: 1 });
+        let isValid = (maxAnswer === null || answer <= maxAnswer);
 
-        questions.push(question);
+        if (isValid) {
+          let question = new MathsQuestion(
+            maths.Grade,
+            maths.AdditionOperation,
+            `${addend1} ${maths.AdditionOperation.Symbol} ${addend2} = `,
+            answer,
+            { type: "number" });
+
+          questions.push(question);
+        }
       }
-    }
 
-    maths.Questions.push(...questions);
+      maths.Questions.push(...questions);
+    }
   };
 
   this.InitQuestionsSubtraction = () => {
     // https://www.splashlearn.com/math-vocabulary/addition/addition
-    let minMinuend, maxMinuend, minSubtrahend, maxSubtrahend, minAnswer, maxAnswer;
+
+    let minuends = [], subtrahends = [];
+    let minAnswer = null;
 
     switch (maths.Grade) {
-      case 1: minMinuend = 0; maxMinuend = 10; minSubtrahend = 0; maxSubtrahend = 10; minAnswer = 0; maxAnswer = 10; break;
-      case 2: minMinuend = 0; maxMinuend = 20; minSubtrahend = 0; maxSubtrahend = 20; minAnswer = 0; maxAnswer = 20; break;
-      case 3: minMinuend = 0; maxMinuend = 40; minSubtrahend = 0; maxSubtrahend = 40; minAnswer = 0; maxAnswer = 40; break;
-      case 4: minMinuend = 0; maxMinuend = 50; minSubtrahend = 0; maxSubtrahend = 50; minAnswer = 0; maxAnswer = 50; break;
-      case 5: minMinuend = 0; maxMinuend = 1000; minSubtrahend = 0; maxSubtrahend = 1000; minAnswer = 0; maxAnswer = 1000; break;
-      case 6: minMinuend = 10000; maxMinuend = 1000000; minSubtrahend = 0; maxSubtrahend = 1000000; minAnswer = 0; maxAnswer = 1000000; break;
+      case 1: maths.fillArray(minuends, 0, 10); maths.fillArray(subtrahends, 0, 10); minAnswer = 0; break;
+      case 2: maths.fillArray(minuends, 0, 20); maths.fillArray(subtrahends, 0, 20); minAnswer = 0; break;
+      case 3: maths.fillArray(minuends, 0, 40); maths.fillArray(subtrahends, 0, 40); minAnswer = 0; break;
+      case 4: maths.fillArray(minuends, 0, 50); maths.fillArray(subtrahends, 0, 50); minAnswer = 0; break;
+      case 5: maths.fillArray(minuends, 0, 1000); maths.fillArray(subtrahends, 0, 1000); minAnswer = 0; break;
+      case 6: maths.fillArray(minuends, 10000, 1000000, 1000); maths.fillArray(subtrahends, 10000, 1000000, 1000); minAnswer = 0; break;
     }
 
-    let questions = [];
-    while (questions.length < maths.QuestionsPerOperation) {
-      let minuend = Math.floor(Math.random() * (maxMinuend - minMinuend + 1)) + minMinuend;
-      let subtrahend = Math.floor(Math.random() * (maxSubtrahend - minSubtrahend + 1)) + minSubtrahend;
-      let answer = minuend - subtrahend;
+    if (minuends.length > 0 && subtrahends.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let minuend = maths.randomElement(minuends);
+        let subtrahend = maths.randomElement(subtrahends);
+        let answer = minuend - subtrahend;
 
-      if (answer >= minAnswer && answer <= maxAnswer) {
-        let question = new MathsQuestion(
-          maths.Grade,
-          maths.SubtractionOperation,
-          `${minuend} ${maths.SubtractionOperation.Symbol} ${subtrahend} = `,
-          answer,
-          { type: "number", min: minAnswer * 2, max: maxAnswer * 2, step: 1 });
+        let isValid = (minAnswer === null || answer >= minAnswer);
 
-        questions.push(question);
+        if (isValid) {
+          let question = new MathsQuestion(
+            maths.Grade,
+            maths.SubtractionOperation,
+            `${minuend} ${maths.SubtractionOperation.Symbol} ${subtrahend} = `,
+            answer,
+            { type: "number" });
+
+          questions.push(question);
+        }
       }
-    }
 
-    maths.Questions.push(...questions);
+      maths.Questions.push(...questions);
+    }
   };
 
   this.initQuestionsMultiplication = () => {
-    let question;
-    let min = -12, max = 12;
-
     // https://www.splashlearn.com/math-vocabulary/multiplication/multiplication
-    for (let multiplicand of new Array(Math.abs(min) + max + 1).fill(0).map((n, i) => i + min)) {
-      for (let multiplier of new Array(Math.abs(min) + max + 1).fill(0).map((n, i) => i + min)) {
-        question = new MathsQuestion(
-          0,
-          maths.MultiplicationOperation,
-          `${multiplicand} ${maths.MultiplicationOperation.Symbol} ${multiplier} = `,
-          multiplicand * multiplier,
-          { type: "number", min: max * -3, max: max * 3, step: "" });
 
-        switch (true) {
-          case multiplicand < 0:
-          case multiplier < 0:
-            question.Grade = 5;
-            break;
-          case [0, 1, 2, 5, 10].indexOf(multiplicand) > -1 || [0, 1, 2, 5, 10].indexOf(multiplier) > -1: question.Grade = 2; break;
-          case [3, 4, 8].indexOf(multiplicand) > -1 && [3, 4, 8].indexOf(multiplier) > -1: question.Grade = 3; break;
-          default: question.Grade = 4; break;
+    let multiplicands = [], multipliers = [];
+
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: multiplicands = [0, 1, 2, 5, 10]; multipliers = [0, 1, 2, 5, 10]; break;
+      case 3: multiplicands = [0, 1, 2, 3, 4, 5, 8, 10]; multipliers = [0, 1, 2, 3, 4, 5, 8, 10]; break;
+      case 4: maths.fillArray(multiplicands, 0, 12); maths.fillArray(multipliers, 0, 12); break;
+      case 5: maths.fillArray(multiplicands, -12, 12); maths.fillArray(multipliers, -12, 12); break;
+      case 6: maths.fillArray(multiplicands, -100, 100); maths.fillArray(multipliers, -100, 100); break;
+    }
+
+    if (multiplicands.length > 0 && multipliers.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let multiplicand = maths.randomElement(multiplicands);
+        let multiplier = maths.randomElement(multipliers);
+        let answer = multiplicand * multiplier;
+
+        let isValid = true;
+
+        if (isValid) {
+          let question = new MathsQuestion(
+            maths.Grade,
+            maths.MultiplicationOperation,
+            `${multiplicand} ${maths.MultiplicationOperation.Symbol} ${multiplier} = `,
+            answer,
+            { type: "number" });
+
+          questions.push(question);
         }
-
-        if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
       }
+
+      maths.Questions.push(...questions);
     }
   };
 
   this.InitQuestionsDivision = () => {
-    let question;
-    let min = -12, max = 12;
-
     // https://www.splashlearn.com/math-vocabulary/division/division
-    for (let dividend of new Array(Math.abs(min) + max + 1).fill(0).map((n, i) => i + min)) {
-      for (let divisor of new Array(Math.abs(min) + max + 1).fill(0).map((n, i) => i + min)) {
-        if (divisor !== 0) {
-          let answer = dividend / divisor;
-          if (!Number.isInteger(answer)) { answer = answer.toFixed(2); }
 
-          question = new MathsQuestion(
-            0,
+    let dividends = [], divisors = [];
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: break;
+      case 3: dividends = [0, 1, 2, 3, 4, 5, 8, 10]; divisors = [1, 2, 3, 4, 5, 8, 10]; break;
+      case 4: maths.fillArray(dividends, 0, 12); maths.fillArray(divisors, 1, 12); break;
+      case 5: maths.fillArray(dividends, -12, 12); maths.fillArray(divisors, -12, 12); break;
+      case 6: maths.fillArray(dividends, -12, 12); maths.fillArray(divisors, -12, 12); break;
+    }
+
+    if (dividends.length > 0 && divisors.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let dividend = maths.randomElement(dividends);
+        let divisor = maths.randomElement(divisors);
+        let answer = dividend / divisor;
+        let fraction = answer % 1;
+
+        let isValid = true;
+
+        switch (maths.Grade) {
+          case 3: isValid = dividend % divisor === 0; break;
+          case 4: isValid = dividend % divisor === 0; break;
+          case 5: isValid = dividend % divisor === 0; break;
+          case 6: isValid = [0.25, 0.5].indexOf(fraction) > -1; break;
+        }
+
+        if (isValid) {
+          let question = new MathsQuestion(
+            maths.Grade,
             maths.DivisionOperation,
             `${dividend} ${maths.DivisionOperation.Symbol} ${divisor} = `,
             answer,
-            { type: "number", min: max * -3, max: max * 3, step: "" });
+            { type: "number" });
 
-          switch (true) {
-            case dividend % divisor !== 0 && (dividend < 0 || divisor < 0): question.Grade = 6; break;
-            case dividend < 0:
-            case divisor < 0:
-              question.Grade = 5;
-              break;
-            case dividend % divisor !== 0: question.Grade = 5; break;
-            case [0, 1, 2, 3, 4, 5, 8, 10].indexOf(dividend) > -1 || [1, 2, 3, 4, 5, 8, 10].indexOf(divisor) > -1: question.Grade = 3; break;
-            default: question.Grade = 4; break;
-          }
-
-          if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+          questions.push(question);
         }
       }
+
+      maths.Questions.push(...questions);
     }
   };
 
   this.initQuestionsFactorOf = () => {
-    let question;
-    let maxDenominator = 12, minValue = -100, maxValue = 100;
+    // https://www.splashlearn.com/math-vocabulary/division/division
 
-    // Factor Of
-    for (let denominator of new Array(maxDenominator - 1).fill(0).map((n, i) => i + 2)) {
-      for (let numerator of new Array(denominator).fill(0).map((n, i) => i + 1)) {
-        for (let value of new Array(Math.abs(-minValue) + maxValue + 1).fill(0).map((n, i) => i + minValue)) {
-          question = new MathsQuestion(
-            0,
+    let numerators = [], denominators = [], values = [];
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: break;
+      case 3: break;
+      case 4: maths.fillArray(numerators, 1, 12); maths.fillArray(denominators, 2, 12); maths.fillArray(values, 0, 100); break;
+      case 5: maths.fillArray(numerators, 1, 12); maths.fillArray(denominators, 2, 12); maths.fillArray(values, -100, 100); break;
+      case 6: maths.fillArray(numerators, 1, 12); maths.fillArray(denominators, 2, 12); maths.fillArray(values, -100, 100); break;
+    }
+
+    if (numerators.length > 0 && denominators.length > 0 && values.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let denominator = maths.randomElement(denominators);
+        let numerator = maths.randomElement(numerators.filter(n => n < denominator));
+        let value = maths.randomElement(values);
+        let answer = value / denominator * numerator;
+
+        let isValid = true;
+
+        switch (maths.Grade) {
+          case 4: isValid = value % denominator === 0; break;
+          case 5: isValid = value % denominator === 0; break;
+          case 6: isValid = value % denominator === 0; break;
+        }
+
+        if (isValid) {
+          let question = new MathsQuestion(
+            maths.Grade,
             maths.FactorOfOperation,
             `${numerator}${maths.FactorOfOperation.Symbol}${denominator} of ${value} = `,
-            value / denominator * numerator,
-            { type: "number", min: maxValue * -3, max: maxValue * 3, step: "" });
+            answer,
+            { type: "number" });
 
-          switch (true) {
-            case value % denominator !== 0: question.Grade = Number.MAX_SAFE_INTEGER; break;
-            case !Number.isInteger(question.Answer): question.Grade = Number.MAX_SAFE_INTEGER; break;
-            case value < 0: question.Grade = 5; break;
-            default: question.Grade = 4; break;
-          }
-
-          if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+          questions.push(question);
         }
       }
+
+      maths.Questions.push(...questions);
     }
   };
 
@@ -700,6 +753,73 @@ function Maths(grade) {
         );
 
         if (maths.Grade >= question.Grade) { maths.Questions.push(question); }
+      }
+    }
+  };
+
+  this.initQuestionsBODMAS = () => {
+    // https://www.splashlearn.com/math-vocabulary/division/division
+
+    let values = [], forms = [];
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: break;
+      case 3: break;
+      case 4: break;
+      case 5: break;
+      case 6: maths.fillArray(values, 0, 12); forms = ['a * b + c * d', 'a * b - c * d', 'a * b + c', 'a * b - c', 'a + b * c', , 'a - b * c']; break;
+    }
+
+    if (values.length > 0 && forms.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let a = maths.randomElement(values);
+        let b = maths.randomElement(values);
+        let c = maths.randomElement(values);
+        let d = maths.randomElement(values);
+        let form = maths.randomInteger(0, forms.length - 1);
+
+        let questionText, answer;
+        switch (form) {
+          case 0: answer = a * b + c * d; questionText = `${a} ${maths.MultiplicationOperation.Symbol} ${b} ${maths.AdditionOperation.Symbol} ${c} ${maths.MultiplicationOperation.Symbol} ${d} = `; break;
+          case 1: answer = a * b - c * d; questionText = `${a} ${maths.MultiplicationOperation.Symbol} ${b} ${maths.SubtractionOperation.Symbol} ${c} ${maths.MultiplicationOperation.Symbol} ${d} = `; break;
+          case 2: answer = a * b + c; questionText = `${a} ${maths.MultiplicationOperation.Symbol} ${b} ${maths.AdditionOperation.Symbol} ${c} = `; break;
+          case 3: answer = a * b - c; questionText = `${a} ${maths.MultiplicationOperation.Symbol} ${b} ${maths.SubtractionOperation.Symbol} ${c} = `; break;
+          case 4: answer = a + b * c; questionText = `${a} ${maths.AdditionOperation.Symbol} ${b} ${maths.MultiplicationOperation.Symbol} ${c} = `; break;
+          case 5: answer = a - b * c; questionText = `${a} ${maths.SubtractionOperation.Symbol} ${b} ${maths.MultiplicationOperation.Symbol} ${c} = `; break;
+        }
+
+        let isValid = true;
+
+        if (isValid) {
+          let question = new MathsQuestion(
+            maths.Grade,
+            maths.BODMASOperation,
+            questionText,
+            answer,
+            { type: "number" });
+
+          questions.push(question);
+        }
+      }
+
+      maths.Questions.push(...questions);
+    }
+  };
+
+  this.randomInteger = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+  this.randomElement = (a) => a[Math.floor(Math.random() * a.length)];
+
+  this.fillArray = (a, min, max, randomCount) => {
+    if (randomCount) {
+      while (a.length < randomCount) {
+        let n = maths.randomInteger(min, max);
+        if (a.indexOf(n) === -1) { a.push(n); }
+      }
+    } else {
+      for (let i = min; i <= max; i++) {
+        a.push(i);
       }
     }
   };
