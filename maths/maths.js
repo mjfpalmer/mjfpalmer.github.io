@@ -1155,7 +1155,8 @@ function Maths(grade) {
           'Express {value1} as a fraction of {value2}. Simplify your answer. ',
           'If {numerators[0]}&frasl;{denominators[0]} = <sup>x</sup>&frasl;<sub>{denominators[1]}</sub>, what is the value of x? ',
           'If <sup>x</sup>&frasl;<sub>{denominators[0]}</sub> = {numerators[1]}&frasl;{denominators[1]}, what is the value of x? ',
-          'Arrange these fractions from smallest to largest: {numerators[0]}&frasl;{denominators[0]}, {numerators[1]}&frasl;{denominators[1]}, {numerators[2]}&frasl;{denominators[2]}, {numerators[3]}&frasl;{denominators[3]}'
+          'Arrange these fractions from smallest to largest: {numerators[0]}&frasl;{denominators[0]}, {numerators[1]}&frasl;{denominators[1]}, {numerators[2]}&frasl;{denominators[2]}, {numerators[3]}&frasl;{denominators[3]}',
+          '{whole} = <sup>x</sup>&frasl;<sub>{denominators[0]}</sub>. What is the value of x? '
         ];
         break;
     }
@@ -1293,6 +1294,17 @@ function Maths(grade) {
             answer.sort((a, b) => (a[0] / a[1]) - (b[0] / b[1]));
             answer = answer.map(f => `${f[0]}/${f[1]}`).join(', ');
             type = 'text';
+            break;
+          case '{whole} = <sup>x</sup>&frasl;<sub>{denominators[0]}</sub>. What is the value of x? ':
+            whole = maths.randomInteger(1, 10);
+            denominators[0] = maths.randomInteger(2, 10);
+
+            questionText = mode
+              .replace('{whole}', whole)
+              .replace('{denominators[0]}', denominators[0]);
+
+            answer = whole * denominators[0];
+            type = 'number';
             break;
           default: throw new Error(`Unknown mode: ${mode}`);
         }
