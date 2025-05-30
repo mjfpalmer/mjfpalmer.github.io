@@ -88,7 +88,7 @@
       let americano = this;
 
       this.tournament = null;
-      this.playerCount = 8;
+      this.playerCount = 0;
 
       this.players = [];
       this.pairs = [];
@@ -143,6 +143,8 @@
       }
 
       this.generateTournament = function (playerCount) {
+        debugger
+        americano.playerCount = playerCount;
         americano.players = [];
         for (let p1 = 0; p1 < this.playerCount; p1++) {
           americano.players.push(new Player(p1));
@@ -166,7 +168,7 @@
 
         console.log(americano.matches);
 
-        let tournaments = []
+        let tournaments = [];
         //debugger
         this.generateTournaments([], [...americano.matches], tournaments);
         console.log(["tournaments", tournaments]);
