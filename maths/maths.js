@@ -1156,7 +1156,8 @@ function Maths(grade) {
           'If {numerators[0]}&frasl;{denominators[0]} = <sup>x</sup>&frasl;<sub>{denominators[1]}</sub>, what is the value of x? ',
           'If <sup>x</sup>&frasl;<sub>{denominators[0]}</sub> = {numerators[1]}&frasl;{denominators[1]}, what is the value of x? ',
           'Arrange these fractions from smallest to largest: {numerators[0]}&frasl;{denominators[0]}, {numerators[1]}&frasl;{denominators[1]}, {numerators[2]}&frasl;{denominators[2]}, {numerators[3]}&frasl;{denominators[3]}',
-          '{whole} = <sup>x</sup>&frasl;<sub>{denominators[0]}</sub>. What is the value of x? '
+          '{whole} = <sup>x</sup>&frasl;<sub>{denominators[0]}</sub>. What is the value of x? ',
+          'How many {denominators[0]} are there in {whole} whole units? '
         ];
         break;
     }
@@ -1302,6 +1303,22 @@ function Maths(grade) {
             questionText = mode
               .replace('{whole}', whole)
               .replace('{denominators[0]}', denominators[0]);
+
+            answer = whole * denominators[0];
+            type = 'number';
+            break;
+          case 'How many {denominators[0]} are there in {whole} whole units? ':
+            denominators[0] = maths.randomElement([2, 3, 4, 5, 10]);
+            whole = maths.randomElement(maths.fillArray([], 2, 5).filter(v => (v * 10) % denominators[0] === 0));
+
+            questionText = mode.replace('{whole}', whole);
+            switch (denominators[0]) {
+              case 2: questionText = questionText.replace('{denominators[0]}', 'halves'); break;
+              case 3: questionText = questionText.replace('{denominators[0]}', 'thirds'); break;
+              case 4: questionText = questionText.replace('{denominators[0]}', 'quarters'); break;
+              case 5: questionText = questionText.replace('{denominators[0]}', 'fifths'); break;
+              case 10: questionText = questionText.replace('{denominators[0]}', 'tenths'); break;
+            }
 
             answer = whole * denominators[0];
             type = 'number';
