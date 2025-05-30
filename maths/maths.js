@@ -8,7 +8,7 @@ function Maths(grade) {
   this.SubtractionOperation = new MathsOperation(1, 'Subtraction', '&minus;');
   this.MultiplicationOperation = new MathsOperation(2, 'Multiplication', '&times;');
   this.DivisionOperation = new MathsOperation(3, 'Division', '&divide;');
-  this.FactorOfOperation = new MathsOperation(4, 'Fractions', '&frasl;');
+  this.FactorOfOperation = new MathsOperation(4, 'Factors', '&frasl;');
   this.TimeAnalogueOperation = new MathsOperation(4, 'Analogue Time');
   this.TimeDigitalOperation = new MathsOperation(4, 'Digital Time');
   this.LengthConversionOperation = new MathsOperation(4, 'Length Conversion');
@@ -18,6 +18,7 @@ function Maths(grade) {
   this.PerimeterUnitsOperation = new MathsOperation(4, 'Unit Perimeter');
   this.Perimeter2DOperation = new MathsOperation(4, '2D Perimeter');
   this.BODMASOperation = new MathsOperation(6, 'BODMAS');
+  this.PercentageOperation = new MathsOperation(6, 'Percentage');
 
   this.MathsOperations = [
     maths.AdditionOperation,
@@ -34,6 +35,7 @@ function Maths(grade) {
     maths.PerimeterUnitsOperation,
     maths.Perimeter2DOperation,
     maths.BODMASOperation,
+    maths.PercentageOperation,
   ];
 
   this.Grade = grade;
@@ -79,6 +81,7 @@ function Maths(grade) {
     maths.initQuestionsPerimeterUnits();
     maths.initQuestionsPerimeter2D();
     maths.initQuestionsBODMAS();
+    maths.initQuestionsPercentage();
 
     console.debug(maths.Questions);
   };
@@ -95,7 +98,7 @@ function Maths(grade) {
       case 3: maths.fillArray(addends, 0, 40); maxAnswer = 40; break;
       case 4: maths.fillArray(addends, 0, 50); maxAnswer = 50; break;
       case 5: maths.fillArray(addends, 0, 1, maths.QuestionsPerOperationPerGrade); break;
-      case 6: maths.fillArray(addends, 10000, 1000000, 1, maths.QuestionsPerOperationPerGrade); break;
+      default: maths.fillArray(addends, 10000, 1000000, 1, maths.QuestionsPerOperationPerGrade); break;
     }
 
     if (addends.length > 0) {
@@ -135,7 +138,7 @@ function Maths(grade) {
       case 3: maths.fillArray(minuends, 0, 40); maths.fillArray(subtrahends, 0, 40); minAnswer = 0; break;
       case 4: maths.fillArray(minuends, 0, 50); maths.fillArray(subtrahends, 0, 50); minAnswer = 0; break;
       case 5: maths.fillArray(minuends, 0, 1, maths.QuestionsPerOperationPerGrade); maths.fillArray(subtrahends, 0, 1, maths.QuestionsPerOperationPerGrade); minAnswer = 0; break;
-      case 6: maths.fillArray(minuends, 10000, 1000000, 1, maths.QuestionsPerOperationPerGrade); maths.fillArray(subtrahends, 10000, 1000000, 1, maths.QuestionsPerOperationPerGrade); minAnswer = 0; break;
+      default: maths.fillArray(minuends, 10000, 1000000, 1, maths.QuestionsPerOperationPerGrade); maths.fillArray(subtrahends, 10000, 1000000, 1, maths.QuestionsPerOperationPerGrade); minAnswer = 0; break;
     }
 
     if (minuends.length > 0 && subtrahends.length > 0) {
@@ -174,7 +177,7 @@ function Maths(grade) {
       case 3: maths.fillArray(multiplicands, 0, 12); maths.fillArray(multipliers, 0, 12); break;
       case 4: maths.fillArray(multiplicands, 0, 12); maths.fillArray(multipliers, 0, 12); break;
       case 5: maths.fillArray(multiplicands, -12, 12); maths.fillArray(multipliers, -12, 12); break;
-      case 6: maths.fillArray(multiplicands, -100, 100); maths.fillArray(multipliers, -100, 100); break;
+      default: maths.fillArray(multiplicands, -100, 100); maths.fillArray(multipliers, -100, 100); break;
     }
 
     if (multiplicands.length > 0 && multipliers.length > 0) {
@@ -212,7 +215,7 @@ function Maths(grade) {
       case 3: dividends = [0, 1, 2, 3, 4, 5, 8, 10]; divisors = [1, 2, 3, 4, 5, 8, 10]; break;
       case 4: maths.fillArray(dividends, 0, 12); maths.fillArray(divisors, 1, 12); break;
       case 5: maths.fillArray(dividends, -12, 12); maths.fillArray(divisors, -12, 12); break;
-      case 6: maths.fillArray(dividends, -12, 12); maths.fillArray(divisors, -12, 12); break;
+      default: maths.fillArray(dividends, -12, 12); maths.fillArray(divisors, -12, 12); break;
     }
 
     if (dividends.length > 0 && divisors.length > 0) {
@@ -229,7 +232,7 @@ function Maths(grade) {
           case 3: isValid = dividend % divisor === 0; break;
           case 4: isValid = dividend % divisor === 0; break;
           case 5: isValid = dividend % divisor === 0; break;
-          case 6: isValid = [0.25, 0.5].indexOf(fraction) > -1; break;
+          default: isValid = [0.25, 0.5].indexOf(fraction) > -1; break;
         }
 
         if (isValid) {
@@ -258,7 +261,7 @@ function Maths(grade) {
       case 3: break;
       case 4: maths.fillArray(numerators, 1, 12); maths.fillArray(denominators, 2, 12); maths.fillArray(values, 0, 100); break;
       case 5: maths.fillArray(numerators, 1, 12); maths.fillArray(denominators, 2, 12); maths.fillArray(values, -100, 100); break;
-      case 6: maths.fillArray(numerators, 1, 12); maths.fillArray(denominators, 2, 12); maths.fillArray(values, -100, 100); break;
+      default: maths.fillArray(numerators, 1, 12); maths.fillArray(denominators, 2, 12); maths.fillArray(values, -100, 100); break;
     }
 
     if (numerators.length > 0 && denominators.length > 0 && values.length > 0) {
@@ -274,7 +277,7 @@ function Maths(grade) {
         switch (maths.Grade) {
           case 4: isValid = value % denominator === 0; break;
           case 5: isValid = value % denominator === 0; break;
-          case 6: isValid = value % denominator === 0; break;
+          default: isValid = value % denominator === 0; break;
         }
 
         if (isValid) {
@@ -309,7 +312,7 @@ function Maths(grade) {
       case 3: break;
       case 4: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
       case 5: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
-      case 6: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+      default: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
     }
 
     if (hours.length > 0 && minutes.length > 0) {
@@ -345,7 +348,7 @@ function Maths(grade) {
       case 3: break;
       case 4: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
       case 5: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
-      case 6: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+      default: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
     }
 
     if (hours.length > 0 && minutes.length > 0) {
@@ -381,7 +384,7 @@ function Maths(grade) {
       case 3: break;
       case 4: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
       case 5: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
-      case 6: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+      default: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
     }
 
     if (hours.length > 0 && minutes.length > 0) {
@@ -417,7 +420,7 @@ function Maths(grade) {
       case 3: break;
       case 4: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
       case 5: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
-      case 6: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+      default: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
     }
 
     if (hours.length > 0 && minutes.length > 0) {
@@ -461,7 +464,7 @@ function Maths(grade) {
       case 3: break;
       case 4: maths.fillArray(hours, 12, 23); maths.fillArray(minutes, 0, 55, 5); break;
       case 5: maths.fillArray(hours, 12, 23); maths.fillArray(minutes, 0, 55, 5); break;
-      case 6: maths.fillArray(hours, 12, 23); maths.fillArray(minutes, 0, 55, 5); break;
+      default: maths.fillArray(hours, 12, 23); maths.fillArray(minutes, 0, 55, 5); break;
     }
 
     if (hours.length > 0 && minutes.length > 0) {
@@ -512,7 +515,7 @@ function Maths(grade) {
       case 3: break;
       case 4: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
       case 5: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
-      case 6: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+      default: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
     }
 
     if (hours.length > 0 && minutes.length > 0) {
@@ -562,7 +565,7 @@ function Maths(grade) {
       case 3: break;
       case 4: maths.fillArray(hours, 0, 23); maths.fillArray(minutes, 0, 55, 5); break;
       case 5: maths.fillArray(hours, 0, 23); maths.fillArray(minutes, 0, 55, 5); break;
-      case 6: maths.fillArray(hours, 0, 23); maths.fillArray(minutes, 0, 55, 5); break;
+      default: maths.fillArray(hours, 0, 23); maths.fillArray(minutes, 0, 55, 5); break;
     }
 
     if (hours.length > 0 && minutes.length > 0) {
@@ -606,7 +609,7 @@ function Maths(grade) {
       case 3: break;
       case 4: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
       case 5: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
-      case 6: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
+      default: maths.fillArray(hours, 0, 11); maths.fillArray(minutes, 0, 55, 5); break;
     }
 
     if (hours.length > 0 && minutes.length > 0) {
@@ -650,7 +653,7 @@ function Maths(grade) {
       case 3: break;
       case 4: maths.fillArray(hours, 12, 23); maths.fillArray(minutes, 0, 55, 5); break;
       case 5: maths.fillArray(hours, 12, 23); maths.fillArray(minutes, 0, 55, 5); break;
-      case 6: maths.fillArray(hours, 12, 23); maths.fillArray(minutes, 0, 55, 5); break;
+      default: maths.fillArray(hours, 12, 23); maths.fillArray(minutes, 0, 55, 5); break;
     }
 
     if (hours.length > 0 && minutes.length > 0) {
@@ -723,7 +726,7 @@ function Maths(grade) {
         case 3: break;
         case 4: mode = maths.randomInteger(0, modes.length - 1); break;
         case 5: mode = maths.randomInteger(0, modes.length - 1); break;
-        case 6: mode = maths.randomInteger(0, modes.length - 1); break;
+        default: mode = maths.randomInteger(0, modes.length - 1); break;
       }
 
       switch (maths.Grade) {
@@ -732,7 +735,7 @@ function Maths(grade) {
         case 3: break;
         case 4:
         case 5:
-        case 6:
+        default:
           switch (mode) {
             case 0: maths.fillArray(as, 0, 10); break;
             case 1: maths.fillArray(as, 0, 10); break;
@@ -790,7 +793,7 @@ function Maths(grade) {
       case 3: break;
       case 4: maths.fillArray(cms, 0, 10); maths.fillArray(mm1s, 0, 10); maths.fillArray(mm2s, 0, 10); break;
       case 5: maths.fillArray(cms, 0, 10); maths.fillArray(mm1s, 0, 10); maths.fillArray(mm2s, 0, 10); break;
-      case 6: maths.fillArray(cms, 0, 10); maths.fillArray(mm1s, 0, 10); maths.fillArray(mm2s, 0, 10); break;
+      default: maths.fillArray(cms, 0, 10); maths.fillArray(mm1s, 0, 10); maths.fillArray(mm2s, 0, 10); break;
     }
 
     if (cms.length > 0 && mm1s.length > 0 && mm2s.length > 0) {
@@ -831,7 +834,7 @@ function Maths(grade) {
       case 3: break;
       case 4: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
       case 5: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
-      case 6: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
+      default: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
     }
 
     if (heights.length > 0 && widths.length > 0) {
@@ -889,7 +892,7 @@ function Maths(grade) {
       case 3: break;
       case 4: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
       case 5: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
-      case 6: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
+      default: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
     }
 
     if (heights.length > 0 && widths.length > 0) {
@@ -940,7 +943,7 @@ function Maths(grade) {
       case 3: break;
       case 4: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
       case 5: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
-      case 6: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
+      default: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
     }
 
     if (heights.length > 0 && widths.length > 0) {
@@ -997,7 +1000,7 @@ function Maths(grade) {
       case 3: break;
       case 4: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
       case 5: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
-      case 6: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
+      default: maths.fillArray(heights, 1, 10); maths.fillArray(widths, 1, 10); break;
     }
 
     if (heights.length > 0 && widths.length > 0) {
@@ -1050,7 +1053,7 @@ function Maths(grade) {
       case 3: break;
       case 4: break;
       case 5: break;
-      case 6: maths.fillArray(values, 0, 12); forms = ['a * b + c * d', 'a * b - c * d', 'a * b + c', 'a * b - c', 'a + b * c', , 'a - b * c']; break;
+      default: maths.fillArray(values, 0, 12); forms = ['a * b + c * d', 'a * b - c * d', 'a * b + c', 'a * b - c', 'a + b * c', , 'a - b * c']; break;
     }
 
     if (values.length > 0 && forms.length > 0) {
@@ -1090,7 +1093,45 @@ function Maths(grade) {
     }
   };
 
-  this.randomInteger = (min, max) => Math.floor(Math.random() * (max - min)) + min;
+  this.initQuestionsPercentage = () => {
+    // https://www.splashlearn.com/math-vocabulary/division/division
+
+    let numerators = [], denominators = [];
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: break;
+      case 3: break;
+      case 4: break;
+      case 5: break;
+      default: maths.fillArray(numerators, 0, 50); denominators = [5, 10, 20, 25, 50]; break;
+    }
+
+    if (numerators.length > 0 && denominators.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let denominator = maths.randomElement(denominators);
+        let numerator = maths.randomElement(numerators.filter(n => n <= denominator));
+        let answer = (100 / denominator) * numerator;
+
+        let isValid = true;
+
+        if (isValid) {
+          let question = new MathsQuestion(
+            maths.Grade,
+            maths.PercentageOperation,
+            `${numerator}&frasl;${denominator} as a % = `,
+            answer,
+            { type: "number" });
+
+          questions.push(question);
+        }
+      }
+
+      maths.Questions.push(...questions);
+    }
+  };
+
+  this.randomInteger = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
   this.randomElement = (a) => a[maths.randomInteger(0, a.length - 1)];
 
