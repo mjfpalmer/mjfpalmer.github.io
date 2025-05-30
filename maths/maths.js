@@ -18,7 +18,9 @@ function Maths(grade) {
   this.PerimeterUnitsOperation = new MathsOperation(4, 'Unit Perimeter');
   this.Perimeter2DOperation = new MathsOperation(4, '2D Perimeter');
   this.BODMASOperation = new MathsOperation(6, 'BODMAS');
-  this.PercentageOperation = new MathsOperation(6, 'Percentage');
+  this.PercentageOperation = new MathsOperation(6, 'Percentages');
+  this.FractionOperation = new MathsOperation(6, 'Fractions');
+  this.RatioOperation = new MathsOperation(6, 'Ratios');
 
   this.MathsOperations = [
     maths.AdditionOperation,
@@ -36,6 +38,8 @@ function Maths(grade) {
     maths.Perimeter2DOperation,
     maths.BODMASOperation,
     maths.PercentageOperation,
+    maths.FractionOperation,
+    maths.RatioOperation,
   ];
 
   this.Grade = grade;
@@ -82,6 +86,8 @@ function Maths(grade) {
     maths.initQuestionsPerimeter2D();
     maths.initQuestionsBODMAS();
     maths.initQuestionsPercentage();
+    maths.initQuestionsFraction();
+    maths.initQuestionsRatio();
 
     console.debug(maths.Questions);
   };
@@ -1094,8 +1100,6 @@ function Maths(grade) {
   };
 
   this.initQuestionsPercentage = () => {
-    // https://www.splashlearn.com/math-vocabulary/division/division
-
     let numerators = [], denominators = [];
     switch (maths.Grade) {
       case 1: break;
@@ -1116,15 +1120,278 @@ function Maths(grade) {
         let isValid = true;
 
         if (isValid) {
+          let questionText = [
+            `${numerator}&frasl;${denominator} as a % = `,
+            `Write ${numerator} out of ${denominator} as a percentage. `,
+            `If you scored ${numerator} marks out of a total of ${denominator}, what is your percentage score? `];
+
           let question = new MathsQuestion(
             maths.Grade,
             maths.PercentageOperation,
-            `${numerator}&frasl;${denominator} as a % = `,
+            maths.randomElement(questionText),
             answer,
             { type: "number" });
 
           questions.push(question);
         }
+      }
+
+      maths.Questions.push(...questions);
+    }
+  };
+
+  this.initQuestionsFraction = () => {
+    let modes = [];
+
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: break;
+      case 3: break;
+      case 4: break;
+      case 5: break;
+      default:
+        modes = [
+          'Express {percentage}% as a fraction in its simplest form. ',
+          'Express {whole} {numerators[0]}&frasl;{denominators[0]} as an improper fraction. ',
+          'Find the lowest common denominator for the following addition: {numerators[0]}&frasl;{denominators[0]} + {numerators[1]}&frasl;{denominators[1]}. ',
+          'Compare {lhs} <u>&nbsp;&nbsp;</u> {rhs} using <, > or =. ',
+          'Express {value1} as a fraction of {value2}. Simplify your answer. ',
+          'If {numerators[0]}&frasl;{denominators[0]} = <sup>x</sup>&frasl;<sub>{denominators[1]}</sub>, what is the value of x? ',
+          'If <sup>x</sup>&frasl;<sub>{denominators[0]}</sub> = {numerators[1]}&frasl;{denominators[1]}, what is the value of x? ',
+          'Arrange these fractions from smallest to largest: {numerators[0]}&frasl;{denominators[0]}, {numerators[1]}&frasl;{denominators[1]}, {numerators[2]}&frasl;{denominators[2]}, {numerators[3]}&frasl;{denominators[3]}',
+          '{whole} = <sup>x</sup>&frasl;<sub>{denominators[0]}</sub>. What is the value of x? ',
+          'How many {denominators[0]} are there in {whole} whole units? '
+        ];
+        break;
+    }
+
+    if (modes.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let mode = maths.randomElement(modes);
+        let denominators = [], numerators = [];
+        let percentage, whole, decimal, value1, value2;
+        let questionText, answer, type;
+
+        switch (mode) {
+          case 'Express {percentage}% as a fraction in its simplest form. ':
+            percentage = maths.randomElement(maths.fillArray([], 5, 100, 5));
+            denominators[0] = maths.lowestCommonDenominator(percentage, 100);
+            numerators[0] = (percentage / 100) * denominators[0];
+
+            questionText = mode.replace('{percentage}', percentage);
+            answer = `${numerators[0]}/${denominators[0]}`;
+            type = 'text';
+            break;
+          case 'Express {whole} {numerators[0]}&frasl;{denominators[0]} as an improper fraction. ':
+            whole = maths.randomInteger(1, 5);
+            denominators[0] = maths.randomInteger(2, 5);
+            numerators[0] = maths.randomInteger(1, denominators[0] - 1);
+
+            questionText = mode
+              .replace('{whole}', whole)
+              .replace('{numerators[0]}', numerators[0])
+              .replace('{denominators[0]}', denominators[0]);
+
+            numerators[1] = (whole * denominators[0]) + numerators[0];
+            denominators[1] = maths.lowestCommonDenominator(numerators[1], denominators[0]);
+
+            answer = `${numerators[1]}/${denominators[1]}`;
+            type = 'text';
+            break;
+          case 'Find the lowest common denominator for the following addition: {numerators[0]}&frasl;{denominators[0]} + {numerators[1]}&frasl;{denominators[1]}. ':
+            denominators[0] = maths.randomInteger(2, 10);
+            numerators[0] = maths.randomInteger(1, denominators[0]);
+            denominators[1] = maths.randomInteger(2, 10);
+            numerators[1] = maths.randomInteger(1, denominators[1]);
+
+            questionText = mode
+              .replace('{numerators[0]}', numerators[0])
+              .replace('{denominators[0]}', denominators[0])
+              .replace('{numerators[1]}', numerators[1])
+              .replace('{denominators[1]}', denominators[1]);
+
+            answer = maths.lowestCommonDenominator((numerators[0] * denominators[1]) + (numerators[1] * denominators[0]), denominators[0] * denominators[1]);
+            type = 'number';
+            break;
+          case 'Compare {lhs} <u>&nbsp;&nbsp;</u> {rhs} using <, > or =. ':
+            denominators[0] = maths.randomInteger(2, 10);
+            numerators[0] = maths.randomInteger(0, denominators[0] - 1);
+            decimal = maths.randomInteger(0, 10) / 10;
+
+            switch (maths.randomInteger(0, 1)) {
+              case 0:
+                questionText = mode.replace('{lhs}', `${numerators[0]}&frasl;${denominators[0]}`).replace('{rhs}', decimal);
+                answer = (numerators[0] / denominators[0]) - decimal;
+                break;
+              default:
+                questionText = mode.replace('{lhs}', decimal).replace('{rhs}', `${numerators[0]}&frasl;${denominators[0]}`);
+                answer = decimal - (numerators[0] / denominators[0]);
+                break;
+            }
+
+            switch (true) {
+              case answer < 0: answer = '<'; break;
+              case answer > 0: answer = '>'; break;
+              default: answer = '='; break;
+            }
+            type = 'text';
+            break;
+          case 'Express {value1} as a fraction of {value2}. Simplify your answer. ':
+            value2 = maths.randomInteger(10, 50) * 10;
+            value1 = maths.randomInteger(1, (value2 / 10) - 1) * 10;
+
+            questionText = mode.replace('{value1}', maths.centsToRands(value1)).replace('{value2}', maths.centsToRands(value2));
+
+            denominators[0] = maths.lowestCommonDenominator(value1, value2);
+            numerators[0] = value1 / (value2 / denominators[0]);
+
+            answer = `${numerators[0]}/${denominators[0]}`;
+            type = 'text';
+            break;
+          case 'If {numerators[0]}&frasl;{denominators[0]} = <sup>x</sup>&frasl;<sub>{denominators[1]}</sub>, what is the value of x? ':
+            denominators[0] = maths.randomInteger(2, 10);
+            numerators[0] = maths.randomInteger(1, denominators[0]);
+            denominators[1] = maths.lowestCommonDenominator(numerators[0], denominators[0]);
+            denominators[1] = maths.randomElement(maths.fillArray([], denominators[1], denominators[1] * 10, denominators[1]));
+
+            questionText = mode
+              .replace('{numerators[0]}', numerators[0])
+              .replace('{denominators[0]}', denominators[0])
+              .replace('{denominators[1]}', denominators[1]);
+
+            answer = numerators[0] / (denominators[0] / denominators[1]);
+            type = 'number';
+            break;
+          case 'If <sup>x</sup>&frasl;<sub>{denominators[0]}</sub> = {numerators[1]}&frasl;{denominators[1]}, what is the value of x? ':
+            denominators[1] = maths.randomElement(maths.fillArray([], 10, 50).filter(v => v % 2 === 0 || v % 3 === 0 || v % 5 === 0 || v % 7 === 0));
+            numerators[1] = maths.randomElement(maths.fillArray([], 2, denominators[1] - 1).filter(v => denominators[1] % v === 0));
+            denominators[0] = maths.lowestCommonDenominator(numerators[1], denominators[1]);
+            denominators[0] = maths.randomElement(maths.fillArray([], denominators[0], denominators[1] - denominators[0], denominators[0]));
+
+            questionText = mode
+              .replace('{denominators[0]}', denominators[0])
+              .replace('{numerators[1]}', numerators[1])
+              .replace('{denominators[1]}', denominators[1]);
+
+            answer = numerators[1] / (denominators[1] / denominators[0]);
+            type = 'number';
+            break;
+          case 'Arrange these fractions from smallest to largest: {numerators[0]}&frasl;{denominators[0]}, {numerators[1]}&frasl;{denominators[1]}, {numerators[2]}&frasl;{denominators[2]}, {numerators[3]}&frasl;{denominators[3]}':
+            denominators[0] = maths.randomInteger(2, 10); numerators[0] = maths.randomInteger(0, denominators[0]);
+            denominators[1] = maths.randomInteger(2, 10); numerators[1] = maths.randomInteger(0, denominators[1]);
+            denominators[2] = maths.randomInteger(2, 10); numerators[2] = maths.randomInteger(0, denominators[2]);
+            denominators[3] = maths.randomInteger(2, 10); numerators[3] = maths.randomInteger(0, denominators[3]);
+
+            questionText = mode
+              .replace('{numerators[0]}', numerators[0]).replace('{denominators[0]}', denominators[0])
+              .replace('{numerators[1]}', numerators[1]).replace('{denominators[1]}', denominators[1])
+              .replace('{numerators[2]}', numerators[2]).replace('{denominators[2]}', denominators[2])
+              .replace('{numerators[3]}', numerators[3]).replace('{denominators[3]}', denominators[3]);
+
+            answer = [
+              [numerators[0], denominators[0]],
+              [numerators[1], denominators[1]],
+              [numerators[2], denominators[2]],
+              [numerators[3], denominators[3]]];
+
+            answer.sort((a, b) => (a[0] / a[1]) - (b[0] / b[1]));
+            answer = answer.map(f => `${f[0]}/${f[1]}`).join(', ');
+            type = 'text';
+            break;
+          case '{whole} = <sup>x</sup>&frasl;<sub>{denominators[0]}</sub>. What is the value of x? ':
+            whole = maths.randomInteger(1, 10);
+            denominators[0] = maths.randomInteger(2, 10);
+
+            questionText = mode
+              .replace('{whole}', whole)
+              .replace('{denominators[0]}', denominators[0]);
+
+            answer = whole * denominators[0];
+            type = 'number';
+            break;
+          case 'How many {denominators[0]} are there in {whole} whole units? ':
+            denominators[0] = maths.randomElement([2, 3, 4, 5, 10]);
+            whole = maths.randomElement(maths.fillArray([], 2, 5).filter(v => (v * 10) % denominators[0] === 0));
+
+            questionText = mode.replace('{whole}', whole);
+            switch (denominators[0]) {
+              case 2: questionText = questionText.replace('{denominators[0]}', 'halves'); break;
+              case 3: questionText = questionText.replace('{denominators[0]}', 'thirds'); break;
+              case 4: questionText = questionText.replace('{denominators[0]}', 'quarters'); break;
+              case 5: questionText = questionText.replace('{denominators[0]}', 'fifths'); break;
+              case 10: questionText = questionText.replace('{denominators[0]}', 'tenths'); break;
+            }
+
+            answer = whole * denominators[0];
+            type = 'number';
+            break;
+          default: throw new Error(`Unknown mode: ${mode}`);
+        }
+
+        question = new MathsQuestion(
+          maths.Grade,
+          maths.FractionOperation,
+          questionText,
+          answer,
+          { type: type });
+
+        questions.push(question);
+      }
+
+      maths.Questions.push(...questions);
+    }
+  };
+
+  this.initQuestionsRatio = () => {
+    let modes = [];
+
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: break;
+      case 3: break;
+      case 4: break;
+      case 5: break;
+      default:
+        modes = [
+          'Express the ratio {numerator}:{denominator} to its simplest form. '
+        ];
+        break;
+    }
+
+    if (modes.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let mode = maths.randomElement(modes);
+        let numerator, denominator;
+        let lcd;
+        let questionText, answer, type;
+
+        switch (mode) {
+          case 'Express the ratio {numerator}:{denominator} to its simplest form. ':
+            denominator = maths.randomElement(maths.fillArray([], 4, 50).filter(v => v % 2 === 0 || v % 3 === 0 || v % 5 === 0 % v % 7 === 0));
+            numerator = maths.randomElement(maths.fillArray([], 2, denominator - 1).filter(v => maths.lowestCommonDenominator(v, denominator) !== denominator));
+
+            questionText = mode
+              .replace('{numerator}', numerator)
+              .replace('{denominator}', denominator);
+
+            lcd = maths.lowestCommonDenominator(numerator, denominator);
+            answer = `${numerator / (denominator / lcd)}/${lcd}`;
+
+            type = 'text';
+            break;
+          default: throw new Error(`Unknown mode: ${mode}`);
+        }
+
+        question = new MathsQuestion(
+          maths.Grade,
+          maths.RatioOperation,
+          questionText,
+          answer,
+          { type: type });
+
+        questions.push(question);
       }
 
       maths.Questions.push(...questions);
@@ -1147,6 +1414,24 @@ function Maths(grade) {
       for (let i = min; i <= max; i += step) {
         a.push(i);
       }
+    }
+
+    return a;
+  };
+
+  this.lowestCommonDenominator = (numerator, denominator) => {
+    if (denominator === 0) { return 0; }
+    if (numerator === 0) { return 1; }
+    let gcd = (a, b) => b === 0 ? a : gcd(b, a % b);
+    let divisor = gcd(numerator, denominator);
+    return denominator / divisor;
+  }
+
+  this.centsToRands = (cents) => {
+    if (cents < 100) {
+      return `${cents} cents`;
+    } else {
+      return `R${Math.floor(cents / 100)}.${(cents % 100).toString().padStart(2, '0')}`;
     }
   };
 
