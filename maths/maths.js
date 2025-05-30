@@ -18,8 +18,9 @@ function Maths(grade) {
   this.PerimeterUnitsOperation = new MathsOperation(4, 'Unit Perimeter');
   this.Perimeter2DOperation = new MathsOperation(4, '2D Perimeter');
   this.BODMASOperation = new MathsOperation(6, 'BODMAS');
-  this.PercentageOperation = new MathsOperation(6, 'Percentage');
+  this.PercentageOperation = new MathsOperation(6, 'Percentages');
   this.FractionOperation = new MathsOperation(6, 'Fractions');
+  this.RatioOperation = new MathsOperation(6, 'Ratios');
 
   this.MathsOperations = [
     maths.AdditionOperation,
@@ -38,6 +39,7 @@ function Maths(grade) {
     maths.BODMASOperation,
     maths.PercentageOperation,
     maths.FractionOperation,
+    maths.RatioOperation,
   ];
 
   this.Grade = grade;
@@ -85,6 +87,7 @@ function Maths(grade) {
     maths.initQuestionsBODMAS();
     maths.initQuestionsPercentage();
     maths.initQuestionsFraction();
+    maths.initQuestionsRatio();
 
     console.debug(maths.Questions);
   };
@@ -1173,7 +1176,7 @@ function Maths(grade) {
         switch (mode) {
           case 'Express {percentage}% as a fraction in its simplest form. ':
             percentage = maths.randomElement(maths.fillArray([], 5, 100, 5));
-            denominators[0] = maths.smallestDenominator(percentage, 100);
+            denominators[0] = maths.lowestCommonDenominator(percentage, 100);
             numerators[0] = (percentage / 100) * denominators[0];
 
             questionText = mode.replace('{percentage}', percentage);
@@ -1191,7 +1194,7 @@ function Maths(grade) {
               .replace('{denominators[0]}', denominators[0]);
 
             numerators[1] = (whole * denominators[0]) + numerators[0];
-            denominators[1] = maths.smallestDenominator(numerators[1], denominators[0]);
+            denominators[1] = maths.lowestCommonDenominator(numerators[1], denominators[0]);
 
             answer = `${numerators[1]}/${denominators[1]}`;
             type = 'text';
@@ -1208,7 +1211,7 @@ function Maths(grade) {
               .replace('{numerators[1]}', numerators[1])
               .replace('{denominators[1]}', denominators[1]);
 
-            answer = maths.smallestDenominator((numerators[0] * denominators[1]) + (numerators[1] * denominators[0]), denominators[0] * denominators[1]);
+            answer = maths.lowestCommonDenominator((numerators[0] * denominators[1]) + (numerators[1] * denominators[0]), denominators[0] * denominators[1]);
             type = 'number';
             break;
           case 'Compare {lhs} <u>&nbsp;&nbsp;</u> {rhs} using <, > or =. ':
@@ -1240,7 +1243,7 @@ function Maths(grade) {
 
             questionText = mode.replace('{value1}', maths.centsToRands(value1)).replace('{value2}', maths.centsToRands(value2));
 
-            denominators[0] = maths.smallestDenominator(value1, value2);
+            denominators[0] = maths.lowestCommonDenominator(value1, value2);
             numerators[0] = value1 / (value2 / denominators[0]);
 
             answer = `${numerators[0]}/${denominators[0]}`;
@@ -1249,7 +1252,7 @@ function Maths(grade) {
           case 'If {numerators[0]}&frasl;{denominators[0]} = <sup>x</sup>&frasl;<sub>{denominators[1]}</sub>, what is the value of x? ':
             denominators[0] = maths.randomInteger(2, 10);
             numerators[0] = maths.randomInteger(1, denominators[0]);
-            denominators[1] = maths.smallestDenominator(numerators[0], denominators[0]);
+            denominators[1] = maths.lowestCommonDenominator(numerators[0], denominators[0]);
             denominators[1] = maths.randomElement(maths.fillArray([], denominators[1], denominators[1] * 10, denominators[1]));
 
             questionText = mode
@@ -1263,7 +1266,7 @@ function Maths(grade) {
           case 'If <sup>x</sup>&frasl;<sub>{denominators[0]}</sub> = {numerators[1]}&frasl;{denominators[1]}, what is the value of x? ':
             denominators[1] = maths.randomElement(maths.fillArray([], 10, 50).filter(v => v % 2 === 0 || v % 3 === 0 || v % 5 === 0 || v % 7 === 0));
             numerators[1] = maths.randomElement(maths.fillArray([], 2, denominators[1] - 1).filter(v => denominators[1] % v === 0));
-            denominators[0] = maths.smallestDenominator(numerators[1], denominators[1]);
+            denominators[0] = maths.lowestCommonDenominator(numerators[1], denominators[1]);
             denominators[0] = maths.randomElement(maths.fillArray([], denominators[0], denominators[1] - denominators[0], denominators[0]));
 
             questionText = mode
@@ -1340,6 +1343,61 @@ function Maths(grade) {
     }
   };
 
+  this.initQuestionsRatio = () => {
+    let modes = [];
+
+    switch (maths.Grade) {
+      case 1: break;
+      case 2: break;
+      case 3: break;
+      case 4: break;
+      case 5: break;
+      default:
+        modes = [
+          'Express the ratio {numerator}:{denominator} to its simplest form. '
+        ];
+        break;
+    }
+
+    if (modes.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let mode = maths.randomElement(modes);
+        let numerator, denominator;
+        let lcd;
+        let questionText, answer, type;
+
+        switch (mode) {
+          case 'Express the ratio {numerator}:{denominator} to its simplest form. ':
+            denominator = maths.randomElement(maths.fillArray([], 4, 50).filter(v => v % 2 === 0 || v % 3 === 0 || v % 5 === 0 % v % 7 === 0));
+            numerator = maths.randomElement(maths.fillArray([], 2, denominator - 1).filter(v => maths.lowestCommonDenominator(v, denominator) !== denominator));
+
+            questionText = mode
+              .replace('{numerator}', numerator)
+              .replace('{denominator}', denominator);
+
+            lcd = maths.lowestCommonDenominator(numerator, denominator);
+            answer = `${numerator / (denominator / lcd)}/${lcd}`;
+
+            type = 'text';
+            break;
+          default: throw new Error(`Unknown mode: ${mode}`);
+        }
+
+        question = new MathsQuestion(
+          maths.Grade,
+          maths.RatioOperation,
+          questionText,
+          answer,
+          { type: type });
+
+        questions.push(question);
+      }
+
+      maths.Questions.push(...questions);
+    }
+  };
+
   this.randomInteger = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
   this.randomElement = (a) => a[maths.randomInteger(0, a.length - 1)];
@@ -1361,7 +1419,7 @@ function Maths(grade) {
     return a;
   };
 
-  this.smallestDenominator = (numerator, denominator) => {
+  this.lowestCommonDenominator = (numerator, denominator) => {
     if (denominator === 0) { return 0; }
     if (numerator === 0) { return 1; }
     let gcd = (a, b) => b === 0 ? a : gcd(b, a % b);
