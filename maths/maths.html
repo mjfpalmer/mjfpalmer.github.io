@@ -130,7 +130,7 @@
         if (Number.isInteger(grade)) {
           game.Grade = grade;
           game.Log(game.Grade, false, false);
-          game.Maths = new Maths(game.Grade);
+          game.Maths = new Maths(game);
 
           game.Log(`What types of questions?<br />${game.Maths.MathsOperations.filter(mo => mo.Grade <= game.Grade).map(mo => mo.Description).join('<br />')}<br />`, true);
           game.OnInput(game.SetOperations, { value: `${game.Maths.MathsOperations.filter(mo => mo.Grade <= game.Grade).map(mo => mo.Description).join(', ')}` }, { type: "text" });

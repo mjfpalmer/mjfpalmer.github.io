@@ -1,4 +1,4 @@
-function Maths(grade) {
+function Maths(game) {
   let maths = this;
 
   this.QuestionsPerOperation = 100;
@@ -42,7 +42,8 @@ function Maths(grade) {
     maths.RatioOperation,
   ];
 
-  this.Grade = grade;
+  this.Game = game;
+  this.Grade = game.Grade;
 
   this.Questions = [];
 
@@ -1404,7 +1405,11 @@ function Maths(grade) {
       case 5: break;
       default:
         modes = [
-          'Reduce the ratio {numerator}:{denominator} to its simplest form. '
+          'Reduce the ratio {numerators[0]}:{denominators[0]} to its simplest form. ',
+          'There are {total} oranges on a tree. For every {denominators[0]} that are still fine to eat, there are {numerators[0]} rotten oranges. How many oranges on the tree can still be eaten? ',
+          'There are {total} children in the hall. For every {denominators[0]} boys, there are {numerators[0]} girls. How many girls are in the hall? ',
+          `${maths.Game.Player} has cards that are red, blue and yellow. The ratio of these coloured cards is {values[0]}:{values[1]}:{values[2]} respectively. There are {values[3]} blue cards. How many cards are there altogether? `,
+          'There are {total} apples in your fridge. There are {numerators[0]} red apples and {denominators[0]} green apples. What is the ratio of apples? '
         ];
         break;
     }
@@ -1413,22 +1418,79 @@ function Maths(grade) {
       let questions = [];
       while (questions.length < maths.QuestionsPerOperation) {
         let mode = maths.randomElement(modes);
-        let numerator, denominator;
+        let numerators = [], denominators = [], values = [];
         let lcd;
         let questionText, answer, type;
 
         switch (mode) {
-          case 'Reduce the ratio {numerator}:{denominator} to its simplest form. ':
-            denominator = maths.randomElement(maths.fillArray([], 4, 50).filter(v => v % 2 === 0 || v % 3 === 0 || v % 5 === 0 % v % 7 === 0));
-            numerator = maths.randomElement(maths.fillArray([], 2, denominator - 1).filter(v => maths.lowestCommonDenominator(v, denominator) !== denominator));
+          case 'Reduce the ratio {numerators[0]}:{denominators[0]} to its simplest form. ':
+            denominators[0] = maths.randomElement(maths.fillArray([], 4, 50).filter(v => v % 2 === 0 || v % 3 === 0 || v % 5 === 0 % v % 7 === 0));
+            numerators[0] = maths.randomElement(maths.fillArray([], 2, denominators[0] - 1).filter(v => maths.lowestCommonDenominator(v, denominators[0]) !== denominators[0]));
 
             questionText = mode
-              .replace('{numerator}', numerator)
-              .replace('{denominator}', denominator);
+              .replace('{numerators[0]}', numerators[0])
+              .replace('{denominators[0]}', denominators[0]);
 
-            lcd = maths.lowestCommonDenominator(numerator, denominator);
-            answer = `${numerator / (denominator / lcd)}/${lcd}`;
+            lcd = maths.lowestCommonDenominator(numerators[0], denominators[0]);
+            answer = `${numerators[0] / (denominators[0] / lcd)}/${lcd}`;
 
+            type = 'text';
+            break;
+          case 'There are {total} oranges on a tree. For every {denominators[0]} that are still fine to eat, there are {numerators[0]} rotten oranges. How many oranges on the tree can still be eaten? ':
+            denominators[0] = maths.randomInteger(3, 12);
+            numerators[0] = maths.randomInteger(1, denominators[0] - 1);
+            total = maths.randomInteger(3, 12) * (numerators[0] + denominators[0]);
+
+            questionText = mode
+              .replace('{numerators[0]}', numerators[0])
+              .replace('{denominators[0]}', denominators[0])
+              .replace('{total}', total);
+
+            answer = total / (numerators[0] + denominators[0]) * denominators[0];
+            type = 'number';
+            break;
+          case 'There are {total} children in the hall. For every {denominators[0]} boys, there are {numerators[0]} girls. How many girls are in the hall? ':
+            denominators[0] = maths.randomInteger(3, 12);
+            numerators[0] = maths.randomInteger(1, denominators[0] - 1);
+            total = maths.randomInteger(3, 12) * (numerators[0] + denominators[0]);
+
+            questionText = mode
+              .replace('{numerators[0]}', numerators[0])
+              .replace('{denominators[0]}', denominators[0])
+              .replace('{total}', total);
+
+            answer = total / (numerators[0] + denominators[0]) * numerators[0];
+            type = 'number';
+            break;
+          case `${maths.Game.Player} has cards that are red, blue and yellow. The ratio of these coloured cards is {values[0]}:{values[1]}:{values[2]} respectively. There are {values[3]} blue cards. How many cards are there altogether? `:
+            values[0] = maths.randomInteger(1, 20);
+            values[1] = maths.randomInteger(1, 20);
+            values[2] = maths.randomInteger(1, 20);
+            values[3] = maths.randomInteger(1, 5) * values[1];
+
+            questionText = mode
+              .replace('{values[0]}', values[0])
+              .replace('{values[1]}', values[1])
+              .replace('{values[2]}', values[2])
+              .replace('{values[3]}', values[3]);
+
+            answer = values[3] / values[1] * (values[0] + values[1] + values[2]);
+            type = 'number';
+            break;
+          case 'There are {total} apples in your fridge. There are {numerators[0]} red apples and {denominators[0]} green apples. What is the ratio of apples? ':
+            lcm = maths.randomInteger(2, 10);
+            numerators[0] = lcm * maths.randomInteger(1, 10);
+            denominators[0] = lcm * maths.randomInteger(1, 10);
+            total = numerators[0] + denominators[0];
+
+            lcm = maths.lowestCommonDenominator(numerators[0], denominators[0]);
+
+            questionText = mode
+              .replace('{numerators[0]}', numerators[0])
+              .replace('{denominators[0]}', denominators[0])
+              .replace('{total}', total);
+
+            answer = `${numerators[0] / (denominators[0] / lcm)}:${lcm}`;
             type = 'text';
             break;
           default: throw new Error(`Unknown mode: ${mode}`);
