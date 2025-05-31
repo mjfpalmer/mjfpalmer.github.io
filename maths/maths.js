@@ -720,75 +720,86 @@ function Maths(grade) {
   };
 
   this.initQuestionsLengthConversion = () => {
-    let modes = ["cm to mm", "m to cm", "m to mm", "km to m", "mm to cm", "mm to m", "cm to m", "m to km", "cm, mm to mm"];
-
-    let questions = [];
-    while (questions.length < maths.QuestionsPerOperation) {
-      let as = [], bs = [];
-
-      switch (maths.Grade) {
-        case 1: break;
-        case 2: break;
-        case 3: break;
-        case 4: mode = maths.randomInteger(0, modes.length - 1); break;
-        case 5: mode = maths.randomInteger(0, modes.length - 1); break;
-        default: mode = maths.randomInteger(0, modes.length - 1); break;
-      }
-
-      switch (maths.Grade) {
-        case 1:
-        case 2:
-        case 3: break;
-        case 4:
-        case 5:
-        default:
-          switch (mode) {
-            case 0: maths.fillArray(as, 0, 10); break;
-            case 1: maths.fillArray(as, 0, 10); break;
-            case 2: maths.fillArray(as, 0, 10); break;
-            case 3: maths.fillArray(as, 0, 10); break;
-            case 4: maths.fillArray(as, 0, 100, 10); break;
-            case 5: maths.fillArray(as, 0, 10000, 1000); break;
-            case 6: maths.fillArray(as, 0, 1000, 100); break;
-            case 7: maths.fillArray(as, 0, 10000); break;
-            case 8: maths.fillArray(as, 0, 10); maths.fillArray(bs, 0, 10); break;
-          }
-          break;
-      }
-
-      let a = maths.randomElement(as);
-      let b = bs.length + 0 ? maths.randomElement(bs) : null;
-
-      let answer, questionText;
-      switch (mode) {
-        case 0: answer = a * 10; questionText = `${a}cm = ?mm `; break;
-        case 1: answer = a * 100; questionText = `${a}m = ?cm `; break;
-        case 2: answer = a * 1000; questionText = `${a}m = ?mm `; break;
-        case 3: answer = a * 1000; questionText = `${a}km = ?m `; break;
-        case 4: answer = a / 10; questionText = `${a}mm = ?cm `; break;
-        case 5: answer = a / 1000; questionText = `${a}mm = ?m `; break;
-        case 6: answer = a / 100; questionText = `${a}cm = ?m `; break;
-        case 7: answer = a / 1000; questionText = `${a}m = ?km `; break;
-        case 8: answer = a * 10 + b; questionText = `${a}cm ${b}mm = ?mm `; break;
-      }
-
-      if (as.length) {
-        let isValid = true;
-
-        if (isValid) {
-          let question = new MathsQuestion(
-            maths.Grade,
-            maths.LengthConversionOperation,
-            questionText,
-            answer,
-            { type: "number" });
-
-          questions.push(question);
-        }
-      }
+    let modes = [], mode;
+    switch (maths.Grade) {
+      case 1:
+      case 2:
+      case 3:
+        break;
+      default:
+        ["cm to mm", "m to cm", "m to mm", "km to m", "mm to cm", "mm to m", "cm to m", "m to km", "cm, mm to mm"];
+        break;
     }
 
-    maths.Questions.push(...questions);
+    if (modes.length > 0) {
+      let questions = [];
+      while (questions.length < maths.QuestionsPerOperation) {
+        let as = [], bs = [];
+
+        switch (maths.Grade) {
+          case 1: break;
+          case 2: break;
+          case 3: break;
+          case 4: mode = maths.randomInteger(0, modes.length - 1); break;
+          case 5: mode = maths.randomInteger(0, modes.length - 1); break;
+          default: mode = maths.randomInteger(0, modes.length - 1); break;
+        }
+
+        switch (maths.Grade) {
+          case 1:
+          case 2:
+          case 3: break;
+          case 4:
+          case 5:
+          default:
+            switch (mode) {
+              case 0: maths.fillArray(as, 0, 10); break;
+              case 1: maths.fillArray(as, 0, 10); break;
+              case 2: maths.fillArray(as, 0, 10); break;
+              case 3: maths.fillArray(as, 0, 10); break;
+              case 4: maths.fillArray(as, 0, 100, 10); break;
+              case 5: maths.fillArray(as, 0, 10000, 1000); break;
+              case 6: maths.fillArray(as, 0, 1000, 100); break;
+              case 7: maths.fillArray(as, 0, 10000); break;
+              case 8: maths.fillArray(as, 0, 10); maths.fillArray(bs, 0, 10); break;
+            }
+            break;
+        }
+
+        let a = maths.randomElement(as);
+        let b = bs.length + 0 ? maths.randomElement(bs) : null;
+
+        let answer, questionText;
+        switch (mode) {
+          case 0: answer = a * 10; questionText = `${a}cm = ?mm `; break;
+          case 1: answer = a * 100; questionText = `${a}m = ?cm `; break;
+          case 2: answer = a * 1000; questionText = `${a}m = ?mm `; break;
+          case 3: answer = a * 1000; questionText = `${a}km = ?m `; break;
+          case 4: answer = a / 10; questionText = `${a}mm = ?cm `; break;
+          case 5: answer = a / 1000; questionText = `${a}mm = ?m `; break;
+          case 6: answer = a / 100; questionText = `${a}cm = ?m `; break;
+          case 7: answer = a / 1000; questionText = `${a}m = ?km `; break;
+          case 8: answer = a * 10 + b; questionText = `${a}cm ${b}mm = ?mm `; break;
+        }
+
+        if (as.length) {
+          let isValid = true;
+
+          if (isValid) {
+            let question = new MathsQuestion(
+              maths.Grade,
+              maths.LengthConversionOperation,
+              questionText,
+              answer,
+              { type: "number" });
+
+            questions.push(question);
+          }
+        }
+      }
+
+      maths.Questions.push(...questions);
+    }
   };
 
   this.initQuestionsLengthAddition = () => {
