@@ -190,7 +190,7 @@
           game.Log(game.Question.PlayerAnswer, false, false);
 
           if (game.Question.Correct()) {
-            game.Log("&nbsp;&nbsp;&check;", false, false, "#0ed145");
+            game.Log(`&nbsp;&nbsp;&check;${game.Question.ExtraInfo ? ` (${game.Question.ExtraInfo})` : ''}`, false, false, "#0ed145");
             game.NextQuestion();
           } else {
             if (attempt < 2) {
@@ -199,7 +199,7 @@
               game.OnInput((answer) => { game.Answer(answer, attempt + 1); }, game.Question.InputAttributes, game.Question.InputProperties);
             } else {
               game.Log("  &cross;", false, false, "#ec1c24");
-              game.Log(`The correct answer was <span style="color: #0ed145;">${game.Question.Answer}</span>`, false, true);
+              game.Log(`The correct answer was <span style="color: #0ed145;">${game.Question.Answer}</span>${game.Question.ExtraInfo ? ` (${game.Question.ExtraInfo})` : ''}`, false, true);
 
               game.NextQuestion();
             }

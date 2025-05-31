@@ -1170,8 +1170,10 @@ function Maths(grade) {
       while (questions.length < maths.QuestionsPerOperation) {
         let mode = maths.randomElement(modes);
         let denominators = [], numerators = [];
-        let percentage, whole, decimal, value1, value2;
-        let questionText, answer, type;
+        let percentage, whole, decimal, value1, value2, lcm;
+        let questionText, answer, type, extraInfo = null;
+
+        let isValid = true;
 
         switch (mode) {
           case 'Express {percentage}% as a fraction in its simplest form. ':
@@ -1283,21 +1285,29 @@ function Maths(grade) {
             denominators[2] = maths.randomInteger(2, 10); numerators[2] = maths.randomInteger(0, denominators[2]);
             denominators[3] = maths.randomInteger(2, 10); numerators[3] = maths.randomInteger(0, denominators[3]);
 
-            questionText = mode
-              .replace('{numerators[0]}', numerators[0]).replace('{denominators[0]}', denominators[0])
-              .replace('{numerators[1]}', numerators[1]).replace('{denominators[1]}', denominators[1])
-              .replace('{numerators[2]}', numerators[2]).replace('{denominators[2]}', denominators[2])
-              .replace('{numerators[3]}', numerators[3]).replace('{denominators[3]}', denominators[3]);
+            lcm = maths.lowestCommonMultiple([denominators[0], denominators[1], denominators[2], denominators[3]]);
 
-            answer = [
-              [numerators[0], denominators[0]],
-              [numerators[1], denominators[1]],
-              [numerators[2], denominators[2]],
-              [numerators[3], denominators[3]]];
+            isValid = lcm <= 100;
 
-            answer.sort((a, b) => (a[0] / a[1]) - (b[0] / b[1]));
-            answer = answer.map(f => `${f[0]}/${f[1]}`).join(', ');
-            type = 'text';
+            if (isValid) {
+              questionText = mode
+                .replace('{numerators[0]}', numerators[0]).replace('{denominators[0]}', denominators[0])
+                .replace('{numerators[1]}', numerators[1]).replace('{denominators[1]}', denominators[1])
+                .replace('{numerators[2]}', numerators[2]).replace('{denominators[2]}', denominators[2])
+                .replace('{numerators[3]}', numerators[3]).replace('{denominators[3]}', denominators[3]);
+
+              extraInfo = `with lowest common multiplier of ${lcm}`;
+
+              answer = [
+                [numerators[0], denominators[0]],
+                [numerators[1], denominators[1]],
+                [numerators[2], denominators[2]],
+                [numerators[3], denominators[3]]];
+
+              answer.sort((a, b) => (a[0] / a[1]) - (b[0] / b[1]));
+              answer = answer.map(f => `${f[0]}/${f[1]}`).join(', ');
+              type = 'text';
+            }
             break;
           case '{whole} = <sup>x</sup>&frasl;<sub>{denominators[0]}</sub>. What is the value of x? ':
             whole = maths.randomInteger(1, 10);
@@ -1329,14 +1339,18 @@ function Maths(grade) {
           default: throw new Error(`Unknown mode: ${mode}`);
         }
 
-        question = new MathsQuestion(
-          maths.Grade,
-          maths.FractionOperation,
-          questionText,
-          answer,
-          { type: type });
+        if (isValid) {
+          question = new MathsQuestion(
+            maths.Grade,
+            maths.FractionOperation,
+            questionText,
+            answer,
+            { type: type },
+            null,
+            extraInfo);
 
-        questions.push(question);
+          questions.push(question);
+        }
       }
 
       maths.Questions.push(...questions);
@@ -1427,6 +1441,17 @@ function Maths(grade) {
     return denominator / divisor;
   }
 
+  this.lowestCommonMultiple = (numbers) => {
+    const gcd = (a, b) => b === 0 ? a : gcd(b, a % b);
+
+    return numbers.reduce((lcm, num) => {
+      if (num === 0) {
+        throw new Error("Cannot calculate LCM for zero.");
+      }
+      return Math.abs(lcm * num) / gcd(lcm, num);
+    });
+  };
+
   this.centsToRands = (cents) => {
     if (cents < 100) {
       return `${cents} cents`;
@@ -1438,7 +1463,7 @@ function Maths(grade) {
   this.Init();
 }
 
-function MathsQuestion(grade, mathsOperation, question, answer, inputProperties, inputAttributes) {
+function MathsQuestion(grade, mathsOperation, question, answer, inputProperties, inputAttributes, extraInfo) {
   let mathsQuestion = this;
 
   this.Grade = grade;
@@ -1447,6 +1472,7 @@ function MathsQuestion(grade, mathsOperation, question, answer, inputProperties,
   this.Answer = answer;
   this.InputProperties = inputProperties;
   this.InputAttributes = inputAttributes;
+  this.ExtraInfo = extraInfo;
 
   this.PlayerAnswer = null;
 
