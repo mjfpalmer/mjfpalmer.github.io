@@ -1155,12 +1155,13 @@ function Maths(grade) {
           'Express {whole} {numerators[0]}&frasl;{denominators[0]} as an improper fraction. ',
           'Find the lowest common denominator for the following addition: {numerators[0]}&frasl;{denominators[0]} + {numerators[1]}&frasl;{denominators[1]}. ',
           'Compare {lhs} <u>&nbsp;&nbsp;</u> {rhs} using <, > or =. ',
-          'Express {value1} as a fraction of {value2}. Simplify your answer. ',
+          'Express {values[0]} as a fraction of {values[1]}. Simplify your answer. ',
           'If {numerators[0]}&frasl;{denominators[0]} = <sup>x</sup>&frasl;<sub>{denominators[1]}</sub>, what is the value of x? ',
           'If <sup>x</sup>&frasl;<sub>{denominators[0]}</sub> = {numerators[1]}&frasl;{denominators[1]}, what is the value of x? ',
           'Arrange these fractions from smallest to largest: {numerators[0]}&frasl;{denominators[0]}, {numerators[1]}&frasl;{denominators[1]}, {numerators[2]}&frasl;{denominators[2]}, {numerators[3]}&frasl;{denominators[3]}: ',
           '{whole} = <sup>x</sup>&frasl;<sub>{denominators[0]}</sub>. What is the value of x? ',
-          'How many {denominators[0]} are there in {whole} whole units? '
+          'How many {denominators[0]} are there in {whole} whole units? ',
+          'Find the missing values in the following set of equivalent fractions: <sup>{numerators[0]}</sup>&frasl;<sub>{denominators[0]}</sub> = <sup>{numerators[1]}</sup>&frasl;<sub>{denominators[1]}</sub> = <sup>{numerators[2]}</sup>&frasl;<sub>{denominators[2]}</sub>. What is the value of {variable}? '
         ];
         break;
     }
@@ -1170,7 +1171,7 @@ function Maths(grade) {
       while (questions.length < maths.QuestionsPerOperation) {
         let mode = maths.randomElement(modes);
         let denominators = [], numerators = [];
-        let percentage, whole, decimal, value1, value2, lcm;
+        let percentage, whole, decimal, values = [], lcm;
         let questionText, answer, type, extraInfo = null;
 
         let isValid = true;
@@ -1239,14 +1240,14 @@ function Maths(grade) {
             }
             type = 'text';
             break;
-          case 'Express {value1} as a fraction of {value2}. Simplify your answer. ':
-            value2 = maths.randomInteger(10, 50) * 10;
-            value1 = maths.randomInteger(1, (value2 / 10) - 1) * 10;
+          case 'Express {values[0]} as a fraction of {values[1]}. Simplify your answer. ':
+            values[1] = maths.randomInteger(10, 50) * 10;
+            values[0] = maths.randomInteger(1, (values[1] / 10) - 1) * 10;
 
-            questionText = mode.replace('{value1}', maths.centsToRands(value1)).replace('{value2}', maths.centsToRands(value2));
+            questionText = mode.replace('{values[0]}', maths.centsToRands(values[0])).replace('{values[1]}', maths.centsToRands(values[1]));
 
-            denominators[0] = maths.lowestCommonDenominator(value1, value2);
-            numerators[0] = value1 / (value2 / denominators[0]);
+            denominators[0] = maths.lowestCommonDenominator(values[0], values[1]);
+            numerators[0] = values[0] / (values[1] / denominators[0]);
 
             answer = `${numerators[0]}/${denominators[0]}`;
             type = 'text';
@@ -1336,6 +1337,30 @@ function Maths(grade) {
             answer = whole * denominators[0];
             type = 'number';
             break;
+          case 'Find the missing values in the following set of equivalent fractions: <sup>{numerators[0]}</sup>&frasl;<sub>{denominators[0]}</sub> = <sup>{numerators[1]}</sup>&frasl;<sub>{denominators[1]}</sub> = <sup>{numerators[2]}</sup>&frasl;<sub>{denominators[2]}</sub>. What is the value of {variable}? ':
+            denominators[0] = maths.randomInteger(2, 20); values[1] = denominators[0];
+            numerators[0] = maths.randomInteger(1, denominators[0] - 1); values[0] = numerators[0];
+            denominators[1] = denominators[0] * maths.randomInteger(2, 4); values[3] = denominators[1];
+            numerators[1] = (denominators[1] / denominators[0]) * numerators[0]; values[2] = numerators[1];
+            denominators[2] = denominators[1] * maths.randomInteger(2, 4); values[5] = denominators[2];
+            numerators[2] = (denominators[2] / denominators[1]) * numerators[1]; values[4] = numerators[2];
+
+            let a = maths.randomInteger(0, 5), b;
+            for (b = maths.randomInteger(0, 5); b === a; b = maths.randomInteger(0, 5)) { }
+            let variable = maths.randomInteger(0, 1);
+
+            questionText = mode
+              .replace('{numerators[0]}', a === 0 ? 'a' : b === 0 ? 'b' : numerators[0])
+              .replace('{denominators[0]}', a === 1 ? 'a' : b === 1 ? 'b' : denominators[0])
+              .replace('{numerators[1]}', a === 2 ? 'a' : b === 2 ? 'b' : numerators[1])
+              .replace('{denominators[1]}', a === 3 ? 'a' : b === 3 ? 'b' : denominators[1])
+              .replace('{numerators[2]}', a === 4 ? 'a' : b === 4 ? 'b' : numerators[2])
+              .replace('{denominators[2]}', a === 5 ? 'a' : b === 5 ? 'b' : denominators[2])
+              .replace('{variable}', variable === 0 ? 'a' : 'b');
+
+            answer = variable === 0 ? values[a] : values[b];
+            type = 'number';
+            break;
           default: throw new Error(`Unknown mode: ${mode}`);
         }
 
@@ -1368,7 +1393,7 @@ function Maths(grade) {
       case 5: break;
       default:
         modes = [
-          'Express the ratio {numerator}:{denominator} to its simplest form. '
+          'Reduce the ratio {numerator}:{denominator} to its simplest form. '
         ];
         break;
     }
@@ -1382,7 +1407,7 @@ function Maths(grade) {
         let questionText, answer, type;
 
         switch (mode) {
-          case 'Express the ratio {numerator}:{denominator} to its simplest form. ':
+          case 'Reduce the ratio {numerator}:{denominator} to its simplest form. ':
             denominator = maths.randomElement(maths.fillArray([], 4, 50).filter(v => v % 2 === 0 || v % 3 === 0 || v % 5 === 0 % v % 7 === 0));
             numerator = maths.randomElement(maths.fillArray([], 2, denominator - 1).filter(v => maths.lowestCommonDenominator(v, denominator) !== denominator));
 
