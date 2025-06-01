@@ -1204,30 +1204,59 @@ function Maths(game) {
   };
 
   this.initQuestionsPercentage = () => {
-    let numerators = [], denominators = [];
+    let modes = [];
+
     switch (maths.Grade) {
       case 1: break;
       case 2: break;
       case 3: break;
       case 4: break;
       case 5: break;
-      default: maths.fillArray(numerators, 0, 50); denominators = [5, 10, 20, 25, 50]; break;
+      default:
+        modes = [
+          '{numerator}&frasl;{denominator} as a % = ',
+          'Write {numerator} out of {denominator} as a percentage. ',
+          'If you scored {numerator} marks out of a total of {denominator}, what is your percentage score? ',
+          'If you scored {numerator} marks out of a total of {denominator} and you need 40% or more to pass, did you pass (Y/N)? '
+        ];
+        break;
     }
 
-    if (numerators.length > 0 && denominators.length > 0) {
+    if (modes.length > 0) {
       let questions = [], attempts = 0;
       while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
         attempts++;
 
-        let denominator = maths.randomElement(denominators);
-        let numerator = maths.randomElement(numerators.filter(n => n <= denominator));
+        let mode = maths.randomElement(modes);
+        let denominator, numerator;
+        let questionText, answer, type;
 
-        let questionText = maths.randomElement([
-          `${numerator}&frasl;${denominator} as a % = `,
-          `Write ${numerator} out of ${denominator} as a percentage. `,
-          `If you scored ${numerator} marks out of a total of ${denominator}, what is your percentage score? `]);
+        switch (mode) {
+          case '{numerator}&frasl;{denominator} as a % = ':
+          case 'Write {numerator} out of {denominator} as a percentage. ':
+          case 'If you scored {numerator} marks out of a total of {denominator}, what is your percentage score? ':
+            denominator = maths.randomElement([5, 10, 20, 25, 50]);
+            numerator = maths.randomInteger(0, denominator);
 
-        let answer = (100 / denominator) * numerator;
+            questionText = mode
+              .replace('{numerator}', numerator)
+              .replace('{denominator}', denominator);
+
+            answer = (100 / denominator) * numerator;
+            type = 'number';
+            break;
+          case 'If you scored {numerator} marks out of a total of {denominator} and you need 40% or more to pass, did you pass (Y/N)? ':
+            denominator = maths.randomElement([5, 10, 20, 25, 50]);
+            numerator = maths.randomInteger(Math.floor(denominator * 0.3), Math.floor(denominator * 0.5));
+
+            questionText = mode
+              .replace('{numerator}', numerator)
+              .replace('{denominator}', denominator);
+
+            answer = (100 / denominator) * numerator >= 40 ? 'Y' : 'N';
+            type = 'text';
+            break;
+        }
 
         let isValid = true;
 
@@ -1237,7 +1266,7 @@ function Maths(game) {
             maths.PercentageOperation,
             questionText,
             answer,
-            { type: "number" });
+            { type: type });
 
           questions.push(question); attempts = 0;
         }
@@ -1258,20 +1287,21 @@ function Maths(game) {
       case 5: break;
       default:
         modes = [
-          //'Express {percentage}% as a fraction in its simplest form. ',
-          //'Express {whole} {numerators[0]}&frasl;{denominators[0]} as an improper fraction. ',
-          //'Find the lowest common denominator for the following addition: {numerators[0]}&frasl;{denominators[0]} + {numerators[1]}&frasl;{denominators[1]}. ',
-          //'Compare {lhs} <u>&nbsp;&nbsp;</u> {rhs} using <, > or =. ',
-          //'Express {values[0]} as a fraction of {values[1]}. Simplify your answer. ',
-          //'If {numerators[0]}&frasl;{denominators[0]} = <sup>x</sup>&frasl;<sub>{denominators[1]}</sub>, what is the value of x? ',
-          //'If <sup>x</sup>&frasl;<sub>{denominators[0]}</sub> = {numerators[1]}&frasl;{denominators[1]}, what is the value of x? ',
-          //'Arrange these fractions from smallest to largest: {numerators[0]}&frasl;{denominators[0]}, {numerators[1]}&frasl;{denominators[1]}, {numerators[2]}&frasl;{denominators[2]}, {numerators[3]}&frasl;{denominators[3]}: ',
-          //'{whole} = <sup>x</sup>&frasl;<sub>{denominators[0]}</sub>. What is the value of x? ',
-          //'How many {denominators[0]} are there in {whole} whole units? ',
-          //'Find the missing values in the following set of equivalent fractions: <sup>{numerators[0]}</sup>&frasl;<sub>{denominators[0]}</sub> = <sup>{numerators[1]}</sup>&frasl;<sub>{denominators[1]}</sub> = <sup>{numerators[2]}</sup>&frasl;<sub>{denominators[2]}</sub>. What is the value of {variable}? ',
-          //'What is the decimal form of the fraction {numerators[0]}&frasl;{denominators[0]}? ',
-          //'What is the percentage form of the fraction {numerators[0]}&frasl;{denominators[0]}? ',
-          'What is the simplest fractional form of the decimal {decimal}? '
+          'Express {percentage}% as a fraction in its simplest form. ',
+          'Express {whole} {numerators[0]}&frasl;{denominators[0]} as an improper fraction. ',
+          'Find the lowest common denominator for the following addition: {numerators[0]}&frasl;{denominators[0]} + {numerators[1]}&frasl;{denominators[1]}. ',
+          'Compare {lhs} <u>&nbsp;&nbsp;</u> {rhs} using <, > or =. ',
+          'Express {values[0]} as a fraction of {values[1]}. Simplify your answer. ',
+          'If {numerators[0]}&frasl;{denominators[0]} = <sup>x</sup>&frasl;<sub>{denominators[1]}</sub>, what is the value of x? ',
+          'If <sup>x</sup>&frasl;<sub>{denominators[0]}</sub> = {numerators[1]}&frasl;{denominators[1]}, what is the value of x? ',
+          'Arrange these fractions from smallest to largest: {numerators[0]}&frasl;{denominators[0]}, {numerators[1]}&frasl;{denominators[1]}, {numerators[2]}&frasl;{denominators[2]}, {numerators[3]}&frasl;{denominators[3]}: ',
+          '{whole} = <sup>x</sup>&frasl;<sub>{denominators[0]}</sub>. What is the value of x? ',
+          'How many {denominators[0]} are there in {whole} whole units? ',
+          'Find the missing values in the following set of equivalent fractions: <sup>{numerators[0]}</sup>&frasl;<sub>{denominators[0]}</sub> = <sup>{numerators[1]}</sup>&frasl;<sub>{denominators[1]}</sub> = <sup>{numerators[2]}</sup>&frasl;<sub>{denominators[2]}</sub>. What is the value of {variable}? ',
+          'What is the decimal form of the fraction {numerators[0]}&frasl;{denominators[0]}? ',
+          'What is the percentage form of the fraction {numerators[0]}&frasl;{denominators[0]}? ',
+          'What is the simplest fractional form of the decimal {decimal}? ',
+          'Express the sum of {values[0]}% and {values[1]}% as a single fraction in its simplest form. '
         ];
         break;
     }
@@ -1521,6 +1551,20 @@ function Maths(game) {
                 break;
             }
             questionText = mode.replace('{decimal}', decimal);
+
+            answer = `${numerators[0]}/${denominators[0]}`;
+            type = 'text';
+            break;
+          case 'Express the sum of {values[0]}% and {values[1]}% as a single fraction in its simplest form. ':
+            values[0] = maths.randomElement(maths.fillArray([], 5, 50, 5));
+            values[1] = maths.randomElement(maths.fillArray([], 5, 50, 5));
+
+            denominators[0] = maths.lowestCommonDenominator(values[0] + values[1], 100);
+            numerators[0] = (values[0] + values[1]) / 100 * denominators[0];
+
+            questionText = mode
+              .replace('{values[0]}', values[0])
+              .replace('{values[1]}', values[1]);
 
             answer = `${numerators[0]}/${denominators[0]}`;
             type = 'text';
