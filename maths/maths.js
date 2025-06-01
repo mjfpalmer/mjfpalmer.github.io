@@ -58,7 +58,6 @@ function Maths(game) {
     let applicableMathsOperations = maths.MathsOperations.filter((mo) => mo.Grade <= maths.Grade);
 
     while (questions.length < questionCount) {
-      debugger
       let mathsOperation = applicableMathsOperations[Math.floor(Math.random() * applicableMathsOperations.length)];
       let applicableQuestions = maths.Questions.filter((q) => q.MathsOperation === mathsOperation);
 
@@ -1294,7 +1293,7 @@ function Maths(game) {
           'Express {values[0]} as a fraction of {values[1]}. Simplify your answer. ',
           'If {numerators[0]}&frasl;{denominators[0]} = <sup>x</sup>&frasl;<sub>{denominators[1]}</sub>, what is the value of x? ',
           'If <sup>x</sup>&frasl;<sub>{denominators[0]}</sub> = {numerators[1]}&frasl;{denominators[1]}, what is the value of x? ',
-          'Arrange these fractions from smallest to largest: {numerators[0]}&frasl;{denominators[0]}, {numerators[1]}&frasl;{denominators[1]}, {numerators[2]}&frasl;{denominators[2]}, {numerators[3]}&frasl;{denominators[3]}: ',
+          'Arrange the following from smallest to largest: {a}, {b}, {c}, {d}: ',
           '{whole} = <sup>x</sup>&frasl;<sub>{denominators[0]}</sub>. What is the value of x? ',
           'How many {denominators[0]} are there in {whole} whole units? ',
           'Find the missing values in the following set of equivalent fractions: <sup>{numerators[0]}</sup>&frasl;<sub>{denominators[0]}</sub> = <sup>{numerators[1]}</sup>&frasl;<sub>{denominators[1]}</sub> = <sup>{numerators[2]}</sup>&frasl;<sub>{denominators[2]}</sub>. What is the value of {variable}? ',
@@ -1313,7 +1312,7 @@ function Maths(game) {
 
         let mode = maths.randomElement(modes);
         let denominators = [], numerators = [];
-        let percentage, whole, decimal, values = [], lcm;
+        let percentage, whole, decimal, values = [], lcm, options = [];
         let questionText, answer, type, extraInfo = null;
 
         let isValid = true;
@@ -1422,33 +1421,53 @@ function Maths(game) {
             answer = numerators[1] / (denominators[1] / denominators[0]);
             type = 'number';
             break;
-          case 'Arrange these fractions from smallest to largest: {numerators[0]}&frasl;{denominators[0]}, {numerators[1]}&frasl;{denominators[1]}, {numerators[2]}&frasl;{denominators[2]}, {numerators[3]}&frasl;{denominators[3]}: ':
-            denominators[0] = maths.randomInteger(2, 10); numerators[0] = maths.randomInteger(0, denominators[0]);
-            denominators[1] = maths.randomInteger(2, 10); numerators[1] = maths.randomInteger(0, denominators[1]);
-            denominators[2] = maths.randomInteger(2, 10); numerators[2] = maths.randomInteger(0, denominators[2]);
-            denominators[3] = maths.randomInteger(2, 10); numerators[3] = maths.randomInteger(0, denominators[3]);
+          case 'Arrange the following from smallest to largest: {a}, {b}, {c}, {d}: ':
+            options = [
+              [0, [`0/${maths.randomInteger(1, 100)}`]],
+              [5, ['1/20', '2/40']],
+              [10, ['1/10', '2/20', '3/30']],
+              [15, ['3/20']],
+              [20, ['1/5', '2/10', '3/15', '4/20']],
+              [25, ['1/4', '2/8', '3/12', '4/16', '5/20']],
+              [30, ['3/10', '6/20']],
+              [33, ['1/3', '2/6', '3/9']],
+              [35, ['7/20']],
+              [40, ['4/10', '8/20', '12/30']],
+              [45, ['9/20']],
+              [50, ['1/2', '2/4', '3/6', '4/8', '5/10', '10/20']],
+              [55, ['11/20']],
+              [60, ['3/5', '6/10', '12/20']],
+              [65, ['13/20']],
+              [66, ['2/3', '4/6', '6/9']],
+              [70, ['7/10', '14/20', '21/30']],
+              [75, ['3/4', '6/8', '9/12', '12/16', '15/20']],
+              [80, ['4/5', '8/10', '16/20']],
+              [85, ['17/20']],
+              [90, ['9/5', '18/20']],
+              [95, ['19/20']],
+              [100, ['10/10', '20/20', '82/82']]
+            ];
 
-            lcm = maths.lowestCommonMultiple([denominators[0], denominators[1], denominators[2], denominators[3]]);
+            values[0] = maths.randomElement(options, true);
+            values[1] = maths.randomElement(options, true);
+            values[2] = maths.randomElement(options, true);
+            values[3] = maths.randomElement(options, true);
 
-            isValid = lcm <= 100;
+            values[0] = [values[0][0], maths.randomInteger(0, 4) === 0 ? `${values[0][0]}%` : maths.randomElement(values[0][1])];
+            values[1] = [values[1][0], maths.randomInteger(0, 4) === 0 ? `${values[1][0]}%` : maths.randomElement(values[1][1])];
+            values[2] = [values[2][0], maths.randomInteger(0, 4) === 0 ? `${values[2][0]}%` : maths.randomElement(values[2][1])];
+            values[3] = [values[3][0], maths.randomInteger(0, 4) === 0 ? `${values[3][0]}%` : maths.randomElement(values[3][1])];
+
+            questionText = mode
+              .replace('{a}', values[0][1])
+              .replace('{b}', values[1][1])
+              .replace('{c}', values[2][1])
+              .replace('{d}', values[3][1]);
 
             if (isValid && !questions.some(q => q.Question === questionText)) {
-              questionText = mode
-                .replace('{numerators[0]}', numerators[0]).replace('{denominators[0]}', denominators[0])
-                .replace('{numerators[1]}', numerators[1]).replace('{denominators[1]}', denominators[1])
-                .replace('{numerators[2]}', numerators[2]).replace('{denominators[2]}', denominators[2])
-                .replace('{numerators[3]}', numerators[3]).replace('{denominators[3]}', denominators[3]);
-
-              extraInfo = `with lowest common multiplier of ${lcm}`;
-
-              answer = [
-                [numerators[0], denominators[0]],
-                [numerators[1], denominators[1]],
-                [numerators[2], denominators[2]],
-                [numerators[3], denominators[3]]];
-
-              answer.sort((a, b) => (a[0] / a[1]) - (b[0] / b[1]));
-              answer = answer.map(f => `${f[0]}/${f[1]}`).join(', ');
+              values.sort((a, b) => a[0] - b[0]);
+              answer = values.map(v => v[1]).join(', ');
+              extraInfo = values.map(v => `${v[0]}%`).join(', ');
               type = 'text';
             }
             break;
@@ -1528,29 +1547,12 @@ function Maths(game) {
           case 'What is the simplest fractional form of the decimal {decimal}? ':
             denominators[0] = maths.randomElement([2, 3, 4, 5, 8, 10]);
             numerators[0] = maths.randomInteger(1, denominators[0] - 1);
-            decimal = (100 / denominators[0]) * numerators[0] / 100;
+            decimal = (1 / denominators[0]) * numerators[0];
 
             denominators[0] = maths.lowestCommonDenominator(numerators[0], denominators[0]);
             numerators[0] = decimal * denominators[0];
 
-            switch (decimal.toFixed(3)) {
-              case '0.100': case '0.200': case '0.300': case '0.400': case '0.500': case '0.600': case '0.700': case '0.800': case '0.900':
-                decimal = decimal.toFixed(1);
-                break;
-              case '0.250': case '0.333': case '0.750':
-                decimal = decimal.toFixed(2);
-                break;
-              case '0.667':
-                decimal = '0.66';
-                break;
-              case '0.000': case '1.000':
-                decimal = decimal.toFixed(0);
-                break;
-              default:
-                decimal = decimal.toFixed(3);
-                break;
-            }
-            questionText = mode.replace('{decimal}', decimal);
+            questionText = mode.replace('{decimal}', maths.decimalDisplay(decimal));
 
             answer = `${numerators[0]}/${denominators[0]}`;
             type = 'text';
@@ -1726,7 +1728,12 @@ function Maths(game) {
 
   this.randomInteger = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
 
-  this.randomElement = (a) => a[maths.randomInteger(0, a.length - 1)];
+  this.randomElement = (a, remove) => {
+    let index = maths.randomInteger(0, a.length - 1);
+    let element = a[index];
+    if (remove) { a.splice(index, 1); }
+    return element;
+  }
 
   this.fillArray = (a, min, max, step, randomCount) => {
     step = step || 1;
@@ -1762,6 +1769,16 @@ function Maths(game) {
       }
       return Math.abs(lcm * num) / gcd(lcm, num);
     });
+  };
+
+  this.decimalDisplay = (decimal) => {
+    switch (decimal.toFixed(3)) {
+      case '0.100': case '0.200': case '0.300': case '0.400': case '0.500': case '0.600': case '0.700': case '0.800': case '0.900': return decimal.toFixed(1);
+      case '0.250': case '0.333': case '0.750': return decimal.toFixed(2);
+      case '0.667': return '0.66';
+      case '0.000': case '1.000': return decimal.toFixed(0);
+      default: return decimal.toFixed(3);
+    }
   };
 
   this.centsToRands = (cents) => {
