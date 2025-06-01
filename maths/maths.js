@@ -3,6 +3,7 @@ function Maths(game) {
 
   this.QuestionsPerOperation = 100;
   this.QuestionsPerOperationPerGrade = 100;
+  this.MaxAttempts = 100;
 
   this.AdditionOperation = new MathsOperation(1, 'Addition', '&plus;');
   this.SubtractionOperation = new MathsOperation(1, 'Subtraction', '&minus;');
@@ -57,11 +58,14 @@ function Maths(game) {
     let applicableMathsOperations = maths.MathsOperations.filter((mo) => mo.Grade <= maths.Grade);
 
     while (questions.length < questionCount) {
+      debugger
       let mathsOperation = applicableMathsOperations[Math.floor(Math.random() * applicableMathsOperations.length)];
       let applicableQuestions = maths.Questions.filter((q) => q.MathsOperation === mathsOperation);
+
       do {
         question = applicableQuestions[Math.floor(Math.random() * applicableQuestions.length)];
-      } while (questions.includes(question));
+      } while (questions.some(q => question.Question === q.Question));
+
       questions.push(question);
     }
     return questions;
@@ -109,23 +113,28 @@ function Maths(game) {
     }
 
     if (addends.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let addend1 = maths.randomElement(addends);
         let addend2 = maths.randomElement(addends);
+
+        let questionText = `${addend1} ${maths.AdditionOperation.Symbol} ${addend2} = `;
+
         let answer = addend1 + addend2;
 
         let isValid = (maxAnswer === null || answer <= maxAnswer);
 
-        if (isValid) {
+        if (isValid && !questions.some(q => q.Question === questionText)) {
           let question = new MathsQuestion(
             maths.Grade,
             maths.AdditionOperation,
-            `${addend1} ${maths.AdditionOperation.Symbol} ${addend2} = `,
+            questionText,
             answer,
             { type: "number" });
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -149,23 +158,28 @@ function Maths(game) {
     }
 
     if (minuends.length > 0 && subtrahends.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let minuend = maths.randomElement(minuends);
         let subtrahend = maths.randomElement(subtrahends);
+
+        let questionText = `${minuend} ${maths.SubtractionOperation.Symbol} ${subtrahend} = `;
+
         let answer = minuend - subtrahend;
 
         let isValid = (minAnswer === null || answer >= minAnswer);
 
-        if (isValid) {
+        if (isValid && !questions.some(q => q.Question === questionText)) {
           let question = new MathsQuestion(
             maths.Grade,
             maths.SubtractionOperation,
-            `${minuend} ${maths.SubtractionOperation.Symbol} ${subtrahend} = `,
+            questionText,
             answer,
             { type: "number" });
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -188,23 +202,28 @@ function Maths(game) {
     }
 
     if (multiplicands.length > 0 && multipliers.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let multiplicand = maths.randomElement(multiplicands);
         let multiplier = maths.randomElement(multipliers);
+
+        let questionText = `${multiplicand} ${maths.MultiplicationOperation.Symbol} ${multiplier} = `;
+
         let answer = multiplicand * multiplier;
 
         let isValid = true;
 
-        if (isValid) {
+        if (isValid && !questions.some(q => q.Question === questionText)) {
           let question = new MathsQuestion(
             maths.Grade,
             maths.MultiplicationOperation,
-            `${multiplicand} ${maths.MultiplicationOperation.Symbol} ${multiplier} = `,
+            questionText,
             answer,
             { type: "number" });
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -226,10 +245,15 @@ function Maths(game) {
     }
 
     if (dividends.length > 0 && divisors.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let dividend = maths.randomElement(dividends);
         let divisor = maths.randomElement(divisors);
+
+        let questionText = `${dividend} ${maths.DivisionOperation.Symbol} ${divisor} = `;
+
         let answer = dividend / divisor;
         let fraction = answer % 1;
 
@@ -242,15 +266,15 @@ function Maths(game) {
           default: isValid = [0.25, 0.5].indexOf(fraction) > -1; break;
         }
 
-        if (isValid) {
+        if (isValid && !questions.some(q => q.Question === questionText)) {
           let question = new MathsQuestion(
             maths.Grade,
             maths.DivisionOperation,
-            `${dividend} ${maths.DivisionOperation.Symbol} ${divisor} = `,
+            questionText,
             answer,
             { type: "number" });
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -272,11 +296,16 @@ function Maths(game) {
     }
 
     if (numerators.length > 0 && denominators.length > 0 && values.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let denominator = maths.randomElement(denominators);
         let numerator = maths.randomElement(numerators.filter(n => n < denominator));
         let value = maths.randomElement(values);
+
+        let questionText = `${numerator}${maths.FactorOfOperation.Symbol}${denominator} of ${value} = `;
+
         let answer = value / denominator * numerator;
 
         let isValid = true;
@@ -287,15 +316,15 @@ function Maths(game) {
           default: isValid = value % denominator === 0; break;
         }
 
-        if (isValid) {
+        if (isValid && !questions.some(q => q.Question === questionText)) {
           let question = new MathsQuestion(
             maths.Grade,
             maths.FactorOfOperation,
-            `${numerator}${maths.FactorOfOperation.Symbol}${denominator} of ${value} = `,
+            questionText,
             answer,
             { type: "number" });
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -323,23 +352,28 @@ function Maths(game) {
     }
 
     if (hours.length > 0 && minutes.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let hour = maths.randomElement(hours);
         let minute = maths.randomElement(minutes);
+
+        let questionText = `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> to digital. `;
+
         let answer = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
 
         let isValid = true;
 
-        if (isValid) {
+        if (isValid && !questions.some(q => q.Question === questionText)) {
           let question = new MathsQuestion(
             maths.Grade,
             maths.FactorOfOperation,
-            `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> to digital. `,
+            questionText,
             answer,
             { type: "text" });
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -359,23 +393,28 @@ function Maths(game) {
     }
 
     if (hours.length > 0 && minutes.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let hour = maths.randomElement(hours);
         let minute = maths.randomElement(minutes);
+
+        let questionText = `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> AM to digital. `;
+
         let answer = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
 
         let isValid = true;
 
-        if (isValid) {
+        if (isValid && !questions.some(q => q.Question === questionText)) {
           let question = new MathsQuestion(
             maths.Grade,
             maths.TimeAnalogueOperation,
-            `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> AM to digital. `,
+            questionText,
             answer,
             { type: "text" });
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -395,23 +434,28 @@ function Maths(game) {
     }
 
     if (hours.length > 0 && minutes.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let hour = maths.randomElement(hours);
         let minute = maths.randomElement(minutes);
+
+        let questionText = `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> PM to digital. `;
+
         let answer = `${(hour + 12).toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
 
         let isValid = true;
 
-        if (isValid) {
+        if (isValid && !questions.some(q => q.Question === questionText)) {
           let question = new MathsQuestion(
             maths.Grade,
             maths.TimeAnalogueOperation,
-            `Convert <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> PM to digital. `,
+            questionText,
             answer,
             { type: "text" });
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -431,18 +475,22 @@ function Maths(game) {
     }
 
     if (hours.length > 0 && minutes.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let hour = maths.randomElement(hours);
         let minute = maths.randomElement(minutes);
 
+        let questionText = `Describe <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> AM. `;
+
         let isValid = true;
 
-        if (isValid) {
+        if (isValid && !questions.some(q => q.Question === questionText)) {
           let question = new MathsQuestion(
             maths.Grade,
             maths.TimeAnalogueOperation,
-            `Describe <img src="/images/clocks/${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> AM. `,
+            questionText,
             '',
             { type: "text" });
 
@@ -455,7 +503,7 @@ function Maths(game) {
             case 45: question.Answer = `quarter to  ${hour + 1 == 12 ? 'midnight' : `${maths.hourTo(hour + 1)}`}`; break;
           }
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -475,18 +523,22 @@ function Maths(game) {
     }
 
     if (hours.length > 0 && minutes.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let hour = maths.randomElement(hours);
         let minute = maths.randomElement(minutes);
 
+        let questionText = `Describe <img src="/images/clocks/${(hour - 12).toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> PM. `;
+
         let isValid = true;
 
-        if (isValid) {
+        if (isValid && !questions.some(q => q.Question === questionText)) {
           let question = new MathsQuestion(
             maths.Grade,
             maths.TimeAnalogueOperation,
-            `Describe <img src="/images/clocks/${(hour - 12).toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}.svg" class="clock" /> PM. `,
+            questionText,
             '',
             { type: "text" });
 
@@ -499,7 +551,7 @@ function Maths(game) {
             case 45: question.Answer = `quarter to  ${hour + 1 == 12 ? 'midnight' : `${maths.hourTo(hour + 1)}`}`; break;
           }
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -526,37 +578,43 @@ function Maths(game) {
     }
 
     if (hours.length > 0 && minutes.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let hour = maths.randomElement(hours);
         let minute = maths.randomElement(minutes);
 
+        let optionCorrect = `${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}`;
+        let options = [optionCorrect];
+        while (options.length < 4) {
+          let changeHour = Math.random() < 0.5;
+          let option = `${(changeHour ? Math.floor(Math.random() * 12) : hour).toString().padStart(2, '0')}${(changeHour ? minute : (Math.floor(Math.random() * 12) * 5)).toString().padStart(2, '0')}`;
+          if (options.indexOf(options) === -1) { options.push(option); }
+        }
+        options.sort(() => Math.random() < 0.5 ? -1 : 1);
+
+        let optionsTable = ['<table class="w-100"><thead><tr><td class="text-center">A</td><td style="text-align: center;">B</td><td style="text-align: center;">C</td><td style="text-align: center;">D</td></tr></thead>',
+          '<tbody><tr>',
+          options.map((option, i) => `<td><img src="/images/clocks/${option}.svg" class="w-100" /></td>`).join(''),
+          '</tr></tbody>',
+          '</table> '].join("");
+
+        let questionText = `How do you show ${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} on a clock?${optionsTable}`;
+
         let isValid = true;
 
-        if (isValid) {
-          let optionCorrect = `${hour.toString().padStart(2, '0')}${minute.toString().padStart(2, '0')}`;
-          let options = [optionCorrect];
-          while (options.length < 4) {
-            let changeHour = Math.random() < 0.5;
-            let option = `${(changeHour ? Math.floor(Math.random() * 12) : hour).toString().padStart(2, '0')}${(changeHour ? minute : (Math.floor(Math.random() * 12) * 5)).toString().padStart(2, '0')}`;
-            if (options.indexOf(options) === -1) { options.push(option); }
+        if (isValid && !questions.some(q => q.Question === questionText)) {
+          if (!questions.some(q => q.Question === questionText)) {
+            let question = new MathsQuestion(
+              maths.Grade,
+              maths.TimeDigitalOperation,
+              questionText,
+              String.fromCharCode(65 + options.indexOf(optionCorrect)),
+              { type: "text" });
+
+            questions.push(question); attempts = 0;
           }
-          options.sort(() => Math.random() < 0.5 ? -1 : 1);
-
-          let optionsTable = ['<table class="w-100"><thead><tr><td class="text-center">A</td><td style="text-align: center;">B</td><td style="text-align: center;">C</td><td style="text-align: center;">D</td></tr></thead>',
-            '<tbody><tr>',
-            options.map((option, i) => `<td><img src="/images/clocks/${option}.svg" class="w-100" /></td>`).join(''),
-            '</tr></tbody>',
-            '</table> '].join("");
-
-          let question = new MathsQuestion(
-            maths.Grade,
-            maths.TimeDigitalOperation,
-            `How do you show ${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} on a clock?${optionsTable}`,
-            String.fromCharCode(65 + options.indexOf(optionCorrect)),
-            { type: "text" });
-
-          questions.push(question);
         }
       }
 
@@ -576,18 +634,22 @@ function Maths(game) {
     }
 
     if (hours.length > 0 && minutes.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let hour = maths.randomElement(hours);
         let minute = maths.randomElement(minutes);
 
+        let questionText = `Describe ${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}. `;
+
         let isValid = true;
 
-        if (isValid) {
+        if (isValid && !questions.some(q => q.Question === questionText)) {
           let question = new MathsQuestion(
             maths.Grade,
             maths.TimeDigitalOperation,
-            `Describe ${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}. `,
+            questionText,
             '',
             { type: "text" });
 
@@ -600,7 +662,7 @@ function Maths(game) {
             case 45: question.Answer = `quarter to ${maths.hourTo(hour + 1)}`; break;
           }
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -620,18 +682,22 @@ function Maths(game) {
     }
 
     if (hours.length > 0 && minutes.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let hour = maths.randomElement(hours);
         let minute = maths.randomElement(minutes);
 
+        let questionText = `Describe ${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} AM. `;
+
         let isValid = true;
 
-        if (isValid) {
+        if (isValid && !questions.some(q => q.Question === questionText)) {
           let question = new MathsQuestion(
             maths.Grade,
             maths.TimeDigitalOperation,
-            `Describe ${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} AM. `,
+            questionText,
             '',
             { type: "text" });
 
@@ -644,7 +710,7 @@ function Maths(game) {
             case 45: question.Answer = `quarter to ${maths.hourTo(hour + 1)}`; break;
           }
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -664,18 +730,22 @@ function Maths(game) {
     }
 
     if (hours.length > 0 && minutes.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let hour = maths.randomElement(hours);
         let minute = maths.randomElement(minutes);
 
+        let questionText = `Describe ${(hour === 12 ? hour : hour - 12).toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} PM. `;
+
         let isValid = true;
 
-        if (isValid) {
+        if (isValid && !questions.some(q => q.Question === questionText)) {
           let question = new MathsQuestion(
             maths.Grade,
             maths.TimeDigitalOperation,
-            `Describe ${(hour === 12 ? hour : hour - 12).toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')} PM. `,
+            questionText,
             '',
             { type: "text" });
 
@@ -688,7 +758,7 @@ function Maths(game) {
             case 45: question.Answer = `quarter to ${maths.hourTo(hour + 1)}`; break;
           }
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -733,8 +803,10 @@ function Maths(game) {
     }
 
     if (modes.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let as = [], bs = [];
 
         switch (maths.Grade) {
@@ -783,19 +855,17 @@ function Maths(game) {
           case 8: answer = a * 10 + b; questionText = `${a}cm ${b}mm = ?mm `; break;
         }
 
-        if (as.length) {
-          let isValid = true;
+        let isValid = as.length > 0;
 
-          if (isValid) {
-            let question = new MathsQuestion(
-              maths.Grade,
-              maths.LengthConversionOperation,
-              questionText,
-              answer,
-              { type: "number" });
+        if (isValid && !questions.some(q => q.Question === questionText)) {
+          let question = new MathsQuestion(
+            maths.Grade,
+            maths.LengthConversionOperation,
+            questionText,
+            answer,
+            { type: "number" });
 
-            questions.push(question);
-          }
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -815,8 +885,10 @@ function Maths(game) {
     }
 
     if (cms.length > 0 && mm1s.length > 0 && mm2s.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let cm = maths.randomElement(cms);
         let mm1 = maths.randomElement(mm1s);
         let mm2 = maths.randomElement(mm2s);
@@ -824,19 +896,21 @@ function Maths(game) {
         let sum = [`${cm}cm`, `${mm1}mm`, `${mm2}mm`];
         sum.sort(() => Math.random() < 0.5 ? -1 : 1);
 
+        let questionText = `${sum.join(' + ')} = ?mm `;
+
         let answer = cm * 10 + mm1 + mm2;
 
         let isValid = true;
 
-        if (isValid) {
+        if (isValid && !questions.some(q => q.Question === questionText)) {
           let question = new MathsQuestion(
             maths.Grade,
             maths.LengthAdditionOperation,
-            `${sum.join(' + ')} = ?mm `,
+            questionText,
             answer,
             { type: "number" });
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -856,24 +930,28 @@ function Maths(game) {
     }
 
     if (heights.length > 0 && widths.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let height = maths.randomElement(heights);
         let width = maths.randomElement(widths);
+
+        let questionText = `What is the area of a ${height}cm x ${width}cm block in cm<sup>2</sup>? `;
 
         let answer = height * width;
 
         let isValid = true;
 
-        if (isValid) {
+        if (isValid && !questions.some(q => q.Question === questionText)) {
           let question = new MathsQuestion(
             maths.Grade,
             maths.AreaUnitsOperation,
-            `What is the area of a ${height}cm x ${width}cm block in cm<sup>2</sup>? `,
+            questionText,
             answer,
             { type: "number" });
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
 
           let block = [
             '<table>',
@@ -894,7 +972,7 @@ function Maths(game) {
             { type: "number" }
           );
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -914,38 +992,42 @@ function Maths(game) {
     }
 
     if (heights.length > 0 && widths.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let height = maths.randomElement(heights);
         let width = maths.randomElement(widths);
+
+        let block = [];
+        block.push('<table>');
+        block.push('  <tbody>');
+        for (let h = 0; h < height; h++) {
+          block.push('    <tr>');
+          for (let w = 0; w < width; w++) {
+            block.push('    <td class="border" style="height: 30px; width: 30px">');
+            block.push('    </td>');
+          }
+          block.push('    </tr>');
+        }
+        block.push('  </tbody>');
+        block.push('</table>');
+
+        let questionText = `What is the area in sq<sup>2</sup>?${block.join('')}<br/>`;
 
         let answer = height * width;
 
         let isValid = true;
 
-        if (isValid) {
-          let block = [];
-          block.push('<table>');
-          block.push('  <tbody>');
-          for (let h = 0; h < height; h++) {
-            block.push('    <tr>');
-            for (let w = 0; w < width; w++) {
-              block.push('    <td class="border" style="height: 30px; width: 30px">');
-              block.push('    </td>');
-            }
-            block.push('    </tr>');
-          }
-          block.push('  </tbody>');
-          block.push('</table>');
-
+        if (isValid && !questions.some(q => q.Question === questionText)) {
           let question = new MathsQuestion(
             maths.Grade,
             maths.Area2DOperation,
-            `What is the area in sq<sup>2</sup>?${block.join('')}<br/>`,
+            questionText,
             answer,
             { type: "number" });
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -965,24 +1047,28 @@ function Maths(game) {
     }
 
     if (heights.length > 0 && widths.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let height = maths.randomElement(heights);
         let width = maths.randomElement(widths);
+
+        let questionText = `What is the perimeter of a ${height}cm x ${width}cm block in cm? `;
 
         let answer = (height + width) * 2;
 
         let isValid = true;
 
-        if (isValid) {
+        if (isValid && !questions.some(q => q.Question === questionText)) {
           let question = new MathsQuestion(
             maths.Grade,
             maths.PerimeterUnitsOperation,
-            `What is the perimeter of a ${height}cm x ${width}cm block in cm? `,
+            questionText,
             answer,
             { type: "number" });
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
 
           let block = [
             '<table>',
@@ -1002,7 +1088,7 @@ function Maths(game) {
             answer,
             { type: "number" });
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -1022,38 +1108,42 @@ function Maths(game) {
     }
 
     if (heights.length > 0 && widths.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let height = maths.randomElement(heights);
         let width = maths.randomElement(widths);
+
+        let block = [];
+        block.push('<table>');
+        block.push('  <tbody>');
+        for (let h = 0; h < height; h++) {
+          block.push('    <tr>');
+          for (let w = 0; w < width; w++) {
+            block.push('    <td class="border" style="height: 30px; width: 30px">');
+            block.push('    </td>');
+          }
+          block.push('    </tr>');
+        }
+        block.push('  </tbody>');
+        block.push('</table>');
+
+        let questionText = `What is the perimeter?${block.join('')}<br/>`;
 
         let answer = (height + width) * 2;
 
         let isValid = true;
 
-        if (isValid) {
-          let block = [];
-          block.push('<table>');
-          block.push('  <tbody>');
-          for (let h = 0; h < height; h++) {
-            block.push('    <tr>');
-            for (let w = 0; w < width; w++) {
-              block.push('    <td class="border" style="height: 30px; width: 30px">');
-              block.push('    </td>');
-            }
-            block.push('    </tr>');
-          }
-          block.push('  </tbody>');
-          block.push('</table>');
-
+        if (isValid && !questions.some(q => q.Question === questionText)) {
           let question = new MathsQuestion(
             maths.Grade,
             maths.Perimeter2DOperation,
-            `What is the perimeter?${block.join('')}<br/>`,
+            questionText,
             answer,
             { type: "number" });
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -1075,8 +1165,10 @@ function Maths(game) {
     }
 
     if (values.length > 0 && forms.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let a = maths.randomElement(values);
         let b = maths.randomElement(values);
         let c = maths.randomElement(values);
@@ -1095,7 +1187,7 @@ function Maths(game) {
 
         let isValid = true;
 
-        if (isValid) {
+        if (isValid && !questions.some(q => q.Question === questionText)) {
           let question = new MathsQuestion(
             maths.Grade,
             maths.BODMASOperation,
@@ -1103,7 +1195,7 @@ function Maths(game) {
             answer,
             { type: "number" });
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -1123,28 +1215,31 @@ function Maths(game) {
     }
 
     if (numerators.length > 0 && denominators.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let denominator = maths.randomElement(denominators);
         let numerator = maths.randomElement(numerators.filter(n => n <= denominator));
+
+        let questionText = maths.randomElement([
+          `${numerator}&frasl;${denominator} as a % = `,
+          `Write ${numerator} out of ${denominator} as a percentage. `,
+          `If you scored ${numerator} marks out of a total of ${denominator}, what is your percentage score? `]);
+
         let answer = (100 / denominator) * numerator;
 
         let isValid = true;
 
-        if (isValid) {
-          let questionText = [
-            `${numerator}&frasl;${denominator} as a % = `,
-            `Write ${numerator} out of ${denominator} as a percentage. `,
-            `If you scored ${numerator} marks out of a total of ${denominator}, what is your percentage score? `];
-
+        if (isValid && !questions.some(q => q.Question === questionText)) {
           let question = new MathsQuestion(
             maths.Grade,
             maths.PercentageOperation,
-            maths.randomElement(questionText),
+            questionText,
             answer,
             { type: "number" });
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -1163,24 +1258,29 @@ function Maths(game) {
       case 5: break;
       default:
         modes = [
-          'Express {percentage}% as a fraction in its simplest form. ',
-          'Express {whole} {numerators[0]}&frasl;{denominators[0]} as an improper fraction. ',
-          'Find the lowest common denominator for the following addition: {numerators[0]}&frasl;{denominators[0]} + {numerators[1]}&frasl;{denominators[1]}. ',
-          'Compare {lhs} <u>&nbsp;&nbsp;</u> {rhs} using <, > or =. ',
-          'Express {values[0]} as a fraction of {values[1]}. Simplify your answer. ',
-          'If {numerators[0]}&frasl;{denominators[0]} = <sup>x</sup>&frasl;<sub>{denominators[1]}</sub>, what is the value of x? ',
-          'If <sup>x</sup>&frasl;<sub>{denominators[0]}</sub> = {numerators[1]}&frasl;{denominators[1]}, what is the value of x? ',
-          'Arrange these fractions from smallest to largest: {numerators[0]}&frasl;{denominators[0]}, {numerators[1]}&frasl;{denominators[1]}, {numerators[2]}&frasl;{denominators[2]}, {numerators[3]}&frasl;{denominators[3]}: ',
-          '{whole} = <sup>x</sup>&frasl;<sub>{denominators[0]}</sub>. What is the value of x? ',
-          'How many {denominators[0]} are there in {whole} whole units? ',
-          'Find the missing values in the following set of equivalent fractions: <sup>{numerators[0]}</sup>&frasl;<sub>{denominators[0]}</sub> = <sup>{numerators[1]}</sup>&frasl;<sub>{denominators[1]}</sub> = <sup>{numerators[2]}</sup>&frasl;<sub>{denominators[2]}</sub>. What is the value of {variable}? '
+          //'Express {percentage}% as a fraction in its simplest form. ',
+          //'Express {whole} {numerators[0]}&frasl;{denominators[0]} as an improper fraction. ',
+          //'Find the lowest common denominator for the following addition: {numerators[0]}&frasl;{denominators[0]} + {numerators[1]}&frasl;{denominators[1]}. ',
+          //'Compare {lhs} <u>&nbsp;&nbsp;</u> {rhs} using <, > or =. ',
+          //'Express {values[0]} as a fraction of {values[1]}. Simplify your answer. ',
+          //'If {numerators[0]}&frasl;{denominators[0]} = <sup>x</sup>&frasl;<sub>{denominators[1]}</sub>, what is the value of x? ',
+          //'If <sup>x</sup>&frasl;<sub>{denominators[0]}</sub> = {numerators[1]}&frasl;{denominators[1]}, what is the value of x? ',
+          //'Arrange these fractions from smallest to largest: {numerators[0]}&frasl;{denominators[0]}, {numerators[1]}&frasl;{denominators[1]}, {numerators[2]}&frasl;{denominators[2]}, {numerators[3]}&frasl;{denominators[3]}: ',
+          //'{whole} = <sup>x</sup>&frasl;<sub>{denominators[0]}</sub>. What is the value of x? ',
+          //'How many {denominators[0]} are there in {whole} whole units? ',
+          //'Find the missing values in the following set of equivalent fractions: <sup>{numerators[0]}</sup>&frasl;<sub>{denominators[0]}</sub> = <sup>{numerators[1]}</sup>&frasl;<sub>{denominators[1]}</sub> = <sup>{numerators[2]}</sup>&frasl;<sub>{denominators[2]}</sub>. What is the value of {variable}? ',
+          //'What is the decimal form of the fraction {numerators[0]}&frasl;{denominators[0]}? ',
+          //'What is the percentage form of the fraction {numerators[0]}&frasl;{denominators[0]}? ',
+          'What is the simplest fractional form of the decimal {decimal}? '
         ];
         break;
     }
 
     if (modes.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let mode = maths.randomElement(modes);
         let denominators = [], numerators = [];
         let percentage, whole, decimal, values = [], lcm;
@@ -1302,7 +1402,7 @@ function Maths(game) {
 
             isValid = lcm <= 100;
 
-            if (isValid) {
+            if (isValid && !questions.some(q => q.Question === questionText)) {
               questionText = mode
                 .replace('{numerators[0]}', numerators[0]).replace('{denominators[0]}', denominators[0])
                 .replace('{numerators[1]}', numerators[1]).replace('{denominators[1]}', denominators[1])
@@ -1373,10 +1473,62 @@ function Maths(game) {
             answer = variable === 0 ? values[a] : values[b];
             type = 'number';
             break;
+          case 'What is the decimal form of the fraction {numerators[0]}&frasl;{denominators[0]}? ':
+            denominators[0] = maths.randomElement([2, 4, 5, 8, 10]);
+            numerators[0] = maths.randomInteger(1, denominators[0]);
+
+            questionText = mode
+              .replace('{numerators[0]}', numerators[0])
+              .replace('{denominators[0]}', denominators[0]);
+
+            answer = 100 / denominators[0] * numerators[0] / 100;
+            type = 'number';
+            break;
+          case 'What is the percentage form of the fraction {numerators[0]}&frasl;{denominators[0]}? ':
+            denominators[0] = maths.randomElement([2, 3, 4, 5, 8, 10]);
+            numerators[0] = denominators[0] === 8 ? maths.randomElement([1, 4, 8]) : maths.randomInteger(1, denominators[0]);
+
+            questionText = mode
+              .replace('{numerators[0]}', numerators[0])
+              .replace('{denominators[0]}', denominators[0]);
+
+            answer = (100 / denominators[0]) * numerators[0];
+            type = 'number';
+            break;
+          case 'What is the simplest fractional form of the decimal {decimal}? ':
+            denominators[0] = maths.randomElement([2, 3, 4, 5, 8, 10]);
+            numerators[0] = maths.randomInteger(1, denominators[0] - 1);
+            decimal = (100 / denominators[0]) * numerators[0] / 100;
+
+            denominators[0] = maths.lowestCommonDenominator(numerators[0], denominators[0]);
+            numerators[0] = decimal * denominators[0];
+
+            switch (decimal.toFixed(3)) {
+              case '0.100': case '0.200': case '0.300': case '0.400': case '0.500': case '0.600': case '0.700': case '0.800': case '0.900':
+                decimal = decimal.toFixed(1);
+                break;
+              case '0.250': case '0.333': case '0.750':
+                decimal = decimal.toFixed(2);
+                break;
+              case '0.667':
+                decimal = '0.66';
+                break;
+              case '0.000': case '1.000':
+                decimal = decimal.toFixed(0);
+                break;
+              default:
+                decimal = decimal.toFixed(3);
+                break;
+            }
+            questionText = mode.replace('{decimal}', decimal);
+
+            answer = `${numerators[0]}/${denominators[0]}`;
+            type = 'text';
+            break;
           default: throw new Error(`Unknown mode: ${mode}`);
         }
 
-        if (isValid) {
+        if (isValid && !questions.some(q => q.Question === questionText)) {
           question = new MathsQuestion(
             maths.Grade,
             maths.FractionOperation,
@@ -1386,7 +1538,7 @@ function Maths(game) {
             null,
             extraInfo);
 
-          questions.push(question);
+          questions.push(question); attempts = 0;
         }
       }
 
@@ -1409,14 +1561,17 @@ function Maths(game) {
           'There are {total} oranges on a tree. For every {denominators[0]} that are still fine to eat, there are {numerators[0]} rotten oranges. How many oranges on the tree can still be eaten? ',
           'There are {total} children in the hall. For every {denominators[0]} boys, there are {numerators[0]} girls. How many girls are in the hall? ',
           `${maths.Game.Player} has cards that are red, blue and yellow. The ratio of these coloured cards is {values[0]}:{values[1]}:{values[2]} respectively. There are {values[3]} blue cards. How many cards are there altogether? `,
+          `${maths.Game.Player} has cards that are red, blue and yellow. The ratio of these coloured cards is {values[0]}:{values[1]}:{values[2]} respectively. There are {values[3]} red cards. How many yellow cards are there? `,
           'There are {total} apples in your fridge. There are {numerators[0]} red apples and {denominators[0]} green apples. What is the ratio of apples? '
         ];
         break;
     }
 
     if (modes.length > 0) {
-      let questions = [];
-      while (questions.length < maths.QuestionsPerOperation) {
+      let questions = [], attempts = 0;
+      while (questions.length < maths.QuestionsPerOperation && attempts < maths.MaxAttempts) {
+        attempts++;
+
         let mode = maths.randomElement(modes);
         let numerators = [], denominators = [], values = [];
         let lcd;
@@ -1477,6 +1632,21 @@ function Maths(game) {
             answer = values[3] / values[1] * (values[0] + values[1] + values[2]);
             type = 'number';
             break;
+          case `${maths.Game.Player} has cards that are red, blue and yellow. The ratio of these coloured cards is {values[0]}:{values[1]}:{values[2]} respectively. There are {values[3]} red cards. How many yellow cards are there? `:
+            values[0] = maths.randomInteger(1, 20);
+            values[1] = maths.randomInteger(1, 20);
+            values[2] = maths.randomInteger(1, 20);
+            values[3] = maths.randomInteger(1, 5) * values[0];
+
+            questionText = mode
+              .replace('{values[0]}', values[0])
+              .replace('{values[1]}', values[1])
+              .replace('{values[2]}', values[2])
+              .replace('{values[3]}', values[3]);
+
+            answer = values[3] / values[0] * values[2];
+            type = 'number';
+            break
           case 'There are {total} apples in your fridge. There are {numerators[0]} red apples and {denominators[0]} green apples. What is the ratio of apples? ':
             lcm = maths.randomInteger(2, 10);
             numerators[0] = lcm * maths.randomInteger(1, 10);
@@ -1503,7 +1673,7 @@ function Maths(game) {
           answer,
           { type: type });
 
-        questions.push(question);
+        questions.push(question); attempts = 0;
       }
 
       maths.Questions.push(...questions);
