@@ -1,6 +1,10 @@
 {
   "events": [
-    { "date": "2025-09-28", "category": "first",   "body":"First netball goal (25 Sep)" },
+    { "date": "2025-12-16", "category": "quote",   "body":"\"Diosorienteriated\" = disorientated" },
+    { "date": "2025-11-15", "category": "quote",   "body":"I'm going to use a tiny bit of little bit of..." },
+    { "date": "2025-10-20", "category": "quote",   "body":"Anika: Who's playing? Banka Slang and Banjester?\\nPappa: Not quite. Sri Lanka vs Bangladesh." },
+    { "date": "2025-09-25", "category": "first",   "body":"First netball goal" },
+    { "date": "2025-09-25", "category": "netball", "body":"First goal" },
     { "date": "2025-09-12", "category": "quote",   "body":"Playing chess...\\nAnika: I like to use those prawn things.\\nPappa: Prawns?\\nAnika: Prunes?\\nPappa: Pawns?\\nAnika: Yes. Those." },
     { "date": "2025-08-02", "category": "height",  "body":"134cm" },
     { "date": "2025-06-06", "category": "general", "body":"Covering you before going to bed...\\nAnika: No, I don't want to get up.\\nPappa: You don't have to. I'm just covering you.\\nAnika: Are you going to padel?\\nPappa: No, just covering you.\\nAnika: What? What time is it?\\nPappa: Late.\\nAnika: Oh good. You're the best Dad. I love you.\\nPappa: I love you my darling." },

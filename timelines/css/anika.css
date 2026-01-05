@@ -1,10 +1,20 @@
 body {
-  background-color: #66ffcc;
-  background-image: linear-gradient(#66ffcc, #33cccc);
+  background-color: #ffffff;
+  background-image: none;
   margin: 0px 0px 0px 0px;
   overflow: hidden;
 }
 
 nav {
   background-color: #66ffcc;
+}
+
+.event {
+  background-color: #66ffcc;
+  color: #003300;
+}
+
+.event-date {
+  color: #00cc66;
+  font-weight: bold;
 }

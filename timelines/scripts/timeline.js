@@ -90,7 +90,7 @@ function Timeline(data, navCategories) {
       eventDate.top = this.totalHeight;
       eventDate.container = $(document.createElement('div')).appendTo(this.container).addClass("px-3 pb-3").prop({ eventDate: eventDate });
 
-      $(document.createElement('h6')).appendTo(eventDate.container).addClass('text-white').text(eventDate.date.toEventDate());
+      $(document.createElement('h6')).appendTo(eventDate.container).addClass('event-date').text(eventDate.date.toEventDate());
 
       eventDate.events.forEach((event) => {
         if (this.visibleCategories & event.categoryId) {
