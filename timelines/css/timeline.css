@@ -9,11 +9,6 @@
   height: calc(100% - 80px);
 }
 
-.event {
-  background-color: #ffffff;
-  color: #003366;
-}
-
 .scrollContainer {
   position: absolute;
   top: 66px;
@@ -44,7 +39,7 @@ img.icon32 {
 }
 
 .cat-selected {
-  background-color: #ffffff;
+  background-color: transparent;
 }
 
 .cat-deselected {

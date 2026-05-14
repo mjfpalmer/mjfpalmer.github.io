@@ -1,4 +1,4 @@
-const version = "250530.1200";
+const version = "260105.1700";
 
 if (typeof Site === "undefined") { var Site = {}; }
 
@@ -105,13 +105,15 @@ Site.ServiceWorker = {
     'favicon/ms-icon-310x310.png',
     'fonts/photograph_signature-webfont.woff',
     'fonts/photograph_signature-webfont.woff2',
-    'images/categories/weight.png',
+    'images/categories/cricket.png',
     'images/categories/first.png',
     'images/categories/general.png',
     'images/categories/gift.png',
     'images/categories/height.png',
+    'images/categories/netball.png',
     'images/categories/quote.png',
     'images/categories/tooth.png',
+    'images/categories/weight.png',
     'images/clocks/0000.svg',
     'images/clocks/0005.svg',
     'images/clocks/0010.svg',
@@ -260,6 +262,7 @@ Site.ServiceWorker = {
     'images/icons/github.svg',
     'images/icons/linkedin.svg',
     'images/icons/twitter.svg',
+    'images/screenshots/screenshot-narrow.png',
     'lib/bootstrap-5.3.2-dist/css/bootstrap.min.css',
     'lib/bootstrap-5.3.2-dist/js/bootstrap.min.js',
     'lib/jquery/jquery-3.7.1.min.js',
